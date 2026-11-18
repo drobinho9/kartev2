@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
 from karte.advisor import build_advice
-from karte.knowledge import ModelConfig, venue_capacity
+from karte.knowledge import ModelConfig, estimate_capacity, expand_countries, venue_capacity
 from karte.models import Event, Opportunity
 from karte.net import FileCache, HttpClient, ProviderError
 from karte.providers.demo import load_demo
@@ -36,6 +36,9 @@ class ScanOptions:
     include_far_onsales: bool = True
     model_path: str | None = None
     now: datetime | None = None
+    seller_country: str = "HR"
+    max_artists: int = 300
+    show_all: bool = False
 
 
 @dataclass
@@ -83,10 +86,29 @@ def annotate_supply(events: list[Event]) -> None:
     for e in events:
         e.shows_in_region = max(e.shows_in_region, counts.get((normalize(e.artist), e.country), 1))
         if not e.capacity:
-            cap = venue_capacity(e.venue)
+            cap = venue_capacity(e.venue) or estimate_capacity(e.venue)
             if cap:
                 e.capacity = cap
                 e.capacity_estimated = True
+
+
+def enrichment_targets(events: list[Event], max_artists: int) -> list[Event]:
+    """Odaberi događaje za Last.fm obogaćivanje: prvo oni s cijenom, pa po najvišoj cijeni (signal veličine izvođača)."""
+    config = ModelConfig.load()
+
+    def priority(e: Event) -> tuple:
+        top = config.to_eur(e.face_max or e.face_min, e.currency) or 0.0
+        return (e.has_face_value or e.secondary is not None, e.secondary is not None, top, e.capacity or 0)
+
+    chosen: list[str] = []
+    for e in sorted(events, key=priority, reverse=True):
+        key = normalize(e.artist)
+        if key and key not in chosen:
+            chosen.append(key)
+        if len(chosen) >= max_artists:
+            break
+    wanted = set(chosen)
+    return [e for e in events if normalize(e.artist) in wanted]
 
 
 def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | None = None) -> tuple[list[Event], list[str], list[str]]:
@@ -94,6 +116,7 @@ def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | Non
     warnings: list[str] = []
     sources: list[str] = []
     events: list[Event] = []
+    opts.countries = expand_countries(opts.countries) or ["ALL"]
 
     if opts.demo:
         events.extend(load_demo(now))
@@ -124,6 +147,10 @@ def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | Non
                     sources.append(f"Ticketmaster – prodaja počinje u idućih {opts.onsale_days} dana ({len(onsales)})")
             except ProviderError as exc:
                 warnings.append(f"Ticketmaster: {exc}")
+            if tm.truncated:
+                warnings.append(
+                    f"Ticketmaster: rezultati su djelomični ({tm.calls} poziva; limit poziva ili > 1000 događaja u 12 h) – suzi države ili smanji --days."
+                )
         else:
             warnings.append("Nema TICKETMASTER_API_KEY – preskačem Ticketmaster (besplatan ključ: developer.ticketmaster.com).")
 
@@ -141,8 +168,14 @@ def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | Non
     if not opts.demo and opts.use_lastfm:
         if settings.lastfm_api_key:
             http = http or HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=6 * 3600))
-            warnings.extend(LastFmProvider(settings.lastfm_api_key, http).enrich(events))
-            sources.append("Last.fm (popularnost izvođača)")
+            targets = enrichment_targets(events, opts.max_artists)
+            warnings.extend(LastFmProvider(settings.lastfm_api_key, http).enrich(targets))
+            artists = len({normalize(e.artist) for e in targets})
+            sources.append(f"Last.fm (popularnost {artists} izvođača)")
+            if len({normalize(e.artist) for e in events}) > artists:
+                warnings.append(
+                    f"Last.fm: obogaćeno samo {artists} najperspektivnijih izvođača (--max-artists); ostali imaju zadanu popularnost."
+                )
         elif events:
             warnings.append("Nema LASTFM_API_KEY – potražnja se procjenjuje bez popularnosti izvođača (manja točnost).")
 
@@ -158,10 +191,13 @@ def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = No
     opts.now = now
     events, warnings, sources = collect_events(opts, settings, http)
     config = ModelConfig.load(opts.model_path)
-    evaluator = Evaluator(config, budget=opts.budget, category=opts.category, strict=opts.strict, now=now)
+    evaluator = Evaluator(
+        config, budget=opts.budget, category=opts.category, strict=opts.strict, now=now, seller_country=opts.seller_country
+    )
 
     window_end = now + timedelta(days=opts.days)
     opportunities: list[Opportunity] = []
+    hidden = 0
     for event in events:
         if event.date < now - timedelta(hours=6):
             continue
@@ -171,10 +207,17 @@ def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = No
         onsale_soon = op.days_to_onsale is not None and op.days_to_onsale <= max(opts.onsale_days, 0)
         if not (in_window or (opts.include_far_onsales and onsale_soon) or opts.demo or event.source.startswith("CSV")):
             continue
+        # bez nominalne cijene nema izračuna – iz API-ja ih skrivamo (CSV/demo uvijek prikazujemo)
+        manual = opts.demo or event.source.startswith("CSV")
+        if op.verdict == "NEMA CIJENE" and not (manual or opts.show_all):
+            hidden += 1
+            continue
         op.advice = build_advice(op, config)
         opportunities.append(op)
 
     opportunities.sort(key=sort_key)
+    if hidden:
+        warnings.append(f"Skriveno {hidden} događaja bez nominalne cijene u izvoru (prikaži s --show-all).")
     return ScanResult(
         opportunities=opportunities,
         warnings=warnings,

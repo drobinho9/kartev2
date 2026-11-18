@@ -10,9 +10,9 @@ import math
 from datetime import datetime
 
 from karte import legal
-from karte.knowledge import ModelConfig
+from karte.knowledge import ModelConfig, market_info
 from karte.models import DemandResult, Event, Opportunity, PlatformOption
-from karte.platforms import Platform, available_platforms
+from karte.platforms import Platform, available_platforms, blocked_for_seller
 from karte.util import clamp, days_between, log_scale, utcnow
 
 VERDICT_ORDER = {
@@ -36,6 +36,7 @@ class Evaluator:
         category: str = "cheap",
         strict: bool = False,
         now: datetime | None = None,
+        seller_country: str = "HR",
     ):
         if category not in CATEGORIES:
             raise ValueError(f"Nepoznata kategorija '{category}', dopušteno: {', '.join(CATEGORIES)}")
@@ -44,6 +45,7 @@ class Evaluator:
         self.category = category
         self.strict = strict
         self.now = now or utcnow()
+        self.seller_country = (seller_country or "HR").upper()
 
     # ------------------------------------------------------------------ cijene
     def face_reference(self, event: Event) -> float | None:
@@ -194,14 +196,14 @@ class Evaluator:
                 multiplier *= r["late_decay"]
             expected_resale = face_ref * multiplier
 
-        legal_result = legal.evaluate(event.country, face_ref, buy_cost, strict=self.strict)
+        legal_result = legal.evaluate(event.country, face_ref, buy_cost, strict=self.strict, region=event.region)
 
         options: list[PlatformOption] = []
         best: PlatformOption | None = None
         best_platform: Platform | None = None
         if face_ref and buy_cost and expected_resale:
             ranked: list[tuple[float, PlatformOption, Platform]] = []
-            for platform in available_platforms(event.country, event.primary_vendor):
+            for platform in available_platforms(event.country, event.primary_vendor, self.seller_country):
                 option = self._platform_option(platform, event, face_ref, buy_cost, expected_resale, legal_result.cap_price, demand.score)
                 options.append(option)
                 rank = option.expected_value - platform.trust_risk * 0.05 * buy_cost
@@ -319,6 +321,18 @@ class Evaluator:
             risk += r["postponed"]
             flags.append("Događaj je odgođen – neizvjestan novi datum i potražnja.")
         risk += r["low_demand"] * (1 - demand.score)
+        if event.country and event.country.upper() != self.seller_country:
+            info = market_info(event.country)
+            access = float(info.get("access_risk", r.get("unknown_access", 0.35)))
+            risk += access * r.get("access_weight", 0.35)
+            if access >= 0.3:
+                note = info.get("access") or "Tržište nije u bazi – provjeri kako kupiti i prodati iz inozemstva."
+                flags.append(f"Kupnja/prodaja iz inozemstva ({event.country}): {note}")
+            blocked = blocked_for_seller(event.country, event.primary_vendor, self.seller_country)
+            if blocked:
+                flags.append(
+                    "Ne primaju prodavatelje iz " + self.seller_country + ": " + ", ".join(p.name for p in blocked) + "."
+                )
         return clamp(risk), flags
 
     def _verdict(self, event, phase, face_ref, legal_result, roi, demand, risk) -> tuple[str, str]:

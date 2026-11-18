@@ -54,6 +54,7 @@ class Event:
     shows_in_region: int = 1
     primary_vendor: str | None = None
     notes: str | None = None
+    region: str | None = None  # savezna država / pokrajina (npr. "NY", "ON", "NSW")
 
     @property
     def has_face_value(self) -> bool:

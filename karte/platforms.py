@@ -2,9 +2,15 @@
 
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass, field
 
 from karte import knowledge
+
+# Koliko lokalni kanal (oglasnik, Facebook) vrijedi kad je događaj izvan države prodavatelja
+LOCAL_ABROAD_REACH = 0.35
+LOCAL_ABROAD_TRUST_PENALTY = 0.15
+LOCAL_ABROAD_PRICE_FACTOR = 0.9
 
 
 @dataclass
@@ -25,9 +31,13 @@ class Platform:
     payout: str
     notes: str
     names: dict[str, str] = field(default_factory=dict)
+    seller_countries: list[str] | None = None
+    local: bool = False
+    overrides: dict[str, dict] = field(default_factory=dict)
 
     @classmethod
     def from_dict(cls, key: str, d: dict) -> "Platform":
+        seller = d.get("seller_countries")
         return cls(
             key=key,
             name=d.get("name", key),
@@ -45,17 +55,42 @@ class Platform:
             payout=d.get("payout", ""),
             notes=d.get("notes", ""),
             names=dict(d.get("names", {})),
+            seller_countries=[c.upper() for c in seller] if seller else None,
+            local=bool(d.get("local", False)),
+            overrides={k.upper(): v for k, v in d.get("overrides", {}).items()},
         )
+
+    def for_event(self, country: str | None, seller_country: str | None = None) -> "Platform":
+        """Kopija s pravilima za državu događaja i korekcijom za lokalne kanale u inozemstvu."""
+        p = self
+        code = (country or "").upper()
+        if code in self.overrides:
+            changes = {k: v for k, v in self.overrides[code].items() if k in {f.name for f in dataclasses.fields(Platform)}}
+            p = dataclasses.replace(p, **changes)
+        if p.local and seller_country and code and code != seller_country.upper():
+            p = dataclasses.replace(
+                p,
+                reach=p.reach * LOCAL_ABROAD_REACH,
+                price_factor=p.price_factor * LOCAL_ABROAD_PRICE_FACTOR,
+                trust_risk=min(1.0, p.trust_risk + LOCAL_ABROAD_TRUST_PENALTY),
+            )
+        return p
 
     def display_name(self, country: str | None = None) -> str:
         if country and country.upper() in self.names:
             return f"{self.names[country.upper()]} ({self.name.lower()})"
         return self.name
 
-    def available_for(self, country: str | None, vendor: str | None) -> bool:
+    def serves_event(self, country: str | None, vendor: str | None) -> bool:
         if self.requires_vendor and self.requires_vendor != vendor:
             return False
         return "*" in self.countries or (country or "").upper() in self.countries
+
+    def accepts_seller(self, seller_country: str | None) -> bool:
+        return not self.seller_countries or not seller_country or seller_country.upper() in self.seller_countries
+
+    def available_for(self, country: str | None, vendor: str | None, seller_country: str | None = None) -> bool:
+        return self.serves_event(country, vendor) and self.accepts_seller(seller_country)
 
     def cap_price(self, face_ref: float, buy_cost: float) -> float | None:
         if self.cap == "none":
@@ -83,5 +118,14 @@ def load_platforms() -> dict[str, Platform]:
     return {key: Platform.from_dict(key, d) for key, d in knowledge.platforms().items()}
 
 
-def available_platforms(country: str | None, vendor: str | None) -> list[Platform]:
-    return [p for p in load_platforms().values() if p.available_for(country, vendor)]
+def available_platforms(country: str | None, vendor: str | None, seller_country: str | None = None) -> list[Platform]:
+    return [
+        p.for_event(country, seller_country)
+        for p in load_platforms().values()
+        if p.available_for(country, vendor, seller_country)
+    ]
+
+
+def blocked_for_seller(country: str | None, vendor: str | None, seller_country: str | None) -> list[Platform]:
+    """Platforme koje bi radile za događaj, ali ne primaju prodavatelje iz tvoje države."""
+    return [p for p in load_platforms().values() if p.serves_event(country, vendor) and not p.accepts_seller(seller_country)]

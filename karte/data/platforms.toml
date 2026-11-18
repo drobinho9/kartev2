@@ -9,8 +9,11 @@
 # reach            – 0..1, koliko kupaca platforma realno dovodi (utječe na vjerojatnost prodaje)
 # price_factor     – realno postiziva cijena u odnosu na tržišnu (viagogo = 1.0; lokalni kupci plaćaju manje)
 # trust_risk       – 0..1, rizik prijevare / spora / zadržane isplate
-# countries        – ISO kodovi gdje ima smisla; "*" = svugdje
+# countries        – države DOGAĐAJA gdje platforma ima smisla; "*" = svugdje
+# seller_countries – države PREBIVALIŠTA prodavatelja koje platforma prihvaća (izostavljeno = bez ograničenja)
+# local            – lokalni kanal (oglasnik/grupe): izvan svoje države prodaješ teško (manji doseg, veći rizik)
 # requires_vendor  – platforma radi samo za ulaznice kupljene kod tog prodavača
+# [x.overrides.CC] – drugačija pravila za državu događaja CC
 
 [viagogo]
 name = "viagogo"
@@ -23,7 +26,12 @@ reach = 0.95
 trust_risk = 0.45
 countries = ["*"]
 payout = "Isplata tek nakon održanog događaja (i ulaska kupca) – kapital je zarobljen do tada."
-notes = "Najveći međunarodni doseg (dio StubHub Holdings). Naknada prodavatelja ~10–15 % (procjena), kupac plaća visoke naknade povrh. Više puta kažnjavan (Italija AGCOM, Australija ACCC 7 mil. AUD). U državama s limitom cijene sam si odgovoran za poštivanje zakona."
+notes = "Najveći međunarodni doseg (dio StubHub Holdings). Naknada prodavatelja ~10–15 % (procjena), kupac plaća visoke naknade povrh. Više puta kažnjavan (Italija AGCOM, Australija ACCC 7 mil. AUD). U državama s limitom cijene sam si odgovoran za poštivanje zakona. Isplata PayPalom ili na račun u valuti oglasa."
+
+[viagogo.overrides.US]
+reach = 0.7
+[viagogo.overrides.CA]
+reach = 0.7
 
 [stubhub]
 name = "StubHub"
@@ -32,11 +40,53 @@ price_factor = 1.0
 seller_fee_pct = 0.15
 seller_fee_fixed = 0.0
 cap = "none"
-reach = 0.9
+reach = 0.95
 trust_risk = 0.35
-countries = ["US", "CA", "GB"]
-payout = "Obično nakon događaja."
-notes = "Sjevernoamerički brend StubHub Holdings (NYSE: STUB). Za Europu se koristi viagogo. UK CMA je 2026. kaznio StubHub zbog skrivenih naknada."
+countries = ["US", "CA", "GB", "IE"]
+payout = "5–8 radnih dana nakon događaja (PayPal ili račun u valuti oglasa)."
+notes = "Sjevernoamerički brend StubHub Holdings (NYSE: STUB); međunarodne stranice (stubhub.co.uk/.ie) primaju i prodavatelje iz EU (EUR račun sa SWIFT/BIC ili PayPal). Za stubhub.com (SAD) kao prodavač iz HR provjeri isplatu prije kupnje. UK CMA je 2026. kaznio StubHub zbog skrivenih naknada."
+
+[vivid_seats]
+name = "Vivid Seats"
+url = "https://www.vividseats.com"
+price_factor = 1.0
+seller_fee_pct = 0.10
+seller_fee_fixed = 0.0
+cap = "none"
+reach = 0.8
+trust_risk = 0.25
+countries = ["US", "CA"]
+seller_countries = ["US"]
+payout = "PayPal nakon isporuke."
+notes = "Pojedinačni prodavatelji moraju imati prebivalište u SAD-u."
+
+[seatgeek_market]
+name = "SeatGeek Marketplace"
+url = "https://seatgeek.com/sell"
+price_factor = 1.0
+seller_fee_pct = 0.10
+seller_fee_fixed = 0.0
+cap = "none"
+reach = 0.7
+trust_risk = 0.2
+countries = ["US", "CA"]
+seller_countries = ["US", "CA"]
+payout = "Na američki/kanadski bankovni račun nakon događaja."
+notes = "Prodavatelj mora imati prebivalište i račun u SAD-u ili Kanadi."
+
+[tickpick]
+name = "TickPick"
+url = "https://www.tickpick.com"
+price_factor = 0.95
+seller_fee_pct = 0.15
+seller_fee_fixed = 0.0
+cap = "none"
+reach = 0.5
+trust_risk = 0.2
+countries = ["US"]
+seller_countries = ["US"]
+payout = "Nakon događaja."
+notes = "Kupci bez naknada; naknada prodavatelja je procjena."
 
 [ticketswap]
 name = "TicketSwap"
@@ -49,7 +99,7 @@ cap_pct = 0.20
 cap_basis = "paid"
 reach = 0.6
 trust_risk = 0.1
-countries = ["NL", "BE", "DE", "FR", "GB", "ES", "IT", "PT", "DK", "SE", "NO", "PL", "AT", "CH", "IE", "CZ"]
+countries = ["NL", "BE", "DE", "FR", "GB", "ES", "IT", "PT", "DK", "SE", "NO", "PL", "AT", "CH", "IE", "CZ", "FI", "US", "BR", "MX"]
 payout = "Brza isplata nakon prodaje (SecureSwap)."
 notes = "Fan-to-fan, cijena ograničena na +20 % iznad plaćenog. Siguran i brz, ali mala marža – dobar za izlaz bez gubitka, ne za veliku zaradu. Popularan za festivale (provjeri ima li događaj stranicu)."
 
@@ -62,13 +112,13 @@ seller_fee_fixed = 0.0
 cap = "none"
 reach = 0.55
 trust_risk = 0.1
-countries = ["DE", "AT", "CH", "NL", "ES"]
+countries = ["DE", "AT", "CH", "NL", "ES", "SE", "NO", "DK", "FI"]
 requires_vendor = "eventim"
 payout = "Nakon prodaje / prema uvjetima."
 notes = "Službena preprodaja Eventima. Za neke događaje organizator nameće limit ili personalizaciju (prijenos imena). Naknada je procjena – provjeri."
 
 [ticketmaster_resale]
-name = "Ticketmaster Fan-to-Fan"
+name = "Ticketmaster preprodaja"
 url = "https://www.ticketmaster.com"
 price_factor = 1.0
 seller_fee_pct = 0.0
@@ -77,10 +127,61 @@ cap = "face"
 cap_basis = "paid"
 reach = 0.7
 trust_risk = 0.05
-countries = ["GB", "IE", "NL", "BE", "DE", "AT", "PL", "CZ", "DK", "SE", "NO", "FI", "ES", "CH"]
+countries = ["GB", "IE", "NL", "BE", "DE", "AT", "PL", "CZ", "DK", "SE", "NO", "FI", "ES", "CH", "US", "CA", "MX", "AU", "NZ"]
 requires_vendor = "ticketmaster"
 payout = "Nakon prodaje."
-notes = "Samo za ulaznice kupljene na Ticketmasteru; u Europi uglavnom po nominalnoj cijeni (ili niže). Koristi se za siguran izlaz kad se karte ne mogu prodati skuplje."
+notes = "Samo za ulaznice kupljene na Ticketmasteru. U Europi uglavnom po nominalnoj cijeni (izlaz bez gubitka); u Sjevernoj Americi slobodna cijena uz naknadu prodavatelja."
+
+[ticketmaster_resale.overrides.US]
+cap = "none"
+seller_fee_pct = 0.10
+reach = 0.85
+[ticketmaster_resale.overrides.CA]
+cap = "none"
+seller_fee_pct = 0.10
+reach = 0.8
+[ticketmaster_resale.overrides.MX]
+cap = "none"
+seller_fee_pct = 0.10
+[ticketmaster_resale.overrides.AU]
+cap = "percent"
+cap_pct = 0.10
+cap_basis = "face"
+[ticketmaster_resale.overrides.NZ]
+cap = "percent"
+cap_pct = 0.10
+cap_basis = "face"
+
+[ticketek_marketplace]
+name = "Ticketek Marketplace"
+url = "https://premier.ticketek.com.au"
+price_factor = 1.0
+seller_fee_pct = 0.05
+seller_fee_fixed = 0.0
+cap = "percent"
+cap_pct = 0.10
+cap_basis = "face"
+reach = 0.6
+trust_risk = 0.05
+countries = ["AU", "NZ"]
+requires_vendor = "ticketek"
+payout = "Nakon prodaje."
+notes = "Službena preprodaja Ticketeka, najviše +10 % iznad nominalne."
+
+[tixel]
+name = "Tixel"
+url = "https://tixel.com"
+price_factor = 1.0
+seller_fee_pct = 0.05
+seller_fee_fixed = 0.0
+cap = "percent"
+cap_pct = 0.10
+cap_basis = "face"
+reach = 0.45
+trust_risk = 0.1
+countries = ["AU", "NZ", "GB", "US", "NO", "DK", "SE"]
+payout = "Nakon prodaje."
+notes = "Fan-to-fan s ograničenom cijenom (organizatori mogu postaviti limit). Za izlaz, ne za zaradu. Naknada je procjena."
 
 [twickets]
 name = "Twickets"
@@ -118,9 +219,10 @@ seller_fee_fixed = 0.0
 cap = "none"
 reach = 0.35
 trust_risk = 0.5
+local = true
 countries = ["*"]
 payout = "Odmah (gotovina/uplata) – ali pazi na lažne uplate i lažne kupce."
-notes = "Bez naknade i s brzom isplatom, ali manji doseg i veći rizik prijevare. Prodaj samo uz uplatu na račun prije slanja ili osobnu primopredaju."
+notes = "Bez naknade i s brzom isplatom, ali manji doseg i veći rizik prijevare. Prodaj samo uz uplatu na račun prije slanja ili osobnu primopredaju. Za događaje u inozemstvu realno slabo upotrebljivo."
 
 [lokalni_oglasnik.names]
 HR = "Njuškalo"
@@ -136,6 +238,21 @@ ES = "Wallapop"
 CZ = "Bazoš"
 SK = "Bazoš"
 PL = "OLX.pl"
+RO = "OLX.ro"
+BG = "OLX.bg"
+GR = "Car.gr / Facebook"
+GB = "Gumtree"
+IE = "DoneDeal"
+SE = "Blocket"
+NO = "Finn.no"
+DK = "DBA"
+FI = "Tori"
+CH = "Ricardo / Tutti"
+US = "Craigslist / Facebook Marketplace"
+CA = "Kijiji"
+AU = "Gumtree"
+NZ = "Trade Me"
+MX = "Facebook Marketplace"
 
 [facebook_grupe]
 name = "Facebook grupe / Instagram"
@@ -146,6 +263,7 @@ seller_fee_fixed = 0.0
 cap = "none"
 reach = 0.3
 trust_risk = 0.6
+local = true
 countries = ["*"]
 payout = "Odmah – ali visok rizik prijevare (u oba smjera)."
 notes = "Grupe tipa 'Ulaznice [ime izvođača/festivala]'. Koristi samo za lokalnu primopredaju ili s provjerenim kupcima."

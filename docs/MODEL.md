@@ -55,7 +55,18 @@ Najbolja platforma = najveći EV umanjen za mali penal rizika platforme (`trust_
 ## 5. Rizik (0–1)
 
 personalizirane ulaznice +0,35 (nepoznato +0,08) · pravni rizik države × 0,5 · niska pouzdanost do +0,2 ·
-događaj > 180 dana +0,1 · isplata nakon događaja +0,05 · odgođeno +0,3 · slaba potražnja do +0,2.
+događaj > 180 dana +0,1 · isplata nakon događaja +0,05 · odgođeno +0,3 · slaba potražnja do +0,2 ·
+**događaj u inozemstvu**: `access_risk` tržišta iz [`markets.toml`](../karte/data/markets.toml) × 0,35
+(npr. AT 0,08, US 0,35, MX 0,5, JP 0,85).
+
+## 5b. Globalno: savezne države, prodavatelj, lokalni kanali
+
+- Pravila saveznih država/pokrajina (`US-VT`, `CA-ON`…) nadjačavaju državna; država događaja dolazi iz Ticketmastera
+  (`venue.state.stateCode`) ili CSV stupca `regija`.
+- `--seller-country` (zadano HR): platforme s `seller_countries` (Vivid Seats, SeatGeek, TickPick) se isključuju ako
+  tvoja država nije na popisu; navode se u rizicima.
+- Lokalni kanali (oglasnici, Facebook) za događaje izvan tvoje države: doseg × 0,35, rizik +0,15.
+- Platforme mogu imati pravila po državi (`[x.overrides.US]`), npr. Ticketmaster preprodaja u SAD-u bez limita uz ~10 %.
 
 ## 6. Preporuka i količina
 

@@ -8,6 +8,7 @@
 #   "organizer_permission" – preprodaja (radi zarade) samo uz dopuštenje organizatora
 # cap_basis: "face" (nominalna cijena) ili "paid" (plaćeno, uklj. neizbježne naknade)
 # planned_*: najavljena pravila koja još NISU na snazi – primjenjuju se samo uz --strict
+# Ključevi tipa "US-VT", "CA-ON", "AU-NSW" su pravila saveznih država/pokrajina; nasljeđuju polja države.
 #
 # VAŽNO: ovo nije pravni savjet. Provjeri aktualne propise prije kupnje.
 
@@ -132,7 +133,9 @@ name = "Španjolska"
 cap = "organizer_permission"
 risk = 0.6
 eu = true
-summary = "Nema opće zabrane, ali preprodaja iznad nominalne cijene traži dopuštenje organizatora; regionalna pravila se razlikuju."
+planned_cap = "face"
+summary = "Nema opće državne zabrane, ali regionalni zakoni o javnim priredbama ograničavaju neovlaštenu preprodaju, a botovi su zabranjeni (čl. 27.6 Zakona o nelojalnoj konkurenciji). Najavljen je Zakon o održivoj potrošnji koji bi cijenu preprodaje vezao uz originalnu (+ inflacija) – još nije donesen (listopad 2026.). Tretiraj kao: samo uz dopuštenje organizatora."
+sources = ["https://maldita.es/malditatecnologia/20250624/reventa-entradas-online-regulacion-dsa/", "https://wwwhatsnew.com/2026/10/31/comprar-entradas-conciertos-reventa-entradas-falsas-ley-espana"]
 
 [NL]
 name = "Nizozemska"
@@ -199,6 +202,198 @@ sources = [
 [US]
 name = "SAD"
 cap = "none"
+cap_basis = "paid"
+risk = 0.35
+eu = false
+summary = "Na saveznoj razini nema limita cijene; BOTS Act zabranjuje botove, FTC od 2025. traži prikaz ukupne cijene. TICKET Act (zabrana spekulativnih oglasa) prošao je Zastupnički dom 29. 4. 2026. – status u Senatu provjeri. Pravila se razlikuju po saveznim državama (VT, ME, NC, RI, MA, ON… vidi pojedinačno); Illinois i Kalifornija zabranjuju spekulativne oglase."
+sources = [
+  "https://www.ticksights.com/us-state-ticket-resale-laws-2026/",
+  "https://www.musicbusinessworldwide.com/us-house-passes-ticket-act-mandating-all-in-pricing-for-ticket-sales-heads-to-senate",
+  "https://www.hypebot.com/ca-nc-dc-vt-me-laws-limit-ticket-resale-as-feds-fail-to-act/",
+]
+
+["US-VT"]
+name = "SAD – Vermont"
+cap = "percent"
+cap_pct = 0.10
+cap_basis = "face"
+risk = 0.7
+summary = "Act 109 (na snazi od 1. 7. 2026.): preprodaja najviše 110 % nominalne cijene (izvori se razlikuju oko opsega dvorana)."
+
+["US-ME"]
+name = "SAD – Maine"
+cap = "percent"
+cap_pct = 0.10
+cap_basis = "face"
+risk = 0.6
+summary = "LD 913 (od rujna 2025.): ukupne cijene i limit od 10 % (izvori se razlikuju je li limit na cijenu ili naknade) – tretirano konzervativno kao +10 %."
+
+["US-NC"]
+name = "SAD – Sjeverna Karolina"
+cap = "percent"
+cap_pct = 0.20
+cap_basis = "face"
+risk = 0.55
+summary = "Prema izvještajima SB 849 od 6. 10. 2026.: oznaka najviše +20 % i limit naknada 10 % (izvori se ne slažu) – konzervativno +20 %."
+
+["US-RI"]
+name = "SAD – Rhode Island"
+cap = "percent"
+cap_pct = 0.10
+cap_basis = "face"
+risk = 0.6
+summary = "Zabranjena preprodaja iznad nominalne + porez + naknada (naknada najviše veće od 3 $ ili 10 %)."
+
+["US-MA"]
+name = "SAD – Massachusetts"
+cap = "percent"
+cap_pct = 0.10
+cap_basis = "face"
+risk = 0.55
+planned_cap = "percent"
+planned_cap_pct = 0.10
+summary = "Stari zakon ograničava preprodaju na nominalnu + 2 $ (uz iznimke za licencirane preprodavače, slaba provedba); guverner je u srpnju 2026. predložio limit 110 % i naknade max 10 %. Konzervativno +10 %."
+
+["US-DC"]
+name = "SAD – Washington, D.C."
+cap = "none"
+cap_basis = "face"
+risk = 0.5
+planned_cap = "percent"
+planned_cap_pct = 0.10
+summary = "RESALE Act: limit +10 % od 1. 1. 2027. (prema izvorima još čeka konačno odobrenje) – pokreni s --strict."
+
+["US-CA"]
+name = "SAD – Kalifornija"
+cap = "none"
+risk = 0.4
+summary = "Nema državnog limita cijene; zabranjeni spekulativni oglasi (AB 1349). U rujnu 2026. potpisan je novi zakon o preprodaji, a predlaže se i limit 110 % (AB 1720) – provjeri aktualno."
+
+["US-NY"]
+name = "SAD – New York"
+cap = "none"
+risk = 0.4
+summary = "Nema općeg limita cijene (pojedini izvori navode limit za velike dvorane – neprovjereno). Preprodavači trebaju licencu za poslovnu preprodaju."
+
+["US-IL"]
+name = "SAD – Illinois"
+cap = "none"
+risk = 0.4
+summary = "2026.: zabrana skrivenih naknada, spekulativnih oglasa i botova; nema limita cijene."
+
+["US-MS"]
+name = "SAD – Mississippi"
+cap = "none"
+risk = 0.5
+summary = "Za pojedine događaje/dvorane preprodaja samo po nominalnoj cijeni – provjeri događaj."
+
+[CA]
+name = "Kanada"
+cap = "none"
 risk = 0.4
 eu = false
-summary = "Pravila po saveznim državama (npr. CA, NY, ME, VT razmatraju ili imaju ograničenja). BOTS Act zabranjuje botove na saveznoj razini."
+summary = "Pravila po pokrajinama: Ontario od 24. 4. 2026. zabranjuje preprodaju iznad nominalne (uklj. naknade), Quebec iznad nominalne bez dopuštenja organizatora. Ostale pokrajine bez općeg limita."
+sources = ["https://news.pollstar.com/2026/04/27/ontario-resale-cap-goes-into-effect-ticketmaster-delists-tickets-to-comply/", "https://www.bnnbloomberg.ca/business/economics/2026/07/03/no-apparent-fines-yet-for-ticket-resellers-under-ontario-price-cap-law/"]
+
+["CA-ON"]
+name = "Kanada – Ontario"
+cap = "face"
+cap_basis = "paid"
+risk = 0.8
+summary = "Bill 97 (royal assent 24. 4. 2026.): zabranjena preprodaja iznad nominalne cijene s naknadama; kazne do 25.000 CAD."
+
+["CA-QC"]
+name = "Kanada – Quebec"
+cap = "organizer_permission"
+risk = 0.8
+summary = "Preprodaja iznad nominalne zabranjena bez dopuštenja organizatora."
+
+[MX]
+name = "Meksiko"
+cap = "none"
+risk = 0.6
+eu = false
+summary = "Nema saveznog limita cijene (ulična preprodaja je prekršaj npr. u CDMX), ali Profeco je 2026. uveo nova pravila za masovne koncerte i pokrenuo postupke protiv StubHuba i viagoga (spekulativni oglasi). Visok regulatorni rizik."
+sources = ["https://www.elimparcial.com/mexico/2026/06/02/la-profeco-va-contra-stubhub-y-viagogo-por-la-venta-especulativa-de-boletos-que-ni-siquiera-han-salido-a-preventa-oficial/"]
+
+[BR]
+name = "Brazil"
+cap = "face"
+cap_basis = "face"
+risk = 0.9
+eu = false
+summary = "Cambismo (preprodaja iznad cijene) tretira se kao kazneno djelo protiv narodne ekonomije (Lei 1.521/51) i po Statutu navijača; najavljene strože kazne ('Lei Taylor Swift')."
+
+[AR]
+name = "Argentina"
+cap = "face"
+cap_basis = "face"
+risk = 0.7
+eu = false
+summary = "Preprodaja (reventa) je prekršaj, posebno za sportske događaje – tretiraj kao zabranu (neprovjereno u detalje)."
+
+[CO]
+name = "Kolumbija"
+cap = "none"
+risk = 0.6
+eu = false
+planned_cap = "face"
+summary = "U pripremi je zakon o zabrani preprodaje (2026.) – visok rizik."
+
+[AU]
+name = "Australija"
+cap = "percent"
+cap_pct = 0.10
+cap_basis = "face"
+risk = 0.7
+eu = false
+summary = "NSW, VIC (proglašeni događaji), QLD, SA i WA: zabranjena preprodaja iznad 110 % nominalne cijene (kazne u VIC do 545.220 AUD). Ticketek Marketplace i Ticketmaster preprodaja također +10 %."
+sources = ["https://beat.com.au/a-state-by-state-breakdown-of-australian-ticket-resale-laws/", "https://djsir.vic.gov.au/ticket-scalping/about/faq"]
+
+[NZ]
+name = "Novi Zeland"
+cap = "none"
+risk = 0.45
+eu = false
+summary = "Zabrana preprodaje iznad nominalne vrijedi za proglašene velike događaje; provjeri događaj."
+
+[JP]
+name = "Japan"
+cap = "face"
+cap_basis = "face"
+risk = 0.95
+eu = false
+summary = "Zakon iz 2019.: ponovljena preprodaja radi zarade je kazneno djelo (do 1 g. zatvora ili 1 mil. JPY). Dopuštena samo službena preprodaja po nominalnoj."
+
+[KR]
+name = "Južna Koreja"
+cap = "face"
+cap_basis = "face"
+risk = 0.95
+eu = false
+summary = "Od kolovoza 2026. proširena zabrana preprodaje za koncerte i sport (kazne 2–50× cijene, oduzimanje dobiti, nagrade za prijave)."
+sources = ["https://www.koreatimes.co.kr/southkorea/law-crime/20260828/ticket-scalpers-face-fines-of-up-to-50-times-sale-price"]
+
+[NO]
+name = "Norveška"
+cap = "face"
+cap_basis = "face"
+risk = 0.8
+eu = false
+summary = "Svartebørsloven (2007.): zabranjena preprodaja kulturnih i sportskih ulaznica iznad originalne cijene."
+sources = ["https://www.thelocal.no/20240702/the-rules-for-buying-and-selling-event-tickets-in-norway-and-scams-to-avoid"]
+
+[SE]
+name = "Švedska"
+cap = "none"
+risk = 0.25
+eu = true
+summary = "Nema zakona koji zabranjuje preprodaju iznad nominalne; preprodaja je česta i legalna (i za ulaznice s imenom, ovisno o organizatoru). Vrijedi EU zabrana botova."
+sources = ["https://www.thelocal.se/20240710/the-rules-for-buying-and-selling-event-tickets-in-sweden-and-how-to-avoid-scams"]
+
+[FI]
+name = "Finska"
+cap = "none"
+risk = 0.35
+eu = true
+summary = "Nije pronađen poseban zakon o cijeni preprodaje (neprovjereno). Vrijedi EU zabrana botova."

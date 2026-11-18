@@ -21,6 +21,7 @@ ALIASES = {
     "venue": ["dvorana", "venue", "mjesto"],
     "city": ["grad", "city"],
     "country": ["drzava", "država", "country"],
+    "region": ["regija", "savezna_drzava", "state", "region"],
     "date": ["datum", "date"],
     "time": ["vrijeme", "time"],
     "face_min": ["cijena_min", "face_min", "min"],
@@ -117,6 +118,7 @@ def parse_row(row: dict[str, str], source: str = "ručni unos") -> Event | None:
         artist_upcoming_events=parse_int(_get(row, "upcoming")),
         primary_vendor=(_get(row, "vendor") or "").lower() or None,
         notes=_get(row, "notes"),
+        region=(_get(row, "region") or "").upper() or None,
     )
 
 

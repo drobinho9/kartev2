@@ -117,3 +117,26 @@ Za 2 ulaznice: ulaganje ~133 €, očekivana dobit ~53 €. Isti koncert s **tri
 - Jednom kad ovo radiš redovito radi zarade → **obrt** (paušalni) ili d.o.o.; platforme te prijavljuju Poreznoj (DAC7: ≥ 30 prodaja ili > 2.000 €/god.).
 - Poštuj zakon države **u kojoj je događaj** (aplikacija upozorava).
 - Bez botova, bez lažnih računa, bez spekulativnih oglasa, bez prodaje iste ulaznice dvaput.
+
+## 9. Koncerti u inozemstvu (bilo gdje u svijetu)
+
+Aplikacija skenira cijeli svijet (`karte scan --countries svijet` ili regije poput `europa`, `sjeverna_amerika`),
+ali isplativost u inozemstvu ovisi o tri dodatna pitanja. `karte markets --details` ih sažima po državi.
+
+1. **Je li legalno ondje?** Država *i* savezna država/pokrajina: npr. New York da, Vermont +10 %, Ontario ne, Australija +10 %,
+   Japan/Koreja/Brazil ne. Aplikacija to provjerava prema mjestu događaja (`US-VT`, `CA-ON`…).
+2. **Mogu li kupiti?** Račun na lokalnom Ticketmasteru/AXS-u/Eventimu, strana kartica, presale registracija (Verified Fan
+   uglavnom radi i s hrvatskim brojem). Prodaja počinje po lokalnom vremenu — SAD 10:00 = 16:00–19:00 kod nas.
+3. **Mogu li prodati i naplatiti?** Vivid Seats i SeatGeek ne primaju prodavatelje izvan SAD-a/Kanade. Iz HR realno:
+   **viagogo/StubHub International** (EUR račun ili PayPal, isplata nakon događaja) i službena preprodaja prodavača
+   (Ticketmaster u SAD-u dopušta slobodnu cijenu — provjeri isplatu na strani račun prije kupnje). Lokalni oglasnici u
+   inozemstvu praktički otpadaju (aplikacija im smanjuje doseg).
+
+**Praktična pravila za inozemstvo**
+- Počni s tržištima uz nisku prepreku: AT, HU, CZ, SI, SK, DE, NL, SE, CH (EUR ili blizu, EU zaštita, viagogo isplata u EUR).
+- SAD tek kad imaš iskustva: najveća potražnja i cijene, ali najjača konkurencija brokera; ciljaj **turneje s malo datuma**,
+  manje gradove koje brokeri slabije pokrivaju i reunion/farewell turneje; izbjegavaj države s limitom.
+- Računaj **tečaj** (USD/GBP/CAD → EUR) i trošak PayPal konverzije (~3–4 %) — dodaj ga kroz `--model` ili ručno u naknadu.
+- Provjeri da se ulaznica **može prenijeti** kupcu u istoj državi kroz aplikaciju (neke mobilne ulaznice se ne mogu
+  prenositi između tržišta ili se aktiviraju tek par dana prije događaja).
+- Prihod je i dalje tvoj prihod u Hrvatskoj (obrt/porez), bez obzira gdje je koncert.

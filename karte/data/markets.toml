@@ -1,0 +1,311 @@
+# Tržišta: veličina sekundarnog tržišta, pokrivenost Ticketmasterom i dostupnost za prodavača iz Hrvatske/EU.
+# (stanje istraživanja: studeni 2026.)
+#
+# size        – 0..1, relativna veličina/likvidnost sekundarnog tržišta koncerata (SAD = 1.0)
+# access_risk – 0..1, koliko je teško kupovati i prodavati iz HR (računi, mobitel, isplate, valuta, platforme)
+# tm          – pokrivenost Ticketmaster Discovery API-jem: "da" | "djelomično" | "ne"
+# access      – praktične napomene za kupnju i prodaju iz inozemstva
+
+[regions]
+# Zadano: tržišta bez zakonskog limita cijene i dostupna iz HR
+otvoreno = ["HR", "SI", "AT", "HU", "CZ", "SK", "DE", "NL", "SE", "CH", "GB", "US", "RS", "BA"]
+balkan = ["HR", "SI", "BA", "RS", "ME", "MK"]
+srednja_europa = ["AT", "HU", "CZ", "SK", "PL", "SI", "HR", "RO", "BG"]
+dach = ["DE", "AT", "CH"]
+benelux = ["NL", "BE", "LU"]
+nordijske = ["SE", "NO", "DK", "FI"]
+zapadna_europa = ["GB", "IE", "FR", "ES", "PT", "IT", "NL", "BE", "DE", "CH", "AT"]
+europa = ["HR", "SI", "AT", "HU", "CZ", "SK", "PL", "RO", "BG", "RS", "BA", "ME", "MK", "GR", "DE", "CH", "NL", "BE", "LU", "FR", "ES", "PT", "IT", "GB", "IE", "SE", "NO", "DK", "FI", "TR"]
+sjeverna_amerika = ["US", "CA", "MX"]
+oceanija = ["AU", "NZ"]
+azija = ["JP", "KR", "SG", "HK", "AE"]
+latam = ["MX", "BR", "AR", "CL", "CO"]
+# "svijet" = svi izvori bez filtra države (Ticketmaster vraća sva svoja tržišta)
+svijet = ["ALL"]
+
+[markets.HR]
+name = "Hrvatska"
+size = 0.08
+access_risk = 0.0
+tm = "djelomično"
+access = "Domaće tržište: Entrio, Eventim.hr, Ulaznice.hr (bez API-ja → CSV). Prodaja: Njuškalo, Facebook, viagogo."
+
+[markets.SI]
+name = "Slovenija"
+size = 0.04
+access_risk = 0.05
+tm = "djelomično"
+access = "Eventim.si, Entrio.si; lokalno Bolha. Sve u EUR, bez prepreka."
+
+[markets.AT]
+name = "Austrija"
+size = 0.20
+access_risk = 0.08
+tm = "da"
+access = "Ticketmaster.at i oeticket (Eventim). Česta personalizacija – provjeri. Prodaja: viagogo, fanSALE (Eventim), willhaben."
+
+[markets.HU]
+name = "Mađarska"
+size = 0.12
+access_risk = 0.10
+tm = "djelomično"
+access = "Cijene u HUF (tečaj!). Prodaja: viagogo, Jófogás."
+
+[markets.CZ]
+name = "Češka"
+size = 0.12
+access_risk = 0.12
+tm = "da"
+access = "Ticketmaster.cz, cijene u CZK. Prodaja: viagogo."
+
+[markets.SK]
+name = "Slovačka"
+size = 0.05
+access_risk = 0.10
+tm = "djelomično"
+access = "EUR. Prodaja: viagogo, Bazoš."
+
+[markets.PL]
+name = "Poljska"
+size = 0.20
+access_risk = 0.15
+tm = "da"
+access = "Zabrana iznad nominalne – nije za zaradu."
+
+[markets.RS]
+name = "Srbija"
+size = 0.06
+access_risk = 0.15
+tm = "ne"
+access = "Eventim.rs / lokalni prodavači; RSD. Prodaja: KupujemProdajem, Facebook, viagogo."
+
+[markets.BA]
+name = "Bosna i Hercegovina"
+size = 0.03
+access_risk = 0.15
+tm = "ne"
+access = "Lokalni prodavači; BAM. Prodaja: OLX.ba, Facebook."
+
+[markets.DE]
+name = "Njemačka"
+size = 0.50
+access_risk = 0.10
+tm = "da"
+access = "Ticketmaster.de, Eventim.de. Personalizacija česta (Eventim). Prodaja: viagogo, fanSALE, Kleinanzeigen. Najavljen limit +20 %/max +20 €."
+
+[markets.NL]
+name = "Nizozemska"
+size = 0.30
+access_risk = 0.15
+tm = "da"
+access = "Ticketmaster.nl (preprodaja po nominalnoj), TicketSwap dominira (+20 %). viagogo je moguć, ali organizatori često zabranjuju neovlaštenu preprodaju."
+
+[markets.SE]
+name = "Švedska"
+size = 0.15
+access_risk = 0.15
+tm = "da"
+access = "Ticketmaster.se; SEK. Preprodaja legalna. Prodaja: viagogo, Blocket, TicketSwap."
+
+[markets.CH]
+name = "Švicarska"
+size = 0.15
+access_risk = 0.20
+tm = "da"
+access = "Ticketmaster.ch / Ticketcorner; CHF. Prodaja: viagogo, Ricardo/Tutti. Nije EU (carina nije problem za digitalne ulaznice)."
+
+[markets.GB]
+name = "Ujedinjeno Kraljevstvo"
+size = 0.60
+access_risk = 0.20
+tm = "da"
+access = "Ticketmaster.co.uk (preprodaja po nominalnoj), AXS, See Tickets. Prodaja: viagogo/StubHub UK (isplata u GBP – PayPal). Najavljena zabrana iznad nominalne!"
+
+[markets.IE]
+name = "Irska"
+size = 0.15
+access_risk = 0.20
+tm = "da"
+access = "Zabrana iznad nominalne – nije za zaradu."
+
+[markets.FR]
+name = "Francuska"
+size = 0.35
+access_risk = 0.25
+tm = "da"
+access = "Preprodaja bez dopuštenja organizatora je kazneno djelo – nije za zaradu."
+
+[markets.ES]
+name = "Španjolska"
+size = 0.30
+access_risk = 0.20
+tm = "da"
+access = "Pravni status nejasan (regionalni propisi, najavljen limit). Visok rizik."
+
+[markets.PT]
+name = "Portugal"
+size = 0.10
+access_risk = 0.20
+tm = "ne"
+access = "Iznad nominalne = kazneno djelo – nije za zaradu."
+
+[markets.IT]
+name = "Italija"
+size = 0.30
+access_risk = 0.25
+tm = "djelomično"
+access = "Zabrana preprodaje radi zarade, nominativne ulaznice – nije za zaradu."
+
+[markets.BE]
+name = "Belgija"
+size = 0.15
+access_risk = 0.20
+tm = "da"
+access = "Zabrana iznad nominalne – nije za zaradu."
+
+[markets.DK]
+name = "Danska"
+size = 0.10
+access_risk = 0.20
+tm = "da"
+access = "Ograničenja preprodaje radi zarade – nije za zaradu."
+
+[markets.NO]
+name = "Norveška"
+size = 0.10
+access_risk = 0.20
+tm = "da"
+access = "Svartebørsloven (2007.): zabrana iznad nominalne – nije za zaradu."
+
+[markets.FI]
+name = "Finska"
+size = 0.08
+access_risk = 0.20
+tm = "da"
+access = "Ticketmaster.fi, Lippupiste. Pravila nisu provjerena."
+
+[markets.US]
+name = "SAD"
+size = 1.0
+access_risk = 0.35
+tm = "da"
+access = "Najveće i najlikvidnije tržište, ali i najjača konkurencija profesionalnih brokera. Kupnja: račun na ticketmaster.com, strane kartice uglavnom prolaze; Verified Fan registracija je moguća i s ne-američkim brojem (ovisi o turneji). Prodaja: Vivid Seats i SeatGeek traže prebivalište u SAD/Kanadi – iz HR realno viagogo/StubHub International (PayPal ili EUR račun) i Ticketmaster preprodaja (provjeri isplatu). Isplate u USD → tečajne razlike. Pravila po saveznim državama!"
+
+[markets.CA]
+name = "Kanada"
+size = 0.40
+access_risk = 0.40
+tm = "da"
+access = "Ontario od 24. 4. 2026. zabranjuje preprodaju iznad nominalne; Quebec bez dopuštenja organizatora. Ostale pokrajine bez limita. CAD."
+
+[markets.MX]
+name = "Meksiko"
+size = 0.35
+access_risk = 0.50
+tm = "da"
+access = "Ogromna potražnja (latino i K-pop turneje), ali Profeco 2026. vodi postupke protiv StubHuba i viagoga i uvodi nova pravila; česti lažnjaci. Visok rizik."
+
+[markets.BR]
+name = "Brazil"
+size = 0.30
+access_risk = 0.70
+tm = "ne"
+access = "Cambismo je kazneno djelo (Lei 1.521/51); kupnja često traži CPF. Nije za zaradu."
+
+[markets.AR]
+name = "Argentina"
+size = 0.10
+access_risk = 0.60
+tm = "ne"
+access = "Kontrole deviza, lokalni prodavači. Visok rizik."
+
+[markets.CL]
+name = "Čile"
+size = 0.08
+access_risk = 0.55
+tm = "ne"
+access = "Lokalni prodavači (Puntoticket). Pravila neprovjerena."
+
+[markets.CO]
+name = "Kolumbija"
+size = 0.08
+access_risk = 0.55
+tm = "ne"
+access = "U pripremi zakon o zabrani preprodaje. Visok rizik."
+
+[markets.AU]
+name = "Australija"
+size = 0.35
+access_risk = 0.40
+tm = "da"
+access = "NSW, VIC, QLD, SA i WA: limit +10 % iznad nominalne za većinu velikih koncerata. Ticketek Marketplace i Ticketmaster preprodaja ograničeni na +10 %. AUD."
+
+[markets.NZ]
+name = "Novi Zeland"
+size = 0.06
+access_risk = 0.40
+tm = "da"
+access = "Zabrana iznad nominalne samo za proglašene velike događaje. NZD."
+
+[markets.JP]
+name = "Japan"
+size = 0.30
+access_risk = 0.85
+tm = "ne"
+access = "Zakon iz 2019.: preprodaja radi zarade kazneno djelo; ulaznice vezane uz japanski broj/ID. Nije za zaradu."
+
+[markets.KR]
+name = "Južna Koreja"
+size = 0.25
+access_risk = 0.90
+tm = "ne"
+access = "Od kolovoza 2026. stroga zabrana preprodaje (kazne do 50× cijene). Nije za zaradu."
+
+[markets.SG]
+name = "Singapur"
+size = 0.06
+access_risk = 0.40
+tm = "ne"
+access = "Ticketmaster.sg / SISTIC. Pravila neprovjerena."
+
+[markets.HK]
+name = "Hong Kong"
+size = 0.06
+access_risk = 0.45
+tm = "ne"
+access = "Pravila neprovjerena."
+
+[markets.AE]
+name = "UAE"
+size = 0.08
+access_risk = 0.35
+tm = "djelomično"
+access = "Platinumlist, Ticketmaster.ae. Pravila neprovjerena."
+
+[markets.TR]
+name = "Turska"
+size = 0.12
+access_risk = 0.40
+tm = "djelomično"
+access = "Biletix (Ticketmaster); TRY uz visoku inflaciju. Pravila neprovjerena."
+
+[markets.GR]
+name = "Grčka"
+size = 0.08
+access_risk = 0.20
+tm = "ne"
+access = "Lokalni prodavači. Pravila neprovjerena."
+
+[markets.RO]
+name = "Rumunjska"
+size = 0.08
+access_risk = 0.15
+tm = "ne"
+access = "iabilet, Eventim.ro. Pravila neprovjerena."
+
+[markets.BG]
+name = "Bugarska"
+size = 0.05
+access_risk = 0.15
+tm = "ne"
+access = "Eventim.bg. Pravila neprovjerena."

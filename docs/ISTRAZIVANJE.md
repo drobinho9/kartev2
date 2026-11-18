@@ -13,7 +13,8 @@
 2. **„Trenje” je 25–35 %.** Naknada pri kupnji (~10–15 % ili fiksno po ulaznici) + naknada prodavatelja na
    viagogu (~10–15 %, procjena) + popust da bi se prodalo. Za stvarnu zaradu treba prodajna cijena barem
    **~1,4× nominalne**.
-3. **Regulativa ide protiv preprodaje radi zarade.** UK je najavio zabranu preprodaje iznad nominalne cijene
+3. **Regulativa ide protiv preprodaje radi zarade** — u Europi, ali i izvan nje (Ontario, Australija +10 %, Japan,
+   Južna Koreja, Brazil, Norveška; u SAD-u sve više saveznih država: Vermont, Maine, Sjeverna Karolina, D.C.). UK je najavio zabranu preprodaje iznad nominalne cijene
    (zakon u pripremi), Njemačka limit **+20 % / najviše +20 €** (cilj: prije ljeta 2027.), Irska, Belgija, Italija,
    Portugal, Poljska, Danska i Francuska već ograničavaju. EU-ov prijedlog *Digital Fairness Acta* (studeni 2026.)
    **ne uvodi limit cijene**, ali uvodi obvezu prikaza originalne cijene — i potrošačke udruge traže limit.
@@ -22,6 +23,11 @@
 5. **Najisplativiji realni model** za pojedinca: *selektivni preprodavač* — 5–15 pažljivo odabranih događaja
    godišnje, kupnja u presaleu/na otvaranju prodaje unutar limita, prodaja preko viagoga (međunarodni doseg) i
    lokalnih kanala (Njuškalo/Facebook — bez naknade, brža isplata), stroga disciplina cijena i budžeta.
+   **Gdje u svijetu** (`karte markets`): 1) HR + srednja Europa (AT, HU, CZ, SI, SK) — lako dostupno, bez limita;
+   2) DE (do novog zakona), NL, SE, CH; 3) **SAD** — najveće i najlikvidnije tržište, ali najjača konkurencija brokera,
+   pravila po saveznim državama i ograničen izbor platformi za prodavača iz HR (Vivid Seats i SeatGeek traže
+   prebivalište u SAD-u); 4) UK samo do stupanja zabrane. Izbjegavati: IE, BE, IT, FR, PT, PL, DK, NO, ES,
+   Ontario/Quebec, Australiju (+10 %), Japan, Koreju, Brazil.
    Realno: dodatni prihod od nekoliko stotina do par tisuća eura godišnje uz budžet od 1–3 tisuće eura — ne „plaća”.
 6. **Sustavna preprodaja = gospodarska djelatnost.** Treba obrt (ili d.o.o.) i porez; platforme od 2023.
    prijavljuju prodavatelje poreznim upravama (DAC7).
@@ -59,6 +65,22 @@
 | **Ticombo** | EU | nema | ~10 % (neprovjereno) | prema uvjetima | alternativa viagogu, više sport |
 | **Njuškalo** / Bolha / willhaben / Jófogás / KupujemProdajem / OLX.ba | lokalno | nema | **0 %** | **odmah** | lokalni kupci, bez naknade, ali niže cijene i rizik prijevare |
 | **Facebook/Instagram grupe** | lokalno | nema | 0 % | odmah | regionalni izvođači; visok rizik prijevare |
+
+### 2.1 Platforme izvan Europe
+
+| Platforma | Gdje | Limit | Naknada prodavatelja (procjena) | Tko smije prodavati | Napomena |
+|---|---|---|---|---|---|
+| **StubHub** | SAD, Kanada (+ UK/IE međunarodne stranice) | nema (osim zakona) | ~15 % | međunarodne stranice primaju prodavatelje iz EU (EUR račun sa SWIFT/BIC ili PayPal); stubhub.com – provjeri | isplata 5–8 radnih dana nakon događaja |
+| **Vivid Seats** | SAD | nema | ~10 % | **samo prebivalište u SAD-u** | PayPal isplata |
+| **SeatGeek Marketplace** | SAD, Kanada | nema | ~10 % | **samo SAD/Kanada** (i račun u toj državi) | |
+| **TickPick** | SAD | nema | ~15 % (neprovjereno) | SAD | kupci bez naknada |
+| **Ticketmaster preprodaja** | SAD, Kanada, Meksiko | slobodna cijena (osim zakona) | ~10 % (procjena) | provjeri isplatu za strani račun | u Europi uglavnom po nominalnoj |
+| **Ticketek Marketplace** | Australija, NZ | **+10 %** | ~5 % | — | službena preprodaja Ticketeka |
+| **Tixel** | AU, NZ, UK, SAD, Skandinavija | ograničeno (+10 % / po organizatoru) | ~5 % | — | za izlaz, ne za zaradu |
+
+**Zaključak za prodavača iz HR:** u SAD-u realno koristiš **viagogo/StubHub International** i (ako isplata radi) **Ticketmaster preprodaju**;
+najjače američke platforme za male prodavatelje (Vivid Seats, SeatGeek) nisu dostupne. Aplikacija to automatski uzima u obzir
+(`--seller-country HR`, zadano).
 
 **viagogo — što treba znati**
 - Dio je **StubHub Holdings** (IPO na NYSE u rujnu 2025., oznaka STUB); viagogo je međunarodni brend.
@@ -108,8 +130,46 @@ Nemaju javni API. Neke Entrio ulaznice (npr. konferencije) „glase na ime i pre
 | 🇪🇸 Španjolska | iznad nominalne samo uz dopuštenje organizatora | regionalno različito |
 | 🇳🇱 Nizozemska | nema zakona | tržište naviklo na TicketSwap (+20 %) |
 
-**Praktična posljedica:** fokus na HR, SI, AT, HU, CZ, SK, RS, BA (i DE do stupanja novog zakona). Aplikacija za IE/BE/IT/PT/PL/DK/FR/ES
-vraća *ZAKONSKI OGRANIČENO*, a uz `--strict` primjenjuje i najavljene limite za DE i UK.
+**Praktična posljedica:** fokus na regiju `otvoreno` (HR, SI, AT, HU, CZ, SK, DE, NL, SE, CH, GB, US, RS, BA). Aplikacija za
+IE/BE/IT/PT/PL/DK/NO/FR/ES, Ontario, Quebec, Japan, Koreju, Brazil vraća *ZAKONSKI OGRANIČENO*, za Australiju i dio
+američkih država računa s limitom +10 %/+20 %, a uz `--strict` primjenjuje i najavljene limite (DE, UK, D.C.).
+
+### 3.4 Svijet (izvan Europe)
+
+| Država / regija | Pravilo | Napomena |
+|---|---|---|
+| 🇺🇸 SAD (savezno) | nema limita cijene | BOTS Act (botovi zabranjeni), FTC: obavezna ukupna cijena (od 2025.); **TICKET Act** (zabrana spekulativnih oglasa) prošao Zastupnički dom 29. 4. 2026. — status u Senatu provjeri |
+| US-VT Vermont | **+10 %** (Act 109, od 1. 7. 2026.) | izvori se razlikuju oko opsega |
+| US-ME Maine | +10 % (konzervativno) | LD 913, od rujna 2025.; nejasno je li limit na cijenu ili naknadu |
+| US-NC Sjeverna Karolina | +20 % (konzervativno) | od 6. 10. 2026. prema izvorima; izvori se ne slažu |
+| US-RI Rhode Island | nominalna + naknada (max 3 $ ili 10 %) | |
+| US-MA Massachusetts | stari limit nominalna + 2 $; predložen 110 % | slaba provedba |
+| US-DC Washington | najavljeno +10 % od 1. 1. 2027. | uz `--strict` |
+| US-CA, US-NY, US-IL | nema limita cijene | zabrane spekulativnih oglasa/skrivenih naknada; NY traži licencu za poslovnu preprodaju |
+| 🇨🇦 Ontario | **zabranjeno iznad nominalne s naknadama** (Bill 97, od 24. 4. 2026.) | kazne do 25.000 CAD; platforme još usklađuju |
+| 🇨🇦 Quebec | iznad nominalne samo uz dopuštenje organizatora | |
+| 🇲🇽 Meksiko | nema saveznog limita | Profeco 2026.: nova pravila, postupci protiv StubHuba i viagoga — visok rizik |
+| 🇧🇷 Brazil | **cambismo = kazneno djelo** | Lei 1.521/51, Statut navijača |
+| 🇦🇺 Australija | **+10 %** (NSW, VIC, QLD, SA, WA) | kazne u VIC do 545.220 AUD |
+| 🇳🇿 Novi Zeland | zabrana samo za proglašene velike događaje | |
+| 🇯🇵 Japan | **kazneno djelo** (zakon iz 2019.) | do 1 g. zatvora |
+| 🇰🇷 Južna Koreja | **zabrana** (od kolovoza 2026.) | kazne 2–50× cijene, policija već procesuira |
+| 🇳🇴 Norveška | **zabranjeno iznad nominalne** (2007.) | |
+| 🇸🇪 Švedska | nema limita | preprodaja legalna i uobičajena |
+| 🇪🇸 Španjolska | nema državnog zakona, regionalna ograničenja; **najavljen limit** (vezan uz originalnu cijenu + inflaciju) | tretirano kao „samo uz dopuštenje organizatora” |
+
+### 3.5 Kupnja i prodaja iz inozemstva (iz Hrvatske)
+
+- **Ne moraš putovati**: mobilne ulaznice se prenose kroz aplikaciju prodavača (Ticketmaster, AXS, Eventim) na račun kupca.
+- **Računi**: za svako tržište zaseban račun (ticketmaster.com, .co.uk, .de, .at…); strane kartice uglavnom prolaze, neki
+  prodavači traže lokalnu adresu (Brazil – CPF, Japan/Koreja – lokalni mobitel/ID → praktički nedostupno).
+- **Verified Fan / presale**: registracija je moguća i s ne-američkim brojem mobitela, ali neki presaleovi vrijede samo za
+  određene datume ili države — provjeri pravila turneje.
+- **Vremenske zone**: američka prodaja u 10:00 lokalno = 16:00–19:00 po našem vremenu.
+- **Isplate**: viagogo/StubHub International isplaćuju u valuti oglasa (EUR račun sa SWIFT/BIC ili PayPal); USD/GBP/CAD
+  isplate nose tečajne troškove (PayPal ~3–4 %).
+- **Prijenos u inozemstvu**: neki prodavači dopuštaju prijenos samo unutar istog tržišta/aplikacije — provjeri prije kupnje.
+- **Porezi**: prihod je tvoj prihod u HR bez obzira gdje je koncert; EU platforme prijavljuju po DAC7.
 
 ## 4. Porezi i registracija (Hrvatska)
 
@@ -201,6 +261,16 @@ U `primjeri/hr_watchlist_2026-11.csv` su upisani — dopuni nominalne cijene i n
 - [Stage Front: broker software 2026](https://stagefront.com/news/best-ticket-broker-softwares) · [Automatiq](https://automatiq.com/) · [Victory Live](https://www.victorylive.com/reseller-tools/) · [SeatData.io](https://seatdata.io/datasets/event-ticket-listings) · [TicketData (RouteNote)](https://routenote.com/blog/ticketdata-find-cheapest-resale-tickets/) · [TicketsData](https://peerpush.com/p/ticketsdata-events-api-in-clean-json)
 - [ticket-price-bot](https://github.com/john-s-lin/ticket-price-bot) · [NYC Data Science: concert resales](https://nycdatascience.com/blog/student-works/web-scraping/web-scraping-and-analysis-of-concert-ticket-resales/) · [Medium: koliko vrijedi ulaznica](https://medium.com/@yiaktan/how-much-is-your-concert-ticket-really-worth-382a8d38333)
 - [Ticketmaster Discovery API](https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2) · [SeatGeek Platform](https://platform.seatgeek.com) · [Last.fm artist.getInfo](https://www.last.fm/api/show/artist.getInfo) · [Spotify: veljača 2026. promjene](https://developer.spotify.com/documentation/web-api/tutorials/february-2026-migration-guide)
+
+**Svijet**
+- [Ticksights: US state laws 2026](https://www.ticksights.com/us-state-ticket-resale-laws-2026/) · [Hypebot: CA, NC, DC, VT, ME](https://www.hypebot.com/ca-nc-dc-vt-me-laws-limit-ticket-resale-as-feds-fail-to-act/) · [Vermont H.512](https://termsandconditionstemplate.com/vermont-ticket-resale-price-cap-h512-2026) · [WROR: Massachusetts](https://wror.com/2026/07/17/massachusetts-governor-files-bill-to-cap-ticket-resale-prices-at-110-of-face-value/) · [TicketNews: Illinois](https://www.ticketnews.com/2026/06/illinois-enacts-junk-fee-ban-ticket-resale-rules-in-new-consumer-protection-package/) · [CalMatters: California](https://calmatters.org/politics/2026/09/newsom-signs-ticket-resale-law/)
+- [MBW: TICKET Act u Zastupničkom domu](https://www.musicbusinessworldwide.com/us-house-passes-ticket-act-mandating-all-in-pricing-for-ticket-sales-heads-to-senate) · [CRS: Tickets for Live Entertainment Events](https://www.everycrsreport.com/files/2026-04-22_R48179_431e1c13f57808c089533dcde71e4bd6eebfd3b7.html)
+- [Pollstar: Ontario cap](https://news.pollstar.com/2026/04/27/ontario-resale-cap-goes-into-effect-ticketmaster-delists-tickets-to-comply/) · [BNN Bloomberg: Ontario provedba](https://www.bnnbloomberg.ca/business/economics/2026/07/03/no-apparent-fines-yet-for-ticket-resellers-under-ontario-price-cap-law/)
+- [Beat: Australija po državama](https://beat.com.au/a-state-by-state-breakdown-of-australian-ticket-resale-laws/) · [Victoria FAQ](https://djsir.vic.gov.au/ticket-scalping/about/faq) · [IQ: Ticketek Marketplace](https://www.iqmagazine.com/?p=29889)
+- [Korea Times: kazne do 50×](https://www.koreatimes.co.kr/southkorea/law-crime/20260828/ticket-scalpers-face-fines-of-up-to-50-times-sale-price) · [Korea Times: 170 preprodavača](https://www.koreatimes.co.kr/southkorea/law-crime/20261007/korea-targets-170-ticket-scalpers-in-1st-mass-police-referral) · [Softjourn: Japan i ostali](https://softjourn.com/insights/global-event-ticketing-regulation)
+- [El Imparcial: Profeco protiv StubHuba i viagoga](https://www.elimparcial.com/mexico/2026/06/02/la-profeco-va-contra-stubhub-y-viagogo-por-la-venta-especulativa-de-boletos-que-ni-siquiera-han-salido-a-preventa-oficial/) · [Politize: cambismo](https://www.politize.com.br/cambismo-e-crime/)
+- [The Local: Norveška](https://www.thelocal.no/20240702/the-rules-for-buying-and-selling-event-tickets-in-norway-and-scams-to-avoid) · [The Local: Švedska](https://www.thelocal.se/20240710/the-rules-for-buying-and-selling-event-tickets-in-sweden-and-how-to-avoid-scams) · [Maldita: Španjolska](https://maldita.es/malditatecnologia/20250624/reventa-entradas-online-regulacion-dsa/) · [wwwhatsnew: Španjolska 2026](https://wwwhatsnew.com/2026/10/31/comprar-entradas-conciertos-reventa-entradas-falsas-ley-espana)
+- [StubHub: isplate za međunarodne prodavatelje](https://support.stubhub.co.uk/en/support/solutions/articles/80000946667) · [Vivid Seats seller FAQ](https://tickets.broadwaysf.com/online/article/vivid-seats-seller-faq) · [SeatGeek: uvjeti za prodavatelje](https://seatgeek.ca/help/articles/50923251786515) · [Ticketmaster: Verified Fan za međunarodne fanove](https://blog.ticketmaster.com/twice/)
 
 **Koncerti (HR/regija)**
 - [Croatia Week: Rod Stewart Pula 2027](https://www.croatiaweek.com/rod-stewart-final-tour-croatia-pula-arena-2027/) · [Novi list: Laura Pausini](https://www.novilist.hr/mozaik/talijanska-zvijezda-laura-pausini-po-prvi-put-u-hrvatskoj/) · [tportal: Fontaines D.C.](https://www.tportal.hr/showtime/clanak/fontaines-d-c-dolaze-u-zagreb-20261026) · [Novi list: Simply Red](https://www.novilist.hr/?p=1759344) · [Kurir: Seka Aleksić](https://www.kurir.rs/stars/10155875/seka-aleksic-odrzala-koncert-u-areni-zagreb) · [karlobag.eu: koncerti HR](https://karlobag.eu/koncerti/hrvatska/)

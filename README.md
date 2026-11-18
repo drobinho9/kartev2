@@ -1,13 +1,14 @@
 # karte — radar za preprodaju ulaznica 🎟️
 
-Aplikacija koja **traži koncerte** u idućih 1–2 mjeseca (i koncerte kojima **prodaja tek počinje**),
+Aplikacija koja **traži koncerte bilo gdje u svijetu** u idućih 1–2 mjeseca (i koncerte kojima **prodaja tek počinje**),
 **procjenjuje potencijalnu zaradu** od preprodaje nakon svih naknada i rizika te za svaki događaj daje
 **konkretan plan**: kako i kada kupiti, koju kategoriju i količinu, gdje prodati, po kojoj cijeni
-i kako spuštati cijenu prema datumu događaja. Uz to provjerava **zakonska ograničenja** po državama.
+i kako spuštati cijenu prema datumu događaja. Uz to provjerava **zakonska ograničenja** po državama i saveznim
+državama/pokrajinama (SAD, Kanada, Australija…) te **može li prodavatelj iz Hrvatske uopće kupiti i prodati** na tom tržištu.
 
 > ⚠️ Prije svega pročitaj [docs/ISTRAZIVANJE.md](docs/ISTRAZIVANJE.md) — iskrena analiza tržišta, platformi,
-> zakona (HR/EU/UK/DE) i poreza. Ukratko: zarada postoji, ali je koncentrirana u malom broju događaja,
-> naknade pojedu 25–35 %, a regulativa se u Europi stalno postrožuje.
+> zakona (Europa, SAD, Kanada, Australija, Azija, Latinska Amerika) i poreza. Ukratko: zarada postoji, ali je
+> koncentrirana u malom broju događaja, naknade pojedu 25–35 %, a regulativa se u Europi i dijelu SAD-a postrožuje.
 
 ---
 
@@ -15,10 +16,11 @@ i kako spuštati cijenu prema datumu događaja. Uz to provjerava **zakonska ogra
 
 | Korak | Opis |
 |---|---|
-| 1. Pretraga | Ticketmaster Discovery API (većina zapadne/srednje Europe), SeatGeek (cijene sa sekundarnog tržišta), ručni CSV za Hrvatsku/regiju (Entrio, Eventim.hr, Ulaznice.hr nemaju javni API) |
+| 1. Pretraga | Ticketmaster Discovery API (SAD, Kanada, Meksiko, Australija, NZ, UK, IE i većina Europe – ili cijeli svijet odjednom), SeatGeek (cijene sa sekundarnog tržišta), ručni CSV za Hrvatsku/regiju (Entrio, Eventim.hr, Ulaznice.hr nemaju javni API) |
 | 2. Obogaćivanje | Last.fm popularnost izvođača, kapacitet dvorane (ugrađena baza), broj koncerata istog izvođača u državi (ponuda), veličina turneje |
 | 3. Procjena | Potražnja (0–100), očekivana prodajna cijena, trošak kupnje s naknadama, neto isplata po platformi, vjerojatnost prodaje, očekivana vrijednost, ROI, rizik |
-| 4. Pravna provjera | Pravila po državama (zabrana iznad nominalne cijene u IE/BE/IT/PT/PL…, najavljeni limiti u DE i UK uz `--strict`), EU zabrana botova |
+| 4. Pravna provjera | ~40 država + savezne države/pokrajine (US-VT, US-NC, CA-ON, CA-QC…): zabrane iznad nominalne (IE, BE, IT, PT, PL, NO, JP, KR, BR…), limit +10 % (AU, VT…), najavljeni limiti (DE, UK, DC) uz `--strict` |
+| 4b. Pristup tržištu | Može li prodavatelj iz HR prodavati na platformi (Vivid Seats/SeatGeek traže prebivalište u SAD-u), lokalni kanali u inozemstvu, rizik računa/isplata/valute |
 | 5. Savjet | **KUPI / RAZMOTRI / PRESKOČI / RASPRODANO / ZAKONSKI OGRANIČENO** + plan kupnje (presale datumi), plan prodaje (platforme, cjenik po datumima), rizici |
 | 6. Izvještaj | Terminal, HTML (sortabilna tablica, tamni način), Markdown, CSV, JSON; tjedno automatsko skeniranje preko GitHub Actions |
 
@@ -41,13 +43,34 @@ karte scan --demo --format html --out izvjestaj.html
 
 Potreban je samo Python 3.11+ — aplikacija **nema vanjskih ovisnosti**.
 
+> **Limiti API-ja kod globalnog skeniranja:** Ticketmaster vraća najviše 1000 rezultata po upitu, pa aplikacija sama dijeli
+> razdoblje na manje dijelove (`svijet` za 60 dana ≈ nekoliko stotina poziva od 5000 dnevno). Last.fm se poziva samo za
+> najperspektivnijih `--max-artists` izvođača (najprije oni s cijenom i najskupljim ulaznicama). Rezultati se cacheiraju 6 h.
+
 ### Pravi podaci (besplatni API ključevi)
 
 ```bash
 cp .env.example .env     # upiši ključeve
 karte doctor             # provjera ključeva
-karte scan --days 60 --countries AT,DE,HU,CZ,PL --budget 1500 --format html --out izvjestaj.html
+karte scan --days 60 --countries otvoreno --budget 1500 --format html --out izvjestaj.html
+karte scan --countries svijet --days 45 --only KUPI,RAZMOTRI          # cijeli svijet
+karte scan --countries sjeverna_amerika,GB --category mid             # regije i države zajedno
 ```
+
+### Gdje se isplati? Regije i rangiranje tržišta
+
+```bash
+karte markets --details     # rang država: veličina tržišta × legalnost × dostupnost iz HR
+```
+
+| Regija (`--countries`) | Države |
+|---|---|
+| `otvoreno` (zadano) | HR, SI, AT, HU, CZ, SK, DE, NL, SE, CH, GB, US, RS, BA — bez zakonskog limita i dostupno iz HR |
+| `europa`, `zapadna_europa`, `srednja_europa`, `dach`, `benelux`, `nordijske`, `balkan` | europske skupine |
+| `sjeverna_amerika`, `latam`, `oceanija`, `azija` | SAD/Kanada/Meksiko, Latinska Amerika, AU/NZ, Azija |
+| `svijet` | sva Ticketmaster tržišta odjednom (bez filtra države) |
+
+Države s limitom cijene i dalje se prikazuju, ali kao **ZAKONSKI OGRANIČENO**, pa vidiš i gdje *nemaš* što tražiti.
 
 | Ključ | Gdje | Za što |
 |---|---|---|
@@ -85,8 +108,9 @@ Stupci (hrvatski ili engleski nazivi, razdjelnik `,` ili `;`):
 ```bash
 karte scan [opcije]        # glavna pretraga i rangiranje
 karte calc --face 59 --resale 140 --country HR --listeners 1500000 --capacity 16000   # brzi kalkulator za jedan događaj
-karte platforms --country HR   # platforme za preprodaju, naknade, limiti
-karte laws [--country DE]      # pravila po državama
+karte platforms --country US --vendor ticketmaster   # platforme, naknade, limiti, tko prima prodavatelje iz HR
+karte laws [--country US-VT]   # pravila po državama i saveznim državama
+karte markets --details        # rang tržišta za prodavača iz HR
 karte doctor                   # provjera API ključeva
 ```
 
@@ -96,7 +120,10 @@ Najvažnije opcije za `scan`:
 |---|---|---|
 | `--days N` | 60 | koncerti koji se održavaju u idućih N dana |
 | `--onsale-days N` | 30 | + koncerti (do 12 mj. unaprijed) kojima prodaja počinje u idućih N dana — **ovdje je najveća prilika** |
-| `--countries` | iz `.env` | ISO kodovi, npr. `HR,SI,AT,HU,DE` |
+| `--countries` | `otvoreno` | ISO kodovi i/ili regije, npr. `US,GB,DE`, `europa`, `svijet` |
+| `--seller-country` | `HR` | tvoje prebivalište – koje platforme te primaju i rizik pristupa |
+| `--max-artists` | 300 | koliko najperspektivnijih izvođača obogatiti Last.fm-om (bitno za `svijet`) |
+| `--show-all` | isključeno | prikaži i događaje bez nominalne cijene u izvoru |
 | `--budget` | 1000 | ukupni budžet; u jedan događaj ide najviše 25 % |
 | `--category` | `cheap` | `cheap` / `mid` / `premium` — koju kategoriju ciljaš |
 | `--strict` | isključeno | primijeni i najavljene limite (DE +20 %/max +20 €, UK nominalna cijena) |
@@ -141,11 +168,11 @@ karte/
   pipeline.py       dohvat → spajanje → obogaćivanje → procjena
   scoring.py        model potražnje, cijene, rizika i preporuke
   advisor.py        savjeti: kupnja, prodaja, cjenik
-  legal.py          pravila po državama
+  legal.py          pravila po državama i saveznim državama/pokrajinama
   platforms.py      platforme za preprodaju i naknade
   report.py         terminal / HTML / Markdown / CSV / JSON
   providers/        ticketmaster, seatgeek, lastfm, manual (CSV), demo
-  data/             laws.toml, platforms.toml, venues.toml, model.toml, demo_events.json
+  data/             laws.toml, markets.toml (regije, pristup), platforms.toml, venues.toml, model.toml, demo_events.json
 primjeri/           primjeri CSV-a (uklj. stvarnu HR watchlistu)
 docs/               istraživanje, strategija, model
 tests/              pytest (bez mreže)
@@ -158,7 +185,7 @@ Testovi: `pip install -e ".[dev]" && pytest`
 - **Bez botova i bez zaobilaženja limita** (više lažnih računa, tuđi računi). U EU je preprodaja tako kupljenih
   ulaznica zabranjena (Omnibus direktiva; u HR Zakon o zaštiti potrošača, NN 19/22). Aplikacija namjerno **ne** automatizira kupnju.
 - **Ne prodaj ono što nemaš** (spekulativni oglasi) i ne prodaj istu ulaznicu više puta.
-- Poštuj zakone države događaja — aplikacija označava države s limitom cijene kao *ZAKONSKI OGRANIČENO*.
+- Poštuj zakone države (i savezne države) događaja — aplikacija označava mjesta s limitom cijene kao *ZAKONSKI OGRANIČENO*.
 - Sustavna preprodaja radi zarade je **gospodarska djelatnost** (obrt/porez), a platforme prijavljuju prodavatelje poreznoj upravi (DAC7).
 - Ništa ovdje nije financijski ni pravni savjet; naknade i propisi se mijenjaju — provjeri prije kupnje.
 

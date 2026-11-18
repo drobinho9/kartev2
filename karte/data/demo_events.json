@@ -385,6 +385,93 @@
       "listeners": 800000,
       "upcoming": 12,
       "vendor": "eventim"
+    },
+    {
+      "artist": "Harbor Lights",
+      "name": "Harbor Lights – Stadium Dreams (jedini koncert na istočnoj obali)",
+      "venue": "Madison Square Garden",
+      "city": "New York",
+      "country": "US",
+      "region": "NY",
+      "days": 160,
+      "face_min": 89,
+      "face_max": 299,
+      "currency": "USD",
+      "status": "onsale",
+      "onsale_days": 9,
+      "presales": [
+        {
+          "name": "Verified Fan presale",
+          "start_days": 7,
+          "end_days": 8
+        }
+      ],
+      "ticket_limit": 6,
+      "tags": [
+        "reunion"
+      ],
+      "listeners": 3800000,
+      "upcoming": 20,
+      "vendor": "ticketmaster"
+    },
+    {
+      "artist": "Maple Echo",
+      "venue": "Scotiabank Arena",
+      "city": "Toronto",
+      "country": "CA",
+      "region": "ON",
+      "days": 70,
+      "face_min": 95,
+      "face_max": 210,
+      "currency": "CAD",
+      "status": "onsale",
+      "onsale_days": -15,
+      "ticket_limit": 8,
+      "listeners": 2500000,
+      "upcoming": 40,
+      "vendor": "ticketmaster"
+    },
+    {
+      "artist": "Sol Nascente",
+      "venue": "Rod Laver Arena",
+      "city": "Melbourne",
+      "country": "AU",
+      "region": "VIC",
+      "days": 80,
+      "face_min": 120,
+      "face_max": 260,
+      "currency": "AUD",
+      "status": "onsale",
+      "onsale_days": -8,
+      "ticket_limit": 8,
+      "tags": [
+        "first_visit"
+      ],
+      "listeners": 3200000,
+      "upcoming": 25,
+      "vendor": "ticketmaster"
+    },
+    {
+      "artist": "Brixton Static",
+      "venue": "O2 Academy Brixton",
+      "city": "London",
+      "country": "GB",
+      "days": 48,
+      "face_min": 42,
+      "face_max": 42,
+      "currency": "GBP",
+      "status": "onsale",
+      "onsale_days": -12,
+      "ticket_limit": 4,
+      "listeners": 900000,
+      "upcoming": 30,
+      "vendor": "ticketmaster",
+      "secondary": {
+        "source": "ručno (viagogo)",
+        "lowest": 140,
+        "median": 175,
+        "currency": "GBP"
+      }
     }
   ]
 }

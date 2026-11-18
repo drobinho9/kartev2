@@ -6,7 +6,8 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-DEFAULT_COUNTRIES = ["HR", "SI", "AT", "HU", "DE", "IT", "CZ", "PL"]
+# Zadano: regija "otvoreno" (tržišta bez zakonskog limita cijene i dostupna iz HR) – vidi karte/data/markets.toml
+DEFAULT_COUNTRIES = ["otvoreno"]
 
 
 def load_dotenv(path: str | Path = ".env") -> None:
@@ -28,7 +29,7 @@ def load_dotenv(path: str | Path = ".env") -> None:
 def _split_countries(value: str | None) -> list[str]:
     if not value:
         return list(DEFAULT_COUNTRIES)
-    return [c.strip().upper() for c in value.split(",") if c.strip()]
+    return [c.strip() for c in value.split(",") if c.strip()]
 
 
 @dataclass
@@ -39,6 +40,7 @@ class Settings:
     countries: list[str]
     budget: float
     cache_dir: Path
+    seller_country: str = "HR"
 
     @classmethod
     def from_env(cls, dotenv: str | Path | None = ".env") -> "Settings":
@@ -56,4 +58,5 @@ class Settings:
             countries=_split_countries(os.environ.get("KARTE_COUNTRIES")),
             budget=budget,
             cache_dir=cache_dir,
+            seller_country=(os.environ.get("KARTE_SELLER_COUNTRY") or "HR").upper(),
         )

@@ -50,6 +50,7 @@ def parse_event(raw: dict) -> Event | None:
         capacity=int(capacity) if capacity else None,
         secondary=secondary,
         primary_vendor="seatgeek",
+        region=(venue.get("state") or None),
     )
 
 
@@ -64,19 +65,16 @@ class SeatGeekProvider:
         events: list[Event] = []
         for cc in countries:
             for page in range(1, MAX_PAGES + 1):
-                data = self.http.get_json(
-                    BASE_URL,
-                    {
-                        "client_id": self.client_id,
-                        "taxonomies.name": "concert",
-                        "venue.country": cc,
-                        "datetime_utc.gte": start.strftime("%Y-%m-%dT%H:%M:%S"),
-                        "datetime_utc.lte": end.strftime("%Y-%m-%dT%H:%M:%S"),
-                        "per_page": PER_PAGE,
-                        "page": page,
-                    },
-                    cache_ttl=3 * 3600,
-                )
+                params = {
+                    "client_id": self.client_id,
+                    "taxonomies.name": "concert",
+                    "venue.country": None if cc.upper() == "ALL" else cc,
+                    "datetime_utc.gte": start.strftime("%Y-%m-%dT%H:%M:%S"),
+                    "datetime_utc.lte": end.strftime("%Y-%m-%dT%H:%M:%S"),
+                    "per_page": PER_PAGE,
+                    "page": page,
+                }
+                data = self.http.get_json(BASE_URL, params, cache_ttl=3 * 3600)
                 raws = (data or {}).get("events") or []
                 events.extend(e for e in (parse_event(r) for r in raws) if e)
                 total = ((data or {}).get("meta") or {}).get("total") or 0

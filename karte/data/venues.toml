@@ -138,3 +138,185 @@ aliases = ["o2 arena prague"]
 capacity = 21000
 city = "Krakow"
 aliases = ["tauron arena"]
+
+# ---------------------------------------------------------------- svijet (približno)
+[venues."madison square garden"]
+capacity = 19500
+city = "New York"
+aliases = ["msg"]
+
+[venues."barclays center"]
+capacity = 18000
+city = "Brooklyn"
+
+[venues."crypto.com arena"]
+capacity = 20000
+city = "Los Angeles"
+
+[venues."kia forum"]
+capacity = 17500
+city = "Inglewood"
+
+[venues."united center"]
+capacity = 23500
+city = "Chicago"
+
+[venues."td garden"]
+capacity = 19500
+city = "Boston"
+
+[venues."red rocks amphitheatre"]
+capacity = 9500
+city = "Morrison"
+
+[venues."hollywood bowl"]
+capacity = 17500
+city = "Los Angeles"
+
+[venues."sofi stadium"]
+capacity = 70000
+city = "Inglewood"
+
+[venues."metlife stadium"]
+capacity = 82500
+city = "East Rutherford"
+
+[venues."scotiabank arena"]
+capacity = 19800
+city = "Toronto"
+
+[venues."bell centre"]
+capacity = 21000
+city = "Montreal"
+aliases = ["centre bell"]
+
+[venues."rogers arena"]
+capacity = 18900
+city = "Vancouver"
+
+[venues."wembley stadium"]
+capacity = 90000
+city = "London"
+
+[venues."ovo arena wembley"]
+capacity = 12500
+city = "London"
+aliases = ["wembley arena"]
+
+[venues."co-op live"]
+capacity = 23500
+city = "Manchester"
+
+[venues."ao arena"]
+capacity = 21000
+city = "Manchester"
+aliases = ["manchester arena"]
+
+[venues."royal albert hall"]
+capacity = 5200
+city = "London"
+
+[venues."o2 academy brixton"]
+capacity = 4900
+city = "London"
+aliases = ["brixton academy"]
+
+[venues."3olympia theatre"]
+capacity = 1600
+city = "Dublin"
+aliases = ["3olympia"]
+
+[venues."ziggo dome"]
+capacity = 17000
+city = "Amsterdam"
+
+[venues."johan cruijff arena"]
+capacity = 55000
+city = "Amsterdam"
+
+[venues."accor arena"]
+capacity = 20300
+city = "Paris"
+
+[venues."stade de france"]
+capacity = 80000
+city = "Saint-Denis"
+
+[venues."palau sant jordi"]
+capacity = 17000
+city = "Barcelona"
+
+[venues."wizink center"]
+capacity = 17000
+city = "Madrid"
+
+[venues."barclays arena"]
+capacity = 16000
+city = "Hamburg"
+
+[venues."waldbuhne"]
+capacity = 22000
+city = "Berlin"
+aliases = ["waldbuehne"]
+
+[venues."olympiastadion berlin"]
+capacity = 74000
+city = "Berlin"
+
+[venues."hallenstadion"]
+capacity = 15000
+city = "Zurich"
+
+[venues."avicii arena"]
+capacity = 16000
+city = "Stockholm"
+
+[venues."strawberry arena"]
+capacity = 50000
+city = "Solna"
+aliases = ["friends arena"]
+
+[venues."royal arena"]
+capacity = 16000
+city = "Copenhagen"
+
+[venues."pge narodowy"]
+capacity = 58000
+city = "Warszawa"
+
+[venues."atlas arena"]
+capacity = 13800
+city = "Lodz"
+
+[venues."rod laver arena"]
+capacity = 14800
+city = "Melbourne"
+
+[venues."qudos bank arena"]
+capacity = 21000
+city = "Sydney"
+
+[venues."marvel stadium"]
+capacity = 53000
+city = "Melbourne"
+
+[venues."spark arena"]
+capacity = 12000
+city = "Auckland"
+
+[venues."tokyo dome"]
+capacity = 55000
+city = "Tokyo"
+
+[venues."estadio gnp seguros"]
+capacity = 65000
+city = "Ciudad de Mexico"
+aliases = ["foro sol"]
+
+[venues."palacio de los deportes"]
+capacity = 20000
+city = "Ciudad de Mexico"
+
+[venues."arena cdmx"]
+capacity = 22300
+city = "Ciudad de Mexico"

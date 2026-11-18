@@ -1,14 +1,17 @@
 """Ticketmaster Discovery API v2 (besplatan ključ, 5000 poziva/dan, 5 zahtjeva/s).
 
 Dokumentacija: https://developer.ticketmaster.com/products-and-docs/apis/discovery-api/v2/
-Ticketmaster pokriva većinu zapadne/srednje Europe (AT, DE, PL, CZ, NL, BE, UK, IE, ES, skandinavija...).
-Hrvatska, Slovenija i Srbija uglavnom nisu pokrivene – za njih koristi ručni CSV unos (Entrio, Eventim.hr, Ulaznice.hr).
+Pokriva SAD, Kanadu, Meksiko, Australiju, Novi Zeland, UK, Irsku i većinu zapadne/srednje Europe.
+Hrvatska, Slovenija i Srbija su slabo pokrivene – za njih koristi ručni CSV unos (Entrio, Eventim.hr, Ulaznice.hr).
+
+API vraća najviše 1000 rezultata po upitu (size × page < 1000), pa se prozor datuma rekurzivno dijeli
+dok svaki dio ne stane u limit. Država "ALL" = bez filtra države (sva tržišta odjednom).
 """
 
 from __future__ import annotations
 
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from karte.models import Event, Presale
 from karte.net import HttpClient
@@ -73,6 +76,7 @@ def parse_event(raw: dict) -> Event | None:
     personalized = True if PERSONALIZED_RE.search(text_blob) else None
 
     upcoming = (attraction.get("upcomingEvents") or {}).get("_total")
+    state = (venue.get("state") or {}).get("stateCode")
     return Event(
         id=f"tm:{raw.get('id')}",
         name=raw.get("name", ""),
@@ -93,60 +97,83 @@ def parse_event(raw: dict) -> Event | None:
         personalized=personalized,
         artist_upcoming_events=int(upcoming) if upcoming else None,
         primary_vendor="ticketmaster",
+        region=state.upper() if state else None,
     )
 
 
 class TicketmasterProvider:
     name = "ticketmaster"
 
-    def __init__(self, api_key: str, http: HttpClient):
+    def __init__(self, api_key: str, http: HttpClient, min_window: timedelta = timedelta(hours=12), max_calls: int = 1500):
         self.api_key = api_key
         self.http = http
+        self.min_window = min_window
+        self.max_calls = max_calls
+        self.calls = 0
+        self.truncated = False
 
-    def _paginate(self, params: dict) -> list[dict]:
+    def _get(self, params: dict, page: int) -> dict:
+        self.calls += 1
+        return self.http.get_json(BASE_URL, {**params, "apikey": self.api_key, "size": PAGE_SIZE, "page": page}, cache_ttl=6 * 3600) or {}
+
+    def _paginate(self, params: dict, first: dict | None = None) -> list[dict]:
         out: list[dict] = []
         page = 0
+        data = first if first is not None else self._get(params, 0)
         while True:
-            data = self.http.get_json(BASE_URL, {**params, "apikey": self.api_key, "size": PAGE_SIZE, "page": page}, cache_ttl=6 * 3600)
-            out.extend(((data or {}).get("_embedded") or {}).get("events") or [])
-            info = (data or {}).get("page") or {}
-            total_pages = int(info.get("totalPages") or 0)
+            out.extend((data.get("_embedded") or {}).get("events") or [])
+            total_pages = int((data.get("page") or {}).get("totalPages") or 0)
             page += 1
-            if page >= total_pages or PAGE_SIZE * (page + 1) > MAX_DEEP:
+            if page >= total_pages or PAGE_SIZE * (page + 1) > MAX_DEEP or self.calls >= self.max_calls:
                 break
+            data = self._get(params, page)
         return out
+
+    def _window(self, base: dict, start_key: str, end_key: str, start: datetime, end: datetime) -> list[dict]:
+        """Dohvati sve događaje u prozoru; ako ih je više od 1000, podijeli prozor na pola."""
+        if self.calls >= self.max_calls:
+            self.truncated = True
+            return []
+        params = {**base, start_key: iso_z(start), end_key: iso_z(end)}
+        first = self._get(params, 0)
+        total = int((first.get("page") or {}).get("totalElements") or 0)
+        if total > MAX_DEEP and end - start > self.min_window:
+            mid = start + (end - start) / 2
+            return self._window(base, start_key, end_key, start, mid) + self._window(base, start_key, end_key, mid, end)
+        if total > MAX_DEEP:
+            self.truncated = True
+        return self._paginate(params, first)
+
+    @staticmethod
+    def _country_params(cc: str) -> dict:
+        params = {"classificationName": "music", "includeTest": "no", "sort": "date,asc"}
+        if cc and cc.upper() != "ALL":
+            params["countryCode"] = cc.upper()
+        return params
+
+    def _parse_all(self, raws: list[dict]) -> list[Event]:
+        seen: set[str] = set()
+        events: list[Event] = []
+        for raw in raws:
+            if raw.get("id") in seen:
+                continue
+            seen.add(raw.get("id"))
+            ev = parse_event(raw)
+            if ev:
+                events.append(ev)
+        return events
 
     def events_between(self, countries: list[str], start: datetime, end: datetime) -> list[Event]:
         """Koncerti koji se održavaju u zadanom razdoblju."""
-        events: list[Event] = []
+        raws: list[dict] = []
         for cc in countries:
-            raws = self._paginate(
-                {
-                    "countryCode": cc,
-                    "classificationName": "music",
-                    "startDateTime": iso_z(start),
-                    "endDateTime": iso_z(end),
-                    "sort": "date,asc",
-                    "includeTest": "no",
-                }
-            )
-            events.extend(e for e in (parse_event(r) for r in raws) if e)
-        return events
+            raws.extend(self._window(self._country_params(cc), "startDateTime", "endDateTime", start, end))
+        return self._parse_all(raws)
 
     def onsales_between(self, countries: list[str], onsale_start: datetime, onsale_end: datetime, event_end: datetime) -> list[Event]:
         """Koncerti (bilo kada do event_end) kojima prodaja počinje u zadanom razdoblju – prilika za kupnju."""
-        events: list[Event] = []
+        raws: list[dict] = []
         for cc in countries:
-            raws = self._paginate(
-                {
-                    "countryCode": cc,
-                    "classificationName": "music",
-                    "onsaleStartDateTime": iso_z(onsale_start),
-                    "onsaleEndDateTime": iso_z(onsale_end),
-                    "endDateTime": iso_z(event_end),
-                    "sort": "onSaleStartDate,asc",
-                    "includeTest": "no",
-                }
-            )
-            events.extend(e for e in (parse_event(r) for r in raws) if e)
-        return events
+            base = {**self._country_params(cc), "endDateTime": iso_z(event_end), "sort": "onSaleStartDate,asc"}
+            raws.extend(self._window(base, "onsaleStartDateTime", "onsaleEndDateTime", onsale_start, onsale_end))
+        return self._parse_all(raws)

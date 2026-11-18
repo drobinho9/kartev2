@@ -17,8 +17,8 @@ on:
         description: "Prodaje koje počinju u idućih N dana"
         default: "30"
       countries:
-        description: "Države (ISO, zarezom)"
-        default: "AT,DE,HU,CZ,PL,NL,BE,GB"
+        description: "Države ili regije (npr. otvoreno, europa, sjeverna_amerika, svijet, US,GB)"
+        default: "otvoreno"
       budget:
         description: "Budžet (EUR)"
         default: "1000"
@@ -42,7 +42,7 @@ jobs:
           SEATGEEK_CLIENT_ID: ${{ secrets.SEATGEEK_CLIENT_ID }}
           DAYS: ${{ github.event.inputs.days || '60' }}
           ONSALE_DAYS: ${{ github.event.inputs.onsale_days || '30' }}
-          COUNTRIES: ${{ github.event.inputs.countries || 'AT,DE,HU,CZ,PL,NL,BE,GB' }}
+          COUNTRIES: ${{ github.event.inputs.countries || 'otvoreno' }}
           BUDGET: ${{ github.event.inputs.budget || '1000' }}
         run: |
           mkdir -p reports

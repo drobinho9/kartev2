@@ -16,12 +16,22 @@ RULE_LABELS = {
 }
 
 
-def country_info(country: str | None) -> dict:
+def country_info(country: str | None, region: str | None = None) -> dict:
+    """Pravila za državu; ako postoji pravilo za saveznu državu/pokrajinu (npr. US-VT), ono nadjačava državno."""
     data = knowledge.laws()
     code = (country or "").upper()
-    if code in data:
-        return data[code]
-    return data["default"]
+    base = dict(data[code]) if code in data else dict(data["default"])
+    if region:
+        sub = data.get(f"{code}-{region.upper()}")
+        if sub:
+            if "planned_cap" not in sub:
+                for k in [k for k in base if k.startswith("planned_")]:
+                    base.pop(k)
+            country_summary = base.get("summary", "")
+            base.update(sub)
+            base["summary"] = f"{sub.get('summary', '')} ({base.get('name', code)} – općenito: {country_summary})".strip()
+            base["_code"] = f"{code}-{region.upper()}"
+    return base
 
 
 def cap_price(rule: str, info: dict, face_ref: float | None, buy_cost: float | None, prefix: str = "") -> float | None:
@@ -41,8 +51,10 @@ def cap_price(rule: str, info: dict, face_ref: float | None, buy_cost: float | N
     return None
 
 
-def evaluate(country: str | None, face_ref: float | None, buy_cost: float | None, strict: bool = False) -> LegalResult:
-    info = country_info(country)
+def evaluate(
+    country: str | None, face_ref: float | None, buy_cost: float | None, strict: bool = False, region: str | None = None
+) -> LegalResult:
+    info = country_info(country, region)
     rule = info.get("cap", "none")
     planned = info.get("planned_cap")
     planned_applied = False
@@ -53,7 +65,7 @@ def evaluate(country: str | None, face_ref: float | None, buy_cost: float | None
         prefix = "planned_"
     price = cap_price(rule, info, face_ref, buy_cost, prefix)
     return LegalResult(
-        country=(country or "").upper(),
+        country=info.get("_code", (country or "").upper()),
         country_name=info.get("name", country or "?"),
         rule=rule,
         summary=info.get("summary", ""),

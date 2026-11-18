@@ -40,7 +40,8 @@ def test_ticketmaster_provider_paginates_and_sends_params(now):
     http = FakeHttp({ticketmaster.BASE_URL: load_fixture("ticketmaster_events.json")})
     tm = ticketmaster.TicketmasterProvider("SECRET", http)
     events = tm.events_between(["AT", "DE"], now, datetime(2027, 1, 17))
-    assert len(events) == 4  # 2 valjana po državi
+    assert len(events) == 2  # isti događaji (isti ID) se ne dupliciraju
+    assert len(http.calls) == 2  # jedan upit po državi
     url, params = http.calls[0]
     assert params["countryCode"] == "AT" and params["classificationName"] == "music"
     assert params["startDateTime"] == "2026-11-18T10:00:00Z"
@@ -119,6 +120,23 @@ def test_run_scan_with_apis(tmp_path, now):
     assert all(op.event.artist_listeners == 2_400_000 for op in result.opportunities)
 
 
+def test_run_scan_hides_events_without_price_unless_show_all(tmp_path, now):
+    http = FakeHttp({ticketmaster.BASE_URL: load_fixture("ticketmaster_events.json")})
+    settings = _settings(tmp_path, ticketmaster_api_key="K")
+    hidden = run_scan(ScanOptions(countries=["DE"], now=now, use_lastfm=False), settings, http=http)
+    assert "Another Artist" not in {op.event.artist for op in hidden.opportunities}
+    assert any("bez nominalne cijene" in w for w in hidden.warnings)
+    shown = run_scan(ScanOptions(countries=["DE"], now=now, use_lastfm=False, show_all=True), settings, http=http)
+    assert "Another Artist" in {op.event.artist for op in shown.opportunities}
+
+
+def test_run_scan_expands_regions(tmp_path, now):
+    http = FakeHttp({ticketmaster.BASE_URL: load_fixture("ticketmaster_events.json")})
+    opts = ScanOptions(countries=["dach"], now=now, use_lastfm=False, onsale_days=0)
+    run_scan(opts, _settings(tmp_path, ticketmaster_api_key="K"), http=http)
+    assert [c[1]["countryCode"] for c in http.calls] == ["DE", "AT", "CH"]
+
+
 def test_run_scan_without_keys_warns(tmp_path, now):
     result = run_scan(ScanOptions(countries=["HR"], now=now), _settings(tmp_path))
     assert result.opportunities == []
@@ -142,6 +160,18 @@ def test_cli_scan_formats(tmp_path, capsys):
     assert "<!doctype html>" in (tmp_path / "r.html").read_text(encoding="utf-8")
     assert main(["--env", str(tmp_path / "none.env"), "scan", "--demo", "--only", "KUPI"]) == 0
     assert "KUPI" in capsys.readouterr().out
+
+
+def test_cli_markets_and_us_state_law(tmp_path, capsys):
+    env = str(tmp_path / "none.env")
+    assert main(["--env", env, "markets", "--details"]) == 0
+    out = capsys.readouterr().out
+    assert "SAD" in out and "Japan" in out
+    assert out.index("SAD") < out.index("Japan")  # SAD je bolje rangiran od Japana
+    assert main(["--env", env, "laws", "--country", "US-VT"]) == 0
+    assert "Vermont" in capsys.readouterr().out
+    assert main(["--env", env, "platforms", "--country", "US", "--vendor", "ticketmaster"]) == 0
+    assert "Ne primaju prodavatelje iz HR" in capsys.readouterr().out
 
 
 def test_cli_calc_platforms_laws(tmp_path, capsys):

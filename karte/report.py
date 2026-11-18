@@ -39,7 +39,7 @@ def _row_values(i: int, op: Opportunity) -> list[str]:
         op.verdict,
         fmt_date(e.date),
         e.artist,
-        f"{e.city} ({e.country})",
+        f"{e.city} ({e.country}{'-' + e.region if e.region else ''})",
         _phase_text(op),
         fmt_eur(op.face_ref),
         fmt_eur(op.expected_resale),
@@ -99,7 +99,8 @@ def render_terminal(result: ScanResult, top: int = 25, details: int = 5) -> str:
 
 def location(e) -> str:
     place = ", ".join(x for x in (e.venue, e.city) if x)
-    return f"{place} ({e.country})" if place else e.country
+    code = f"{e.country}-{e.region}" if e.region else e.country
+    return f"{place} ({code})" if place else code
 
 
 def render_detail_text(i: int, op: Opportunity) -> str:
@@ -159,7 +160,7 @@ def render_markdown(result: ScanResult, top: int = 50, details: int = 10) -> str
     for i, op in enumerate(result.opportunities[:details], 1):
         e = op.event
         a = op.advice
-        md += [f"## {i}. {e.name}", "", f"**{e.venue}, {e.city} ({e.country}) · {fmt_datetime(e.date)} · {op.phase}**", "", f"> {a.get('summary', '')}", ""]
+        md += [f"## {i}. {e.name}", "", f"**{location(e)} · {fmt_datetime(e.date)} · {op.phase}**", "", f"> {a.get('summary', '')}", ""]
         if op.multiplier:
             md.append(
                 f"Nominalna (ref.) {fmt_eur(op.face_ref)} · trošak s naknadama {fmt_eur(op.buy_cost, 2)} · očekivana prodajna "
@@ -191,7 +192,7 @@ def render_markdown(result: ScanResult, top: int = 50, details: int = 10) -> str
 
 # ------------------------------------------------------------------ CSV / JSON
 CSV_FIELDS = [
-    "verdict", "date", "artist", "event", "venue", "city", "country", "phase", "days_to_event", "days_to_onsale",
+    "verdict", "date", "artist", "event", "venue", "city", "country", "region", "phase", "days_to_event", "days_to_onsale",
     "face_ref_eur", "buy_cost_eur", "expected_resale_eur", "profit_eur", "expected_value_eur", "roi", "demand", "confidence",
     "risk", "qty", "best_platform", "legal_rule", "source", "url",
 ]
@@ -211,6 +212,7 @@ def render_csv(result: ScanResult) -> str:
             "venue": e.venue,
             "city": e.city,
             "country": e.country,
+            "region": e.region or "",
             "phase": op.phase,
             "days_to_event": op.days_to_event,
             "days_to_onsale": op.days_to_onsale if op.days_to_onsale is not None else "",
@@ -329,7 +331,7 @@ def render_html(result: ScanResult, top: int = 200) -> str:
             f"<td data-v='{_e(op.verdict)}'><span class='pill {VERDICT_CLASS.get(op.verdict, 'v-skip')}'>{_e(op.verdict)}</span></td>"
             f"<td data-v='{e.date.isoformat()}'>{_e(fmt_date(e.date))}</td>"
             f"<td><a href='#ev{i}'>{_e(e.artist)}</a></td>"
-            f"<td>{_e(e.venue)}, {_e(e.city)} ({_e(e.country)})</td>"
+            f"<td>{_e(location(e))}</td>"
             f"<td>{_e(_phase_text(op))}</td>"
             f"<td class='num' data-v='{_num(op.face_ref)}'>{_e(fmt_eur(op.face_ref))}</td>"
             f"<td class='num' data-v='{_num(op.expected_resale)}'>{_e(fmt_eur(op.expected_resale))}</td>"
@@ -349,7 +351,7 @@ def render_html(result: ScanResult, top: int = 200) -> str:
         parts = [
             f"<details class='card' id='ev{i}'{' open' if i <= 3 and op.verdict in ('KUPI', 'RAZMOTRI') else ''}>",
             f"<summary><span class='pill {VERDICT_CLASS.get(op.verdict, 'v-skip')}'>{_e(op.verdict)}</span>"
-            f"<h2>{i}. {_e(e.name)}</h2><span class='muted'>{_e(e.venue)}, {_e(e.city)} ({_e(e.country)}) · {_e(fmt_datetime(e.date))} · {_e(op.phase)}</span></summary>",
+            f"<h2>{i}. {_e(e.name)}</h2><span class='muted'>{_e(location(e))} · {_e(fmt_datetime(e.date))} · {_e(op.phase)}</span></summary>",
             f"<p>{_e(a.get('summary', ''))}</p>",
         ]
         if op.multiplier:

@@ -59,6 +59,71 @@ def _venue_index() -> dict[str, int]:
     return index
 
 
+@lru_cache(maxsize=1)
+def _markets_raw() -> dict[str, Any]:
+    return _load_toml("markets.toml")
+
+
+def regions() -> dict[str, list[str]]:
+    return dict(_markets_raw().get("regions", {}))
+
+
+def markets() -> dict[str, dict]:
+    return dict(_markets_raw().get("markets", {}))
+
+
+def market_info(country: str | None) -> dict:
+    """Veličina tržišta i dostupnost za prodavača iz HR/EU; prazno ako država nije u bazi."""
+    return dict(markets().get((country or "").upper(), {}))
+
+
+def expand_countries(items: list[str] | str | None) -> list[str]:
+    """Pretvori popis država i/ili naziva regija (npr. 'otvoreno', 'dach', 'svijet') u ISO kodove."""
+    if not items:
+        return []
+    if isinstance(items, str):
+        items = [x for x in items.replace(";", ",").split(",")]
+    presets = {k.lower(): v for k, v in regions().items()}
+    out: list[str] = []
+    for raw in items:
+        token = raw.strip()
+        if not token:
+            continue
+        key = token.lower().replace("-", "_").replace(" ", "_")
+        codes = presets.get(key, [token.upper()])
+        for code in codes:
+            code = "ALL" if code.upper() in ("ALL", "SVE", "WORLD") else code.upper()
+            if code not in out:
+                out.append(code)
+    if "ALL" in out:
+        return ["ALL"]
+    return out
+
+
+# Procjena kapaciteta po ključnim riječima u nazivu dvorane (kad je nema u bazi)
+VENUE_KEYWORDS: list[tuple[tuple[str, ...], int]] = [
+    (("stadium", "stadion", "stadio", "estadio", "stade", "field", "park stadium"), 40000),
+    (("hipodrom", "racecourse", "festival grounds", "showgrounds"), 30000),
+    (("arena", "dome", "centre", "center", "coliseum", "forum", "palau", "palais", "halle d", "hall d"), 12000),
+    (("amphitheatre", "amphitheater", "amfiteatar", "pavilion", "bowl", "open air"), 8000),
+    (("sporthalle", "dvorana", "sports hall", "eventhalle", "messe"), 5000),
+    (("theatre", "theater", "kazaliste", "opera", "concert hall", "konzerthaus", "philharmonie", "auditorium"), 2000),
+    (("hall", "halle", "ballroom", "music hall", "o2 academy", "academy"), 2500),
+    (("club", "klub", "bar", "pub", "lounge", "cafe", "kafana"), 600),
+]
+
+
+def estimate_capacity(venue_name: str | None) -> int | None:
+    """Gruba procjena kapaciteta iz naziva dvorane (npr. '... Stadium' → 40.000)."""
+    name = normalize(venue_name)
+    if not name:
+        return None
+    for keywords, cap in VENUE_KEYWORDS:
+        if any(f" {normalize(k)} " in f" {name} " for k in keywords):
+            return cap
+    return None
+
+
 def venue_capacity(venue_name: str | None) -> int | None:
     """Pronađi približan kapacitet dvorane po nazivu (točno ili djelomično podudaranje)."""
     if not venue_name:
@@ -69,8 +134,9 @@ def venue_capacity(venue_name: str | None) -> int | None:
         return index[name]
     # djelomično: "Arena Zagreb, Lanište 32" ili "Wiener Stadthalle - Halle D"
     best: tuple[int, int] | None = None
+    padded = f" {name} "
     for key, cap in index.items():
-        if key and (key in name or name in key):
+        if key and (f" {key} " in padded or (len(name) >= 6 and f" {name} " in f" {key} ")):
             score = len(key)
             if best is None or score > best[0]:
                 best = (score, cap)
