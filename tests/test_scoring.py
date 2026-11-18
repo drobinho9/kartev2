@@ -131,3 +131,16 @@ def test_advice_contains_actionable_sections(evaluator, make_event):
 def test_invalid_category_rejected(now):
     with pytest.raises(ValueError):
         Evaluator(category="vip", now=now)
+
+
+def test_safety_checks_flag_dangerous_situations(evaluator, make_event):
+    from karte.advisor import safety_checks
+
+    bad = evaluator.evaluate(make_event(country="IE", personalized=True, ticket_limit=None, primary_vendor="ticketmaster"))
+    levels = [c["level"] for c in safety_checks(bad)]
+    assert levels.count("bad") >= 2
+    good = evaluator.evaluate(make_event(personalized=False, ticket_limit=4))
+    checks = safety_checks(good)
+    assert not any(c["level"] == "bad" for c in checks)
+    assert any("povuci oglase" in c["text"] for c in checks)
+    assert "safety" in build_advice(good, evaluator.cfg)

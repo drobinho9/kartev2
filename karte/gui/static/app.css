@@ -179,3 +179,14 @@ dialog::backdrop { background: rgba(0,0,0,.45); }
   .chart .bar { fill: CanvasText; }
   .chart .bar.neg { fill: GrayText; }
 }
+
+/* sigurnosna provjera */
+.safety { list-style: none; padding: 0 !important; }
+.safety li { padding: 6px 10px 6px 34px; border-radius: 8px; margin: 4px 0; position: relative; }
+.safety li::before { position: absolute; left: 10px; top: 6px; font-weight: 700; }
+.safety .s-ok { background: var(--good-bg); }
+.safety .s-ok::before { content: "✓"; color: var(--good); }
+.safety .s-warn { background: var(--warn-bg); }
+.safety .s-warn::before { content: "!"; color: var(--warn); }
+.safety .s-bad { background: var(--bad-bg); }
+.safety .s-bad::before { content: "✕"; color: var(--bad); }

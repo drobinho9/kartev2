@@ -123,6 +123,11 @@ def render_detail_text(i: int, op: Opportunity) -> str:
     if ladder:
         lines.append("   CJENIK (plan spuštanja cijene):")
         lines.extend(f"     {row['date']:>12}  {fmt_eur(row['price']):>8}  {row['label']}" for row in ladder)
+    safety = a.get("safety") or []
+    if safety:
+        lines.append("   SIGURNOSNA PROVJERA:")
+        icon = {"ok": "✓", "warn": "!", "bad": "✕"}
+        lines.extend(f"     {icon.get(c['level'], '·')} {c['text']}" for c in safety)
     risks = a.get("risks") or []
     if risks:
         lines.append("   RIZICI:")
@@ -182,6 +187,9 @@ def render_markdown(result: ScanResult, top: int = 50, details: int = 10) -> str
             md += ["**Cjenik**", "", "| Kada | Cijena | |", "|---|---|---|"]
             md += [f"| {r['date']} | {fmt_eur(r['price'])} | {r['label']} |" for r in a["ladder"]]
             md.append("")
+        if a.get("safety"):
+            icon = {"ok": "✅", "warn": "⚠️", "bad": "⛔"}
+            md += ["**Sigurnosna provjera**", ""] + [f"- {icon.get(c['level'], '')} {c['text']}" for c in a["safety"]] + [""]
         if a.get("risks"):
             md += ["**Rizici**", ""] + [f"- {x}" for x in a["risks"]] + [""]
         if a.get("legal"):
@@ -377,6 +385,9 @@ def render_html(result: ScanResult, top: int = 200) -> str:
         if a.get("ladder"):
             parts.append("<h3>Cjenik – plan spuštanja cijene</h3><ul>" + "".join(
                 f"<li><b>{_e(r['date'])}</b> → {_e(fmt_eur(r['price']))} — {_e(r['label'])}</li>" for r in a["ladder"]) + "</ul>")
+        if a.get("safety"):
+            icon = {"ok": "✓", "warn": "!", "bad": "✕"}
+            parts.append("<h3>Sigurnosna provjera</h3><ul>" + "".join(f"<li><b>{icon.get(c['level'], '')}</b> {_e(c['text'])}</li>" for c in a["safety"]) + "</ul>")
         if a.get("risks"):
             parts.append("<h3>Rizici</h3><ul>" + "".join(f"<li>{_e(x)}</li>" for x in a["risks"]) + "</ul>")
         if a.get("legal"):

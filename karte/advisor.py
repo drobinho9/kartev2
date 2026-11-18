@@ -65,6 +65,49 @@ def _ladder(op: Opportunity, cfg: ModelConfig) -> list[dict]:
     return rows
 
 
+def safety_checks(op: Opportunity) -> list[dict]:
+    """Sigurnosna provjera prije kupnje/prodaje: ok | warn | bad (vidi karte/data/guides/5_sigurnost.md)."""
+    e = op.event
+    out: list[dict] = []
+
+    def add(level: str, text: str):
+        out.append({"level": level, "text": text})
+
+    if op.legal.profit_prohibited:
+        add("bad", f"Zakon ({op.legal.country_name}) ne dopušta preprodaju radi zarade – ne kupuj radi preprodaje.")
+    elif op.legal.cap_price is not None:
+        add("warn", f"Zakonski limit cijene: najviše ~{fmt_eur(op.legal.cap_price)} po ulaznici – ne oglašavaj iznad toga.")
+    elif op.legal.planned_rule:
+        add("warn", "Najavljeno je zakonsko ograničenje cijene – provjeri vrijedi li već na datum koncerta.")
+    else:
+        add("ok", "Zakon države ne ograničava cijenu preprodaje (vrijedi zabrana botova i zaobilaženja limita).")
+
+    if e.personalized is True:
+        add("bad", "Ulaznice su personalizirane – kupac možda neće ući; prodaj samo ako organizator dopušta službenu promjenu imena.")
+    elif e.personalized is None:
+        add("warn", "Provjeri u uvjetima jesu li ulaznice na ime i može li se prenijeti/promijeniti ime – prije kupnje.")
+    else:
+        add("ok", "Ulaznice nisu personalizirane.")
+
+    limit = e.ticket_limit
+    add("ok" if limit else "warn",
+        f"Kupuj s jednog računa i najviše {limit} kom (limit po kupcu). Narudžbe preko limita se poništavaju." if limit
+        else "Limit po kupcu nije poznat – provjeri ga i kupuj s jednog računa (više računa = poništene narudžbe).")
+
+    if op.phase == "NAJAVA":
+        add("warn", "Ne oglašavaj prije nego ulaznice budu u tvom računu – spekulativni oglasi nose kazne.")
+    if (e.primary_vendor or "") in ("ticketmaster", "eventim"):
+        add("warn", "Mobilne ulaznice se često mogu prenijeti tek par dana prije koncerta – postavi takav rok isporuke u oglasu.")
+    if op.best and "nakon" in op.best.payout.lower() and "događaj" in op.best.payout.lower():
+        add("warn", f"{op.best.name}: novac stiže tek nakon koncerta – ne računaj na njega prije {fmt_date(e.date)}.")
+    add("ok", "Kad se proda: odmah povuci oglase s ostalih platformi, prenesi službenim prijenosom i spremi screenshot potvrde.")
+    if op.best and op.best.trust_risk >= 0.5:
+        add("warn", "Privatna prodaja: novac na račun prije prijenosa ili osobna primopredaja; bez PayPal F&F i „potvrda uplate”.")
+    if op.demand.confidence < 0.5:
+        add("warn", "Malo podataka – prije kupnje ručno provjeri cijene i broj oglasa na viagogu.")
+    return out
+
+
 def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
     e = op.event
     best = op.best
@@ -181,4 +224,5 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
         "risks": list(op.risk_flags) + list(op.demand.notes),
         "legal": pravno,
         "legal_sources": op.legal.sources,
+        "safety": safety_checks(op),
     }

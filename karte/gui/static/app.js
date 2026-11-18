@@ -460,6 +460,7 @@ function detailHTML(op) {
     <h3>Plan: kada kupiti i kada prodati</h3><ul class="timeline">${tl}</ul>
     <div class="cols"><div><h3>Kako kupiti</h3>${list(a.buy)}</div><div><h3>Kako i gdje prodati</h3>${list(a.sell)}</div></div>
     ${plat ? `<h3>Usporedba platformi (po ulaznici)</h3><div class="tablewrap"><table><thead><tr><th>Platforma</th><th class="num">Oglasna</th><th class="num">Neto</th><th class="num">P(prodaja)</th><th class="num">Oček. vrijednost</th></tr></thead><tbody>${plat}</tbody></table></div>` : ""}
+    ${(a.safety || []).length ? `<h3>Sigurnosna provjera (bez kazni)</h3><ul class="safety">${a.safety.map((c) => `<li class="s-${esc(c.level)}">${esc(c.text)}</li>`).join("")}</ul>` : ""}
     <div class="cols"><div><h3>Rizici</h3>${list(a.risks, "flags")}</div><div><h3>Pravno</h3>${list(a.legal)}</div></div>
     <div class="actions">
       <button type="button" class="ghost" data-act="ics">📅 Kalendar (.ics)</button>

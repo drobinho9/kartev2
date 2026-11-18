@@ -210,6 +210,24 @@ konkretan plan kupnje/prodaje**, i nijedan ne pokriva HR tržište — to je smi
 Postoje plaćeni tečajevi i Discord zajednice („ticket flipping”, vodiči za viagogo). Oprez: često prodaju „sustave” s botovima ili više
 računa — u EU je to protuzakonito, a zarada im je od tečaja, ne od ulaznica.
 
+### 5.5 Usporedba pristupa i lekcije iz prakse
+
+| Pristup | Primjeri | Zarada | Rizik kazni/poništenja | Za nas |
+|---|---|---|---|---|
+| Profesionalni brokeri s botovima i više računa | slučajevi iz FTC tužbe (49 računa, 273 ulaznice za jedan koncert) | velika, kratkoročno | **vrlo visok** – poništavanje (The Cure 7.000, Oasis 50.000 ulaznica), tužbe, u EU protuzakonito | ❌ |
+| Spekulativni oglasi („short” – prodaj pa kupi) | „Shorting Taylor Swift” | moguća | visok – kazne platformi, zabrane (UK, IL, CA, TICKET Act) | ❌ |
+| Broker softver (Stage Front, Automatiq, SkyBox) | SAD, veliki volumen | stabilna uz kapital | srednji – ovisi o disciplini | ⚠️ preskupo za početak |
+| Startup za automatsku preprodaju | „Mistakes from my failed startup in scalping” | nije uspio – naknade, nelikvidnost, poništenja | srednji | lekcija: ne skalirati prije dokaza |
+| Fan-to-fan po nominalnoj (Twickets, TicketSwap, Fan-to-Fan) | Europa, UK | ~0 | nizak | ✅ kao izlaz |
+| **Selektivni preprodavač** (ovaj projekt) | 5–15 događaja/god, unutar limita, viagogo + lokalno | umjerena (ROI 20–80 % na dobrim događajima) | **nizak** uz pravila iz vodiča 5 | ✅ |
+
+**Što ponavljaju prodavači na forumima i u pritužbama:** prevelika pozicija na jednom događaju, brza rasprodaja zamijenjena
+za potražnju na sekundarnom tržištu, neisporučive (personalizirane/zaključane) ulaznice, zaboravljeni oglasi na drugim
+platformama (dvostruka prodaja → kazna 300–3.000+ €), kazne viagoga bez obrazloženja (bez dokaza nema obrane), PayPal
+zadržavanja za „visokorizičnu” kategoriju ulaznica i chargebackovi kod privatne prodaje. Sve to je ugrađeno u
+**sigurnosnu provjeru** koju aplikacija ispisuje za svaki koncert i u vodič
+[Sigurna preprodaja bez kazni](../karte/data/guides/5_sigurnost.md).
+
 ## 6. Izvori podataka (API) — što je dostupno
 
 | Izvor | Status (studeni 2026.) | Korišteno |
