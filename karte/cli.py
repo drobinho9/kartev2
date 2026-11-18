@@ -1,4 +1,4 @@
-"""Naredbeni redak: karte scan | calc | platforms | laws | doctor."""
+"""Naredbeni redak: karte gui | scan | calc | kategorije | dnevnik | markets | platforms | laws | doctor."""
 
 from __future__ import annotations
 
@@ -8,16 +8,16 @@ import sys
 from pathlib import Path
 
 from karte import __version__, legal
-from karte.knowledge import ModelConfig, expand_countries, market_info, markets, regions
-from karte.models import Event, SecondaryMarket
-from karte.net import FileCache, HttpClient, ProviderError
+from karte.journal import Journal, default_path
+from karte.knowledge import ModelConfig, expand_countries, regions
+from karte.net import HttpClient, ProviderError
 from karte.pipeline import ScanOptions, run_scan
 from karte.platforms import available_platforms, blocked_for_seller, load_platforms
 from karte.report import RENDERERS, render_detail_text
-from karte.scoring import CATEGORIES, Evaluator
+from karte.scoring import CATEGORIES
+from karte.service import calculate, categories, market_rows
 from karte.settings import Settings
-from karte.advisor import build_advice
-from karte.util import add_days, fmt_eur, fmt_pct, utcnow
+from karte.util import fmt_eur, fmt_pct
 
 
 def _countries(value: str | None, settings: Settings) -> list[str]:
@@ -68,54 +68,92 @@ def cmd_scan(args, settings: Settings) -> int:
     return 0
 
 
+def _calc_fields(args, settings: Settings) -> dict:
+    return {
+        "artist": args.name or "Kalkulacija",
+        "venue": args.venue or "",
+        "country": args.country,
+        "region": args.state or "",
+        "date": args.date or "",
+        "days": args.days,
+        "face": args.face,
+        "currency": args.currency,
+        "resale_lowest": args.resale,
+        "listing_count": getattr(args, "listings", None),
+        "capacity": args.capacity,
+        "ticket_limit": args.limit,
+        "personalized": "da" if args.personalized else ("ne" if args.not_personalized else ""),
+        "tags": args.tags or "",
+        "listeners": args.listeners,
+        "vendor": args.vendor or "",
+        "primary_fee": args.primary_fee,
+        "budget": args.budget,
+        "strict": args.strict,
+        "seller_country": args.seller_country or settings.seller_country,
+    }
+
+
 def cmd_calc(args, settings: Settings) -> int:
     """Brzi kalkulator za jedan događaj (npr. iz oglasa na Entriju + najniže cijene na viagogu)."""
-    now = utcnow()
-    secondary = None
-    if args.resale:
-        secondary = SecondaryMarket(source="ručni unos", lowest=args.resale, currency=args.currency)
-    event = Event(
-        id="calc",
-        name=args.name or "Kalkulacija",
-        artist=args.name or "Kalkulacija",
-        venue=args.venue or "",
-        city="",
-        country=args.country.upper(),
-        date=add_days(now, args.days),
-        source="kalkulator",
-        face_min=args.face,
-        face_max=args.face,
-        currency=args.currency,
-        status="onsale",
-        capacity=args.capacity,
-        ticket_limit=args.limit,
-        personalized=True if args.personalized else (False if args.not_personalized else None),
-        tags=[t.strip() for t in (args.tags or "").split(",") if t.strip()],
-        secondary=secondary,
-        artist_listeners=args.listeners,
-        primary_vendor=args.vendor,
-        region=args.state.upper() if args.state else None,
-    )
-    config = ModelConfig.load(args.model)
-    if args.primary_fee is not None:
-        config.data.setdefault("primary_fees", {})["default_pct"] = args.primary_fee
-        config.data["primary_fees"]["default_fixed"] = 0.0
-        event.primary_vendor = None
-    evaluator = Evaluator(
-        config,
-        budget=args.budget if args.budget is not None else settings.budget,
-        strict=args.strict,
-        now=now,
-        seller_country=(args.seller_country or settings.seller_country).upper(),
-    )
-    op = evaluator.evaluate(event)
-    op.advice = build_advice(op, config)
+    op = calculate(_calc_fields(args, settings), settings, args.model)
     print(render_detail_text(1, op))
     if op.platforms:
         print("Platforme (po ulaznici):")
         for p in op.platforms:
             print(f"  {p.name:<34} oglas {fmt_eur(p.list_price):>8}  neto {fmt_eur(p.net_payout):>8}  "
                   f"P(prodaja) {p.p_sell * 100:3.0f} %  oček. vrijednost {fmt_eur(p.expected_value):>8}{'  (limit)' if p.capped else ''}")
+    return 0
+
+
+def _parse_cat(spec: str) -> dict:
+    """'Naziv:cijena[:vrsta[:najniža_na_viagogu]]' → rječnik."""
+    parts = [x.strip() for x in spec.split(":")]
+    if len(parts) < 2:
+        raise SystemExit(f"Neispravna kategorija '{spec}' – format: Naziv:cijena[:vrsta[:najniža_na_viagogu]]")
+    return {"name": parts[0], "face": parts[1], "kind": parts[2] if len(parts) > 2 and parts[2] else "standard",
+            "resale_lowest": parts[3] if len(parts) > 3 else None}
+
+
+def cmd_categories(args, settings: Settings) -> int:
+    fields = _calc_fields(args, settings)
+    fields["face"] = None
+    result = categories(fields, [_parse_cat(c) for c in args.cat], settings, args.model)
+    print(result["summary"] + "\n")
+    print(f"{'Kategorija':<28} {'Vrsta':<26} {'Nomin.':>7} {'Oček.':>7} {'×':>5} {'Dobit*':>7} {'Oček.ROI':>8}  Preporuka")
+    for r in result["rows"]:
+        star = "★ " if r.get("best_roi") else "  "
+        print(f"{star}{r['name'][:26]:<26} {r['kind_label'][:26]:<26} {fmt_eur(r['face_eur']):>7} {fmt_eur(r['expected_resale']):>7} "
+              f"{(r['multiplier'] or 0):>5.2f} {fmt_eur(r['profit']):>7} {fmt_pct(r['roi']):>8}  {r['verdict']}")
+    print("\nDobit* = neto po ulaznici ako se proda. Vrste: front, parter, standard, tribina, vip, zaklonjeno.")
+    return 0
+
+
+def cmd_journal(args, settings: Settings) -> int:
+    journal = Journal(args.file or default_path(os.environ.get("KARTE_DATA_DIR")))
+    if args.import_csv:
+        n = journal.import_csv(Path(args.import_csv).read_text(encoding="utf-8"))
+        print(f"Uvezeno {n} transakcija u {journal.path}")
+    if args.export:
+        Path(args.export).write_text(journal.export_csv(), encoding="utf-8")
+        print(f"Izvezeno u {args.export}")
+    st = journal.stats(ModelConfig.load(args.model))
+    print(f"Dnevnik: {journal.path} · transakcija: {st['count']} (zatvoreno {st['closed']})")
+    print(f"Uloženo {fmt_eur(st['invested_total'])} · prihod {fmt_eur(st['revenue'])} · dobit {fmt_eur(st['profit'])} · "
+          f"ROI {fmt_pct(st['roi'])} · kapital u igri {fmt_eur(st['open_capital'])}")
+    for t in journal.list()[:20]:
+        row = t.to_row()
+        print(f"  {t.event_date or '—':<10} {t.artist[:28]:<28} {row['status_label']:<22} {t.qty} kom  "
+              f"dobit {fmt_eur(row['realized_profit'])}  ROI {fmt_pct(row['roi'])}  {t.platform}")
+    print("\n" + st["calibration"].get("message", ""))
+    print("Unos i uređivanje: karte gui → Moje prodaje")
+    return 0
+
+
+def cmd_gui(args, settings: Settings) -> int:
+    from karte.gui.server import serve
+
+    journal = Path(args.journal) if args.journal else default_path(os.environ.get("KARTE_DATA_DIR"))
+    serve(settings, port=args.port, open_browser=not args.no_browser, journal_path=journal, model_path=args.model, verbose=args.verbose)
     return 0
 
 
@@ -165,38 +203,17 @@ def cmd_laws(args, settings: Settings) -> int:
     return 0
 
 
-def market_score(code: str) -> tuple[float, dict, dict]:
-    """Privlačnost tržišta za prodavača iz HR: veličina × (1 − pravni rizik) × (1 − pristup); limiti jako smanjuju."""
-    info = market_info(code)
-    law = legal.country_info(code)
-    size = float(info.get("size", 0.05))
-    score = size ** 0.5 * (1 - float(law.get("risk", 0.35))) * (1 - float(info.get("access_risk", 0.35)))
-    rule = law.get("cap", "none")
-    if rule in legal.PROFIT_PROHIBITED_RULES:
-        score *= 0.1
-    elif rule != "none":
-        score *= 0.4
-    if law.get("planned_cap"):
-        score *= 0.7
-    return score, info, law
-
-
 def cmd_markets(args, settings: Settings) -> int:
-    codes = expand_countries(args.countries) if args.countries else sorted(markets())
-    if codes == ["ALL"]:
-        codes = sorted(markets())
-    rows = sorted(((market_score(c), c) for c in codes), key=lambda t: t[0][0], reverse=True)
+    codes = expand_countries(args.countries) if args.countries else None
+    rows = market_rows(codes)
     print(f"Tržišta rangirana za prodavača iz {settings.seller_country} (veličina × legalnost × dostupnost):\n")
     print(f"{'#':>3}  {'Država':<24} {'Ocjena':>6}  {'Veličina':>8}  {'Pristup':>7}  {'TM':<11} Pravilo")
-    for i, ((score, info, law), code) in enumerate(rows, 1):
-        rule = legal.RULE_LABELS.get(law.get("cap", "none"), law.get("cap"))
-        if law.get("planned_cap"):
-            rule += " (+ najavljeno ograničenje)"
-        name = f"{code} {info.get('name') or law.get('name', '')}"
-        print(f"{i:>3}  {name[:24]:<24} {score * 100:>6.0f}  {float(info.get('size', 0)) * 100:>8.0f}  "
-              f"{(1 - float(info.get('access_risk', 0.35))) * 100:>7.0f}  {info.get('tm', '?'):<11} {rule}")
-        if args.details and info.get("access"):
-            print(f"       {info['access']}")
+    for i, m in enumerate(rows, 1):
+        rule = m["rule_label"] + (" (+ najavljeno ograničenje)" if m["planned"] else "")
+        name = f"{m['code']} {m['name']}"
+        print(f"{i:>3}  {name[:24]:<24} {m['score'] * 100:>6.0f}  {m['size'] * 100:>8.0f}  {m['access'] * 100:>7.0f}  {m['tm']:<11} {rule}")
+        if args.details and m["access_note"]:
+            print(f"       {m['access_note']}")
     print("\nRegije za --countries: " + ", ".join(sorted(regions())))
     print("Napomena: procjena za orijentaciju, ne pravni savjet. Detalji: karte laws --country XX")
     return 0
@@ -277,7 +294,9 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("--country", default="HR")
     c.add_argument("--state", help="savezna država/pokrajina, npr. NY, VT, ON, NSW")
     c.add_argument("--seller-country")
-    c.add_argument("--days", type=int, default=45, help="za koliko dana je događaj")
+    c.add_argument("--days", type=int, default=45, help="za koliko dana je događaj (ako nema --date)")
+    c.add_argument("--date", help="datum događaja YYYY-MM-DD")
+    c.add_argument("--listings", type=int, help="broj oglasa na viagogu")
     c.add_argument("--listeners", type=int, help="Last.fm slušatelji izvođača")
     c.add_argument("--capacity", type=int, help="kapacitet dvorane")
     c.add_argument("--limit", type=int, help="limit ulaznica po kupcu")
@@ -292,6 +311,37 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("--strict", action="store_true")
     c.add_argument("--model")
     c.set_defaults(func=cmd_calc)
+
+    k = sub.add_parser("kategorije", help="koje kategorije ulaznica za koncert se najisplativije preprodaju")
+    k.add_argument("--cat", action="append", required=True, help="Naziv:cijena[:vrsta[:najniža_na_viagogu]], npr. Parter:59:parter (više puta)")
+    for a in ("--currency", "--country", "--state", "--vendor", "--name", "--venue", "--tags", "--seller-country", "--model", "--date"):
+        k.add_argument(a, default={"--currency": "EUR", "--country": "HR"}.get(a))
+    k.add_argument("--days", type=int, default=45)
+    k.add_argument("--listeners", type=int)
+    k.add_argument("--capacity", type=int)
+    k.add_argument("--limit", type=int)
+    k.add_argument("--budget", type=float)
+    k.add_argument("--primary-fee", type=float)
+    k.add_argument("--resale", type=float)
+    k.add_argument("--personalized", action="store_true")
+    k.add_argument("--not-personalized", action="store_true")
+    k.add_argument("--strict", action="store_true")
+    k.set_defaults(func=cmd_categories, face=None)
+
+    j = sub.add_parser("dnevnik", help="moje kupnje i prodaje: statistika, uvoz/izvoz CSV")
+    j.add_argument("--file", help="putanja do dnevnika (zadano ~/.karte/dnevnik.json)")
+    j.add_argument("--import-csv", help="uvezi transakcije iz CSV-a")
+    j.add_argument("--export", help="izvezi transakcije u CSV")
+    j.add_argument("--model")
+    j.set_defaults(func=cmd_journal)
+
+    g = sub.add_parser("gui", help="pokreni grafičko sučelje u pregledniku")
+    g.add_argument("--port", type=int, default=8765)
+    g.add_argument("--no-browser", action="store_true", help="ne otvaraj preglednik automatski")
+    g.add_argument("--journal", help="putanja do dnevnika prodaja")
+    g.add_argument("--model")
+    g.add_argument("--verbose", action="store_true")
+    g.set_defaults(func=cmd_gui)
 
     p = sub.add_parser("platforms", help="popis platformi za preprodaju i naknada")
     p.add_argument("--country", help="samo platforme dostupne u državi")

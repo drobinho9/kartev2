@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radar ulaznica</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">🎟️</span>
+    <div><b>karte</b><span class="muted small" id="version"></span><div class="muted small">Radar preprodaje ulaznica</div></div>
+  </div>
+  <div class="keys" id="keys"></div>
+  <button class="ghost" id="themeBtn" type="button" title="Svijetla / tamna tema" aria-label="Promijeni temu">🌓</button>
+</header>
+
+<nav class="tabs" role="tablist" id="tabs">
+  <button role="tab" data-tab="radar" class="active">Radar</button>
+  <button role="tab" data-tab="calc">Kalkulator</button>
+  <button role="tab" data-tab="cats">Kategorije</button>
+  <button role="tab" data-tab="journal">Moje prodaje</button>
+  <button role="tab" data-tab="markets">Tržišta</button>
+  <button role="tab" data-tab="guides">Vodiči</button>
+</nav>
+
+<main class="wrap">
+
+<!-- ====================================================== RADAR -->
+<section id="tab-radar" class="tab active">
+  <form class="card" id="scanForm">
+    <h2>Pretraga koncerata</h2>
+    <div class="grid">
+      <label>Države / regija
+        <select name="preset" id="presetSel"></select>
+      </label>
+      <label>Vlastiti popis (ISO kodovi)
+        <input name="custom" id="customCountries" placeholder="npr. US,GB,DE" autocomplete="off">
+      </label>
+      <label>Koncerti u idućih (dana)
+        <input type="number" name="days" value="60" min="1" max="365">
+      </label>
+      <label>+ prodaja počinje u idućih (dana)
+        <input type="number" name="onsale_days" value="30" min="0" max="180">
+      </label>
+      <label>Budžet (€)
+        <input type="number" name="budget" value="1000" min="0" step="50">
+      </label>
+      <label>Kategorija koju ciljaš
+        <select name="category" id="categorySel"></select>
+      </label>
+      <label>Moje prebivalište (prodavač)
+        <select name="seller_country" id="sellerSel"></select>
+      </label>
+      <label>Vlastiti događaji (CSV)
+        <input type="file" name="csv" accept=".csv,text/csv">
+      </label>
+    </div>
+    <div class="row checks">
+      <label class="check"><input type="checkbox" name="demo"> Demo podaci (izmišljeni)</label>
+      <label class="check"><input type="checkbox" name="strict"> Strogo: primijeni najavljene zakone</label>
+      <label class="check"><input type="checkbox" name="show_all"> Prikaži i događaje bez cijene</label>
+    </div>
+    <div class="row">
+      <button type="submit" class="primary" id="scanBtn">Pokreni pretragu</button>
+      <button type="button" class="ghost" data-export="html">Preuzmi HTML izvještaj</button>
+      <button type="button" class="ghost" data-export="csv">Preuzmi CSV</button>
+      <span class="muted small" id="scanHint"></span>
+    </div>
+  </form>
+
+  <div id="scanStatus"></div>
+  <div class="kpis" id="scanKpis"></div>
+
+  <div class="card" id="chartCard" hidden>
+    <h3>Najveći očekivani skok cijene <span class="muted small">(očekivana prodajna ÷ nominalna, samo dopuštena tržišta)</span></h3>
+    <div id="chartTop"></div>
+  </div>
+
+  <div class="card" id="resultsCard" hidden>
+    <div class="row between">
+      <div class="chips" id="verdictChips"></div>
+      <input type="search" id="searchBox" placeholder="Traži izvođača ili grad…" aria-label="Traži">
+    </div>
+    <div class="tablewrap"><table class="results" id="resultsTable"></table></div>
+    <p class="muted small">Klik na redak otvara detaljan plan: kako kupiti, kada i gdje prodati, cjenik po datumima.</p>
+  </div>
+</section>
+
+<!-- ====================================================== KALKULATOR -->
+<section id="tab-calc" class="tab">
+  <form class="card" id="calcForm">
+    <h2>Kalkulator za jedan koncert</h2>
+    <p class="muted">Upiši što znaš — najvažnije su <b>nominalna cijena</b> i, ako postoji, <b>najniža cijena na viagogu</b>.</p>
+    <div class="grid" id="calcFields"></div>
+    <fieldset class="tags"><legend>Oznake</legend><div id="calcTags" class="row wrapgap"></div></fieldset>
+    <div class="row"><button type="submit" class="primary">Izračunaj</button><button type="button" class="ghost" id="calcExample">Primjer</button></div>
+  </form>
+  <div id="calcResult"></div>
+</section>
+
+<!-- ====================================================== KATEGORIJE -->
+<section id="tab-cats" class="tab">
+  <form class="card" id="catsForm">
+    <h2>Koje ulaznice se najviše isplati preprodati?</h2>
+    <p class="muted">Upiši kategorije za koncert (npr. iz Eventim/Entrio cjenika). Ako vidiš najniže cijene po kategoriji na viagogu, upiši ih — imaju prednost pred procjenom.</p>
+    <div class="grid" id="catsFields"></div>
+    <fieldset class="tags"><legend>Oznake</legend><div id="catsTags" class="row wrapgap"></div></fieldset>
+    <h3>Kategorije</h3>
+    <div class="tablewrap"><table class="edit" id="catsTable">
+      <thead><tr><th>Naziv</th><th>Vrsta</th><th>Nominalna (valuta koncerta)</th><th>Najniža na viagogu</th><th>Broj oglasa</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <div class="row">
+      <button type="button" class="ghost" id="addCat">+ Dodaj kategoriju</button>
+      <button type="button" class="ghost" id="catsExample">Primjer: Arena Zagreb</button>
+      <button type="submit" class="primary">Izračunaj</button>
+    </div>
+  </form>
+  <div id="catsResult"></div>
+</section>
+
+<!-- ====================================================== DNEVNIK -->
+<section id="tab-journal" class="tab">
+  <div class="kpis" id="jKpis"></div>
+  <div class="card" id="jCalib"></div>
+  <div class="card" id="jChartCard" hidden>
+    <h3>Dobit po transakciji</h3>
+    <div id="jChart"></div>
+  </div>
+  <form class="card" id="jForm">
+    <div class="row between"><h2 id="jFormTitle">Nova transakcija</h2>
+      <div class="row"><button type="button" class="ghost" id="jExample">Primjer: A$AP Rocky (viagogo)</button><button type="button" class="ghost" id="jReset">Očisti</button></div></div>
+    <input type="hidden" name="id">
+    <div class="grid" id="jFields"></div>
+    <div class="row"><button type="submit" class="primary">Spremi</button><span class="muted small" id="jMsg"></span></div>
+  </form>
+  <div class="card">
+    <div class="row between"><h2>Moje kupnje i prodaje</h2>
+      <div class="row"><a class="btn ghost" href="/api/journal/export">Izvoz CSV</a>
+      <label class="btn ghost">Uvoz CSV<input type="file" id="jImport" accept=".csv,text/csv" hidden></label></div></div>
+    <div class="tablewrap"><table class="results" id="jTable"></table></div>
+    <div id="jPlatforms"></div>
+    <p class="muted small" id="jPath"></p>
+  </div>
+</section>
+
+<!-- ====================================================== TRŽIŠTA -->
+<section id="tab-markets" class="tab">
+  <div class="card">
+    <h2>Gdje u svijetu se isplati?</h2>
+    <p class="muted">Ocjena = veličina tržišta × legalnost × koliko lako iz Hrvatske kupuješ i prodaješ. Klik na državu za pravila.</p>
+    <div class="row"><input id="lawCode" placeholder="Pravila za: npr. US-VT, CA-ON, DE" autocomplete="off"><button class="ghost" id="lawBtn" type="button">Prikaži pravila</button></div>
+    <div id="lawBox"></div>
+    <div class="tablewrap"><table class="results" id="mTable"></table></div>
+  </div>
+</section>
+
+<!-- ====================================================== VODIČI -->
+<section id="tab-guides" class="tab">
+  <div class="guides">
+    <aside class="card" id="guideNav"></aside>
+    <article class="card prose" id="guideBody"></article>
+  </div>
+</section>
+</main>
+
+<dialog id="detail"><div class="dlg">
+  <button class="ghost close" type="button" id="detailClose" aria-label="Zatvori">✕</button>
+  <div id="detailBody"></div>
+</div></dialog>
+<div id="tooltip" class="tooltip" hidden></div>
+<div id="toast" class="toast" hidden></div>
+<footer class="wrap muted small">Procjene su informativne (heuristički model) — nisu financijski ni pravni savjet. Kupuj legalno: bez botova, unutar limita. Naknade i zakoni se mijenjaju.</footer>
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -127,6 +127,14 @@ class Opportunity:
     advice: dict = field(default_factory=dict)
 
     @property
+    def listings_share(self) -> float | None:
+        """Broj oglasa na sekundarnom tržištu kao udio kapaciteta (intenzitet preprodaje)."""
+        sec = self.event.secondary
+        if sec is None or not sec.listing_count or not self.event.capacity:
+            return None
+        return sec.listing_count / self.event.capacity
+
+    @property
     def total_expected_value(self) -> float:
         if self.expected_value is None:
             return 0.0

@@ -1,6 +1,9 @@
 # Strategija: kako legalno i isplativo preprodavati ulaznice
 
 Praktični priručnik uz aplikaciju `karte`. Temelji se na [ISTRAZIVANJE.md](ISTRAZIVANJE.md).
+Detaljni vodiči (i u sučelju, kartica *Vodiči*): [virtualni redovi](../karte/data/guides/1_redovi.md) ·
+[kada kupiti/prodati](../karte/data/guides/2_kada_kupiti_prodati.md) · [viagogo](../karte/data/guides/3_viagogo.md) ·
+[koje karte se najviše preprodaju](../karte/data/guides/4_koje_karte.md).
 
 ---
 

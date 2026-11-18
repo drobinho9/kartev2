@@ -83,6 +83,13 @@ Količina: KUPI → 4 (potražnja ≥ 0,75) ili 2; RAZMOTRI → 2; uvijek ≤ li
 
 ## 7. Kalibracija vlastitim podacima
 
+Najlakše: **karte gui → Moje prodaje**. Dodaj transakciju iz rezultata pretrage ili kalkulatora (gumb *Dodaj u Moje
+prodaje* sprema i procjenu modela), a nakon prodaje upiši oglasnu cijenu i stvarno primljeni iznos. Aplikacija uspoređuje
+ostvareni multiplikator (oglasna ÷ nominalna) s procjenom i predlaže novi `demand_slope`
+(`novi = stari × medijan((ostvareni − 0,8) / (procijenjeni − 0,8))`).
+
+Ručno:
+
 1. Vodi CSV svojih transakcija: nominalna, trošak, stvarna prodajna cijena, dan prodaje, platforma, potražnja koju je model dao.
 2. Nakon 10–20 transakcija usporedi **stvarni multiplikator** (prodajna/nominalna) s modelom po razredima potražnje.
 3. Ako model sustavno precjenjuje → smanji `demand_slope` (npr. 1,7 → 1,4); podcjenjuje → povećaj.
@@ -100,3 +107,10 @@ buy_roi = 0.4
 [primary_fees.vendors]
 entrio = { pct = 0.0, fixed = 2.0 }
 ```
+
+## 8. Analiza kategorija
+
+Za svaku kategoriju istog koncerta: multiplikator koncerta × `(cijena / medijan cijena)^-0,35` × faktor vrste
+(prednji sektor 1,15 · parter 1,10 · standard 1,00 · tribina 0,95 · VIP 0,85 · zaklonjeno 0,75), uz korekciju vjerojatnosti
+prodaje (jeftinije se prodaje brže, VIP sporije). Ako za kategoriju upišeš stvarnu najnižu cijenu s viagoga, koristi se ona.
+Detalji: [`karte/categories.py`](../karte/categories.py).

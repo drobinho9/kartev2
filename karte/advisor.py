@@ -56,7 +56,12 @@ def _ladder(op: Opportunity, cfg: ModelConfig) -> list[dict]:
         if cap is not None:
             price = min(price, cap)
         date = add_days(op.event.date, -days_before) if days_before is not None else None
-        rows.append({"label": label, "date": fmt_date(date) if date else "odmah", "price": round(price, 2)})
+        rows.append({
+            "label": label,
+            "date": fmt_date(date) if date else "odmah",
+            "iso": date.date().isoformat() if date else None,
+            "price": round(price, 2),
+        })
     return rows
 
 

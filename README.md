@@ -23,8 +23,7 @@ državama/pokrajinama (SAD, Kanada, Australija…) te **može li prodavatelj iz 
 | 4b. Pristup tržištu | Može li prodavatelj iz HR prodavati na platformi (Vivid Seats/SeatGeek traže prebivalište u SAD-u), lokalni kanali u inozemstvu, rizik računa/isplata/valute |
 | 5. Savjet | **KUPI / RAZMOTRI / PRESKOČI / RASPRODANO / ZAKONSKI OGRANIČENO** + plan kupnje (presale datumi), plan prodaje (platforme, cjenik po datumima), rizici |
 | 6. Izvještaj | Terminal, HTML (sortabilna tablica, tamni način), Markdown, CSV, JSON; tjedno automatsko skeniranje preko GitHub Actions |
-
-![Primjer HTML izvještaja](docs/img/izvjestaj.png)
+| 7. Grafičko sučelje | `karte gui` – sve gore navedeno u pregledniku + analiza kategorija, dnevnik prodaja s kalibracijom modela, plan po datumima i podsjetnici u kalendaru, vodiči |
 
 ## Brzi početak
 
@@ -34,6 +33,30 @@ cd kartev2
 python3 -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
 pip install -e .
 
+# Grafičko sučelje (otvara se u pregledniku na http://127.0.0.1:8765)
+karte gui
+```
+
+## Grafičko sučelje (`karte gui`)
+
+Najlakši način korištenja — sve radi lokalno na tvom računalu (server sluša samo na 127.0.0.1, podaci ostaju kod tebe).
+
+| Kartica | Čemu služi |
+|---|---|
+| **Radar** | Odabereš regiju (ili cijeli svijet), dane i budžet → tablica preporuka (KUPI / RAZMOTRI / …), graf koncerata s najvećim očekivanim skokom cijene, filtri i sortiranje. Klik na koncert otvara **plan po datumima**: presale, javna prodaja, kada oglasiti i po kojoj cijeni, kada spuštati cijenu. Gumb **📅 Kalendar (.ics)** sve to doda u tvoj kalendar s podsjetnikom 30 min prije prodaje. |
+| **Kalkulator** | Za jedan koncert (npr. s Entrija/Eventima) upišeš nominalnu cijenu i najnižu cijenu na viagogu → isplativost, platforme, cjenik. |
+| **Kategorije** | **Koje ulaznice se najviše isplati preprodati** za isti koncert: parter, tribine, VIP, zaklonjena mjesta… rangirano po očekivanom ROI-ju i zaradi. |
+| **Moje prodaje** | Dnevnik kupnji i prodaja (npr. tvoja **A$AP Rocky prodaja na viagogu** – gumb *Primjer*): dobit, ROI, koliko dana prije koncerta prodaješ, po platformi. Iz stvarnih prodaja **kalibrira model** i predlaže podešavanje. Uvoz/izvoz CSV. |
+| **Tržišta** | Rang država za prodavača iz HR + pravila po državama i saveznim državama (US-VT, CA-ON…). |
+| **Vodiči** | Virtualni redovi (kako najbolje doći do ulaznice), kada kupiti i prodati, viagogo korak po korak, koje karte se najviše preprodaju. |
+
+![Radar](docs/img/gui_radar.png)
+![Plan kupnje i prodaje](docs/img/gui_plan.png)
+![Analiza kategorija](docs/img/gui_kategorije.png)
+
+## Naredbeni redak
+
+```bash
 # 1) Isprobaj bez ikakvih ključeva (izmišljeni demo podaci)
 karte scan --demo
 
@@ -107,7 +130,10 @@ Stupci (hrvatski ili engleski nazivi, razdjelnik `,` ili `;`):
 
 ```bash
 karte scan [opcije]        # glavna pretraga i rangiranje
+karte gui                  # grafičko sučelje u pregledniku
 karte calc --face 59 --resale 140 --country HR --listeners 1500000 --capacity 16000   # brzi kalkulator za jedan događaj
+karte kategorije --cat "Parter:59:parter" --cat "Tribina:79" --cat "VIP:189:vip" --venue "Arena Zagreb" --listeners 2000000
+karte dnevnik              # statistika mojih prodaja (unos u: karte gui → Moje prodaje)
 karte platforms --country US --vendor ticketmaster   # platforme, naknade, limiti, tko prima prodavatelje iz HR
 karte laws [--country US-VT]   # pravila po državama i saveznim državama
 karte markets --details        # rang tržišta za prodavača iz HR
@@ -159,6 +185,7 @@ ROI           = oček. vrij. / trošak
 - 📊 [docs/ISTRAZIVANJE.md](docs/ISTRAZIVANJE.md) — tržište, platforme i naknade, zakoni po državama, porezi u HR, slični projekti i alati, izvori podataka
 - 🧭 [docs/STRATEGIJA.md](docs/STRATEGIJA.md) — praktični priručnik: odabir događaja, kupnja, prodaja, cijene, rizik, porezi
 - 🧮 [docs/MODEL.md](docs/MODEL.md) — kako model radi i kako ga kalibrirati vlastitim podacima
+- 🎫 Vodiči (i u kartici *Vodiči*): [virtualni redovi](karte/data/guides/1_redovi.md) · [kada kupiti/prodati](karte/data/guides/2_kada_kupiti_prodati.md) · [viagogo za prodavatelje](karte/data/guides/3_viagogo.md) · [koje karte se najviše preprodaju](karte/data/guides/4_koje_karte.md)
 
 ## Struktura projekta
 
@@ -168,11 +195,15 @@ karte/
   pipeline.py       dohvat → spajanje → obogaćivanje → procjena
   scoring.py        model potražnje, cijene, rizika i preporuke
   advisor.py        savjeti: kupnja, prodaja, cjenik
+  categories.py     analiza kategorija (koje ulaznice se najisplativije preprodaju)
+  journal.py        dnevnik kupnji/prodaja, statistika, kalibracija modela
+  service.py        zajednički sloj za CLI i sučelje
+  gui/              lokalni web server + sučelje (HTML/CSS/JS, bez vanjskih biblioteka)
   legal.py          pravila po državama i saveznim državama/pokrajinama
   platforms.py      platforme za preprodaju i naknade
   report.py         terminal / HTML / Markdown / CSV / JSON
   providers/        ticketmaster, seatgeek, lastfm, manual (CSV), demo
-  data/             laws.toml, markets.toml (regije, pristup), platforms.toml, venues.toml, model.toml, demo_events.json
+  data/             laws.toml, markets.toml (regije, pristup), platforms.toml, venues.toml, model.toml, demo_events.json, guides/
 primjeri/           primjeri CSV-a (uklj. stvarnu HR watchlistu)
 docs/               istraživanje, strategija, model
 tests/              pytest (bez mreže)

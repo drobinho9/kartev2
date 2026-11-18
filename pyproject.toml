@@ -21,7 +21,8 @@ karte = "karte.cli:main"
 include = ["karte*"]
 
 [tool.setuptools.package-data]
-"karte.data" = ["*.toml", "*.json"]
+"karte.data" = ["*.toml", "*.json", "guides/*.md"]
+"karte.gui" = ["static/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -170,7 +170,8 @@ class Evaluator:
         return "U PRODAJI", days_to_onsale
 
     # --------------------------------------------------------------- evaluacija
-    def evaluate(self, event: Event) -> Opportunity:
+    def evaluate(self, event: Event, multiplier_adjust: float = 1.0, p_adjust: float = 1.0) -> Opportunity:
+        """Procijeni događaj. multiplier_adjust/p_adjust koristi analiza kategorija (kad nema stvarnih cijena po kategoriji)."""
         cfg = self.cfg
         face_ref = self.face_reference(event)
         demand = self.demand(event, face_ref)
@@ -191,6 +192,7 @@ class Evaluator:
                 multiplier_source = f"sekundarno tržište ({event.secondary.source})"
             else:
                 multiplier = r["base_multiplier"] + r["demand_slope"] * demand.score ** r["demand_exponent"]
+                multiplier *= multiplier_adjust
                 multiplier_source = "model (procjena iz potražnje)"
             if days_to_event <= r["late_days"] and demand.score < r["late_decay_max_demand"]:
                 multiplier *= r["late_decay"]
@@ -204,7 +206,9 @@ class Evaluator:
         if face_ref and buy_cost and expected_resale:
             ranked: list[tuple[float, PlatformOption, Platform]] = []
             for platform in available_platforms(event.country, event.primary_vendor, self.seller_country):
-                option = self._platform_option(platform, event, face_ref, buy_cost, expected_resale, legal_result.cap_price, demand.score)
+                option = self._platform_option(
+                    platform, event, face_ref, buy_cost, expected_resale, legal_result.cap_price, demand.score, p_adjust
+                )
                 options.append(option)
                 rank = option.expected_value - platform.trust_risk * 0.05 * buy_cost
                 ranked.append((rank, option, platform))
@@ -256,6 +260,7 @@ class Evaluator:
         expected_resale: float,
         legal_cap: float | None,
         demand: float,
+        p_adjust: float = 1.0,
     ) -> PlatformOption:
         s = self.cfg.section("sell")
         list_price = expected_resale * platform.price_factor
@@ -272,7 +277,7 @@ class Evaluator:
             p_sell += s.get("secondary_bonus", 0.0)
         if capped:
             p_sell += s.get("capped_bonus", 0.0)
-        p_sell = min(p_sell, s.get("p_max", 0.97))
+        p_sell = min(p_sell * p_adjust, s.get("p_max", 0.97))
         salvage = 0.0 if event.personalized else s["salvage_ratio"] * face_ref
         expected_value = p_sell * net + (1 - p_sell) * salvage - buy_cost
         return PlatformOption(

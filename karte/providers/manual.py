@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import io
 from pathlib import Path
 
 from karte.models import Event, Presale, SecondaryMarket
@@ -38,6 +39,7 @@ ALIASES = {
     "secondary_lowest": ["sek_najniza", "sek_najniža", "secondary_lowest"],
     "secondary_median": ["sek_medijan", "secondary_median"],
     "secondary_source": ["sek_izvor", "secondary_source"],
+    "listing_count": ["sek_broj_oglasa", "broj_oglasa", "listing_count"],
     "listeners": ["slusatelji", "slušatelji", "listeners"],
     "upcoming": ["broj_koncerata_turneje", "upcoming"],
     "url": ["url", "link"],
@@ -84,7 +86,13 @@ def parse_row(row: dict[str, str], source: str = "ručni unos") -> Event | None:
     currency = (_get(row, "currency") or "EUR").upper()
     secondary = None
     if lowest or median:
-        secondary = SecondaryMarket(source=_get(row, "secondary_source") or "ručni unos", lowest=lowest, median=median, currency=currency)
+        secondary = SecondaryMarket(
+            source=_get(row, "secondary_source") or "ručni unos",
+            lowest=lowest,
+            median=median,
+            currency=currency,
+            listing_count=parse_int(_get(row, "listing_count")),
+        )
     presales = []
     if _get(row, "presale_start"):
         presales.append(Presale(name=_get(row, "presale_name") or "Presale", start=parse_datetime(_get(row, "presale_start"))))
@@ -122,14 +130,23 @@ def parse_row(row: dict[str, str], source: str = "ručni unos") -> Event | None:
     )
 
 
+def _read(fh, name: str) -> list[Event]:
+    sample = fh.read(4096)
+    fh.seek(0)
+    try:
+        dialect = csv.Sniffer().sniff(sample, delimiters=",;\t")
+    except csv.Error:
+        dialect = csv.excel
+    reader = csv.DictReader(fh, dialect=dialect)
+    return [e for e in (parse_row(r, source=f"CSV ({name})") for r in reader) if e]
+
+
 def load_csv(path: str | Path) -> list[Event]:
     path = Path(path)
     with path.open("r", encoding="utf-8-sig", newline="") as fh:
-        sample = fh.read(4096)
-        fh.seek(0)
-        try:
-            dialect = csv.Sniffer().sniff(sample, delimiters=",;\t")
-        except csv.Error:
-            dialect = csv.excel
-        reader = csv.DictReader(fh, dialect=dialect)
-        return [e for e in (parse_row(r, source=f"CSV ({path.name})") for r in reader) if e]
+        return _read(fh, path.name)
+
+
+def load_csv_text(text: str, name: str = "upload") -> list[Event]:
+    """CSV iz teksta (npr. datoteka učitana u grafičkom sučelju)."""
+    return _read(io.StringIO(text.lstrip("\ufeff")), name)

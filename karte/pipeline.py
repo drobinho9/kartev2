@@ -12,7 +12,7 @@ from karte.models import Event, Opportunity
 from karte.net import FileCache, HttpClient, ProviderError
 from karte.providers.demo import load_demo
 from karte.providers.lastfm import LastFmProvider
-from karte.providers.manual import load_csv
+from karte.providers.manual import load_csv, load_csv_text
 from karte.providers.seatgeek import SeatGeekProvider
 from karte.providers.ticketmaster import TicketmasterProvider
 from karte.scoring import Evaluator, sort_key
@@ -31,6 +31,7 @@ class ScanOptions:
     strict: bool = False
     demo: bool = False
     manual_files: list[str] = field(default_factory=list)
+    csv_texts: list[tuple[str, str]] = field(default_factory=list)  # (naziv, sadržaj) – iz grafičkog sučelja
     use_lastfm: bool = True
     use_seatgeek: bool = True
     include_far_onsales: bool = True
@@ -129,6 +130,10 @@ def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | Non
             sources.append(f"CSV {path} ({len(loaded)})")
         except OSError as exc:
             warnings.append(f"Ne mogu pročitati {path}: {exc}")
+    for name, text in opts.csv_texts:
+        loaded = load_csv_text(text, name)
+        events.extend(loaded)
+        sources.append(f"CSV {name} ({len(loaded)})")
 
     if not opts.demo:
         http = http or HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=6 * 3600))
