@@ -1,0 +1,179 @@
+"""Generiranje konkretnih savjeta: kako kupiti, gdje i kada prodati, po kojoj cijeni."""
+
+from __future__ import annotations
+
+from karte.knowledge import ModelConfig
+from karte.models import Opportunity
+from karte.util import add_days, fmt_date, fmt_datetime, fmt_eur, fmt_pct
+
+NO_BOTS = (
+    "Kupuj ručno, jedan uređaj po računu i unutar limita po kupcu. Botovi i zaobilaženje limita "
+    "(više lažnih računa) krše uvjete prodaje, a u EU je preprodaja tako kupljenih ulaznica zabranjena "
+    "(Omnibus direktiva; u HR Zakon o zaštiti potrošača)."
+)
+
+
+def _ladder(op: Opportunity, cfg: ModelConfig) -> list[dict]:
+    best = op.best
+    if best is None or op.buy_cost is None:
+        return []
+    start = best.list_price
+    floor = best.break_even_price
+    caps = [c for c in (op.legal.cap_price,) if c is not None]
+    if best.capped:
+        caps.append(best.list_price)
+    cap = min(caps) if caps else None
+    d = op.demand.score
+    salvage = cfg.get("sell", "salvage_ratio", 0.5) * (op.face_ref or 0)
+
+    if d >= 0.7:
+        steps = [
+            (None, start * 1.10, "Odmah (po rasprodaji primarne prodaje / kupnji)"),
+            (30, start, "T-30 dana"),
+            (14, max(floor, start * 0.92), "T-14 dana"),
+            (7, max(floor, start * 0.85), "T-7 dana"),
+            (2, floor, "T-2 dana – zadnja prilika (break-even)"),
+        ]
+    elif d >= 0.45:
+        steps = [
+            (None, start, "Odmah po kupnji"),
+            (30, max(floor, start * 0.95), "T-30 dana"),
+            (14, max(floor, start * 0.88), "T-14 dana"),
+            (5, floor, "T-5 dana – break-even"),
+            (1, max(salvage, floor * 0.8), "T-1 dan – smanji gubitak"),
+        ]
+    else:
+        steps = [
+            (None, max(floor, start), "Odmah"),
+            (7, floor, "T-7 dana – break-even"),
+            (1, salvage, "T-1 dan – prodaj u bescjenje"),
+        ]
+
+    rows = []
+    for days_before, price, label in steps:
+        if days_before is not None and days_before >= op.days_to_event:
+            continue
+        if cap is not None:
+            price = min(price, cap)
+        date = add_days(op.event.date, -days_before) if days_before is not None else None
+        rows.append({"label": label, "date": fmt_date(date) if date else "odmah", "price": round(price, 2)})
+    return rows
+
+
+def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
+    e = op.event
+    best = op.best
+    d = op.demand.score
+    buy: list[str] = []
+    sell: list[str] = []
+
+    # ------------------------------------------------------------ sažetak
+    if op.verdict in ("KUPI", "RAZMOTRI") and best:
+        summary = (
+            f"{op.verdict}: očekivana neto dobit ~{fmt_eur(op.profit)} po ulaznici ako se proda "
+            f"(očekivana vrijednost uz rizik {fmt_eur(op.expected_value)}, ROI {fmt_pct(op.roi)}), "
+            f"potražnja {d * 100:.0f}/100. Preporuka: {op.suggested_qty} kom, prodaja preko: {best.name}."
+        )
+    else:
+        summary = f"{op.verdict}: {op.verdict_reason}"
+
+    # ------------------------------------------------------------ kupnja
+    if op.phase == "NAJAVA":
+        for p in sorted(e.presales, key=lambda x: x.start or e.date):
+            if p.start:
+                end = f" (do {fmt_datetime(p.end)})" if p.end else ""
+                buy.append(f"Presale „{p.name}”: {fmt_datetime(p.start)}{end}.")
+        if e.public_onsale:
+            buy.append(f"Javna prodaja: {fmt_datetime(e.public_onsale)}.")
+        buy.append(
+            "Prijavi se unaprijed za presale: newsletter/fan klub izvođača, račun kod prodavača "
+            f"({e.primary_vendor or 'službeni prodavač'}) s pohranjenom karticom, partnerski presaleovi (banke, telekomi)."
+        )
+        buy.append("U virtualni red uđi 10–15 min prije početka; ne osvježavaj stranicu u redu.")
+    elif op.phase == "U PRODAJI":
+        buy.append("Ulaznice su još u primarnoj prodaji – ako je preporuka KUPI, kupi što prije, prije nego jeftinije kategorije nestanu.")
+    elif op.phase == "RASPRODANO":
+        buy.append("Primarna prodaja rasprodana – kupnja na sekundarnom tržištu radi preprodaje rijetko je isplativa (dvostruke naknade).")
+        buy.append("Prati službene kanale: često se puštaju dodatne ulaznice (production holds) 1–7 dana prije događaja.")
+    elif op.phase == "NIJE U PRODAJI":
+        buy.append("Ulaznice trenutno nisu u prodaji kod izvora (rasprodano ili prodaja zatvorena) – provjeri službenu stranicu.")
+
+    if op.verdict in ("KUPI", "RAZMOTRI"):
+        if d >= 0.7:
+            buy.append(
+                "Ciljaj najjeftinije kategorije s dobrim pogledom i parter/stajanje – najveći postotni skok cijene i najbrža prodaja. "
+                "Premium/VIP paketi samo uz vrlo jaku potražnju (veći kapital, manji postotak)."
+            )
+        else:
+            buy.append("Ciljaj srednje kategorije s dobrim pogledom; izbjegavaj zaklonjene sjedalice i najskuplje pakete.")
+        limit = f", limit po kupcu: {e.ticket_limit}" if e.ticket_limit else ""
+        buy.append(f"Količina: {op.suggested_qty} kom (u parovima – parovi se najbrže prodaju){limit}.")
+        if best and op.buy_cost:
+            p = best.p_sell
+            salvage = 0.0 if e.personalized else cfg.get("sell", "salvage_ratio", 0.5) * (op.face_ref or 0)
+            buy_roi = cfg.get("verdict", "buy_roi", 0.3)
+            max_cost = (p * best.net_payout + (1 - p) * salvage) / (1 + buy_roi)
+            buy.append(
+                f"Ne plaćaj više od ~{fmt_eur(max_cost)} po ulaznici s naknadama – iznad toga očekivani ROI pada ispod {buy_roi * 100:.0f} %."
+            )
+    buy.append(
+        "Prije kupnje provjeri uvjete: personalizacija/promjena imena, prijenos kroz aplikaciju, pravila organizatora o preprodaji."
+    )
+    buy.append(NO_BOTS)
+
+    # ------------------------------------------------------------ prodaja
+    if best:
+        backups = [o for o in op.platforms[1:3]]
+        sell.append(
+            f"Glavni kanal: {best.name} – oglasi oko {fmt_eur(best.list_price)}, neto ~{fmt_eur(best.net_payout)} "
+            f"po ulaznici (naknada prodavatelja ~{best.fee_pct * 100:.0f} %, break-even {fmt_eur(best.break_even_price)})."
+        )
+        if backups:
+            sell.append(
+                "Rezervni kanali: "
+                + "; ".join(f"{o.name} (neto ~{fmt_eur(o.net_payout)})" for o in backups)
+                + "."
+            )
+        if d >= 0.7:
+            sell.append(
+                "Oglasi odmah nakon rasprodaje primarne prodaje – prvih 24–72 h cijene su najviše. "
+                "Drži cijenu do ~T-14 dana, zatim spuštaj postupno prema cjeniku."
+            )
+        elif d >= 0.45:
+            sell.append(
+                "Oglasi odmah po kupnji, malo ispod konkurencije. Kod srednje potražnje cijene uglavnom padaju prema datumu – "
+                "ne čekaj zadnji tjedan."
+            )
+        else:
+            sell.append("Potražnja je slaba – ne kupuj radi preprodaje. Ako već imaš ulaznice, prodaj što prije, makar po nominalnoj cijeni.")
+        sell.append("Prati najniži oglas iste kategorije i budi 1–3 % ispod njega; ne spuštaj ispod break-evena prije T-7 dana.")
+        if best.capped:
+            sell.append(f"Cijena je ograničena (zakon ili pravila platforme) na ~{fmt_eur(best.list_price)}.")
+        if "nakon" in best.payout.lower():
+            sell.append(f"Napomena ({best.name}): {best.payout} Datum događaja: {fmt_date(e.date)}")
+        sell.append("Ulaznice prenosi samo službenim prijenosom (aplikacija prodavača) – nikad screenshot/PDF više kupaca.")
+
+    pravno = [op.legal.summary] if op.legal.summary else []
+    if op.legal.cap_price is not None:
+        pravno.append(f"Najviša dopuštena cijena po ulaznici (procjena): {fmt_eur(op.legal.cap_price)}.")
+
+    return {
+        "summary": summary,
+        "buy": buy,
+        "sell": sell,
+        "ladder": _ladder(op, cfg),
+        "platforms": [
+            {
+                "name": o.name,
+                "list_price": round(o.list_price, 2),
+                "net": round(o.net_payout, 2),
+                "p_sell": round(o.p_sell, 2),
+                "ev": round(o.expected_value, 2),
+                "capped": o.capped,
+            }
+            for o in op.platforms[:5]
+        ],
+        "risks": list(op.risk_flags) + list(op.demand.notes),
+        "legal": pravno,
+        "legal_sources": op.legal.sources,
+    }

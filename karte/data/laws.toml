@@ -1,0 +1,204 @@
+# Pravila preprodaje ulaznica po državama (stanje istraživanja: studeni 2026.).
+#
+# cap:
+#   "none"                 – nema zakonskog ograničenja cijene preprodaje
+#   "face"                 – preprodaja iznad originalne cijene zabranjena
+#   "percent"              – dopušteno do cap_pct iznad originalne cijene
+#   "percent_or_abs"       – do cap_pct, ali najviše cap_abs EUR iznad originalne cijene
+#   "organizer_permission" – preprodaja (radi zarade) samo uz dopuštenje organizatora
+# cap_basis: "face" (nominalna cijena) ili "paid" (plaćeno, uklj. neizbježne naknade)
+# planned_*: najavljena pravila koja još NISU na snazi – primjenjuju se samo uz --strict
+#
+# VAŽNO: ovo nije pravni savjet. Provjeri aktualne propise prije kupnje.
+
+[default]
+name = "Nepoznato"
+cap = "none"
+risk = 0.35
+summary = "Pravila za ovu državu nisu u bazi. Provjeri lokalne propise i uvjete prodaje organizatora prije kupnje radi preprodaje."
+eu = false
+
+[HR]
+name = "Hrvatska"
+cap = "none"
+risk = 0.15
+eu = true
+summary = "Nema zakonskog ograničenja cijene preprodaje koncertnih ulaznica. Zabranjena je preprodaja ulaznica kupljenih automatiziranim sredstvima (botovi) kojima se zaobilazi limit kupnje – Zakon o zaštiti potrošača (NN 19/22, na snazi od 28. 5. 2022.), prijenos Omnibus direktive. Za nogometne utakmice HNS poništava preprodane ulaznice i provjerava ime na ulaznici uz osobnu iskaznicu – izbjegavati."
+sources = [
+  "https://narodne-novine.nn.hr/clanci/sluzbeni/2022_02_19_203.html",
+  "https://informator.hr/strucni-clanci/novosti-u-zastiti-potrosaca",
+  "https://www.croatiaweek.com/new-measures-to-stop-black-market-tickets-for-croatia-games/",
+]
+
+[SI]
+name = "Slovenija"
+cap = "none"
+risk = 0.2
+eu = true
+summary = "Nije pronađen poseban zakon o cijeni preprodaje. Vrijedi EU zabrana preprodaje ulaznica kupljenih botovima (Omnibus direktiva). Provjeri uvjete organizatora (personalizacija)."
+
+[AT]
+name = "Austrija"
+cap = "none"
+risk = 0.25
+eu = true
+summary = "Nema posebnog zakona o cijeni preprodaje. Vrijedi EU zabrana botova. Organizatori (Eventim AT, oeticket) često personaliziraju ulaznice – provjeri uvjete. Austrija bi mogla slijediti njemački model ograničenja."
+
+[HU]
+name = "Mađarska"
+cap = "none"
+risk = 0.3
+eu = true
+summary = "Nije pronađen poseban zakon o cijeni preprodaje (neprovjereno u detalje). Vrijedi EU zabrana botova. Provjeri uvjete organizatora."
+
+[DE]
+name = "Njemačka"
+cap = "none"
+cap_basis = "paid"
+risk = 0.35
+eu = true
+planned_cap = "percent_or_abs"
+planned_cap_pct = 0.20
+planned_cap_abs = 20.0
+summary = "Trenutno nema zakonskog limita cijene, ali organizatori smiju ograničiti preprodaju u uvjetima (personalizirane ulaznice). Ministrica pravosuđa Hubig je u studenom 2026. najavila 'Ticketschutzgesetz': preprodaja najviše 20 % iznad originalne cijene, a maksimalno +20 EUR, s ciljem stupanja na snagu prije ljeta 2027. Ne kupuj za događaje nakon tog datuma računajući na veliku maržu."
+sources = [
+  "https://www.iamexpat.de/lifestyle/lifestyle-news/germany-plans-cap-ticket-resales-20-over-original-price",
+  "https://cms.law/de/deu/legal-updates/neue-koalition-will-ticketzweitmarkt-staerker-regulieren",
+]
+
+[IT]
+name = "Italija"
+cap = "face"
+cap_basis = "face"
+risk = 0.8
+eu = true
+summary = "Sekundarna prodaja radi zarade je zabranjena; dopuštena je samo preko ovlaštenih kanala po nominalnoj cijeni ili nižoj. Ulaznice za prostore >5000 mjesta su nominativne. AGCOM kažnjava (viagogo kažnjen s više milijuna EUR)."
+sources = [
+  "https://www.billboard.com/pro/italian-regulator-fines-viagogo-inflating-ticket-prices-maneskin-dua-lipa-concerts",
+  "https://www.ticketnews.com/2026/10/viagogo-italy-ticket-resale-fine-appeal/",
+]
+
+[IE]
+name = "Irska"
+cap = "face"
+cap_basis = "face"
+risk = 0.9
+eu = true
+summary = "Sale of Tickets Act 2021: preprodaja iznad nominalne cijene za određene događaje/prostore je kazneno djelo."
+
+[BE]
+name = "Belgija"
+cap = "face"
+cap_basis = "face"
+risk = 0.85
+eu = true
+summary = "Zakon iz 2013.: zabranjena redovita preprodaja i preprodaja iznad originalne cijene."
+
+[FR]
+name = "Francuska"
+cap = "organizer_permission"
+risk = 0.85
+eu = true
+summary = "Redovita preprodaja bez dopuštenja organizatora je kazneno djelo (čl. 313-6-2 Kaznenog zakona). Bez pisanog dopuštenja – ne preprodavati radi zarade."
+
+[PT]
+name = "Portugal"
+cap = "face"
+cap_basis = "face"
+risk = 0.9
+eu = true
+summary = "Prodaja iznad nominalne cijene smatra se kaznenim djelom špekulacije (DECO PROteste)."
+sources = ["https://noticiasaominuto.com/en/economia/2559530/esteja-atento-revenda-de-bilhetes-acima-do-preco-de-custo-e-crime"]
+
+[PL]
+name = "Poljska"
+cap = "face"
+cap_basis = "face"
+risk = 0.7
+eu = true
+summary = "Preprodaja iznad nominalne cijene je zabranjena (provedba slaba, ali rizik postoji)."
+sources = ["https://www.iqmagazine.com/publications/international-ticketing-report-2025/poland/"]
+
+[DK]
+name = "Danska"
+cap = "face"
+cap_basis = "face"
+risk = 0.7
+eu = true
+summary = "Danska ograničava preprodaju radi zarade (detalji neprovjereni) – tretiraj kao zabranu iznad nominalne cijene."
+
+[ES]
+name = "Španjolska"
+cap = "organizer_permission"
+risk = 0.6
+eu = true
+summary = "Nema opće zabrane, ali preprodaja iznad nominalne cijene traži dopuštenje organizatora; regionalna pravila se razlikuju."
+
+[NL]
+name = "Nizozemska"
+cap = "none"
+risk = 0.35
+eu = true
+summary = "Nema zakonskog limita, ali tržište je naviklo na TicketSwap (dobrovoljni limit +20 %) i Ticketmaster preprodaju po nominalnoj cijeni. Mnogi festivali/organizatori zabranjuju preprodaju izvan službenih kanala."
+
+[CZ]
+name = "Češka"
+cap = "none"
+risk = 0.3
+eu = true
+summary = "Nije pronađen poseban zakon o cijeni preprodaje (neprovjereno). Vrijedi EU zabrana botova."
+
+[SK]
+name = "Slovačka"
+cap = "none"
+risk = 0.3
+eu = true
+summary = "Nije pronađen poseban zakon o cijeni preprodaje (neprovjereno). Vrijedi EU zabrana botova."
+
+[CH]
+name = "Švicarska"
+cap = "none"
+risk = 0.35
+eu = false
+summary = "Nema saveznog limita cijene (neprovjereno na kantonalnoj razini). Organizatori često personaliziraju ulaznice."
+
+[RS]
+name = "Srbija"
+cap = "none"
+risk = 0.3
+eu = false
+summary = "Nije pronađen poseban zakon o cijeni preprodaje (neprovjereno). Lokalno tržište: KupujemProdajem, Facebook grupe."
+
+[BA]
+name = "Bosna i Hercegovina"
+cap = "none"
+risk = 0.3
+eu = false
+summary = "Nije pronađen poseban zakon o cijeni preprodaje (neprovjereno). Lokalno tržište: OLX.ba, Facebook grupe."
+
+[ME]
+name = "Crna Gora"
+cap = "none"
+risk = 0.3
+eu = false
+summary = "Nije pronađen poseban zakon o cijeni preprodaje (neprovjereno)."
+
+[GB]
+name = "Ujedinjeno Kraljevstvo"
+cap = "none"
+cap_basis = "paid"
+risk = 0.6
+eu = false
+planned_cap = "face"
+summary = "Vlada je (studeni 2025., potvrđeno u King's Speech 13. 5. 2026.) najavila zabranu preprodaje iznad nominalne cijene + neizbježnih naknada, limit naknada platformi i zabranu preprodaje više ulaznica od dopuštenog limita. Zakon je u pripremi (nije još na snazi). Botovi su zabranjeni od 2018. (Digital Economy Act 2017), a neovlaštena preprodaja ulaznica za nogomet je kazneno djelo."
+sources = [
+  "https://www.rpclegal.com/snapshots/consumer/spring-2026/uk-government-to-introduce-new-rules-banning-ticket-touting/",
+  "https://www.slaughterandmay.com/insights/new-insights/at-face-value-the-king-s-speech-and-the-future-of-ticket-reselling-in-uk-sport/",
+]
+
+[US]
+name = "SAD"
+cap = "none"
+risk = 0.4
+eu = false
+summary = "Pravila po saveznim državama (npr. CA, NY, ME, VT razmatraju ili imaju ograničenja). BOTS Act zabranjuje botove na saveznoj razini."

@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "karte"
+version = "0.1.0"
+description = "Radar za preprodaju ulaznica: traži koncerte, procjenjuje potencijalnu zaradu i daje savjete kako kupiti i preprodati."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+karte = "karte.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["karte*"]
+
+[tool.setuptools.package-data]
+"karte.data" = ["*.toml", "*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

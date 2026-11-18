@@ -1,0 +1,15 @@
+{
+  "meta": {"total": 1, "per_page": 100, "page": 1},
+  "events": [
+    {
+      "id": 6123456,
+      "title": "Test Band",
+      "url": "https://seatgeek.com/test-band-tickets/vienna/2027-03-14/6123456",
+      "datetime_local": "2027-03-14T20:00:00",
+      "datetime_utc": "2027-03-14T19:00:00",
+      "performers": [{"name": "Test Band", "primary": true}],
+      "venue": {"name": "Wiener Stadthalle", "city": "Wien", "country": "AT", "capacity": 16000},
+      "stats": {"lowest_price": 180, "median_price": 240, "average_price": 260, "listing_count": 120}
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+# Približni koncertni kapaciteti dvorana (koristi se kad izvor ne daje kapacitet).
+# Ključ je naziv dvorane u malim slovima bez dijakritika; 'aliases' pomažu pri prepoznavanju.
+# Brojke su okvirne (ovise o postavu bine) – slobodno ispravi/dodaj.
+
+[venues."arena zagreb"]
+capacity = 16000
+city = "Zagreb"
+aliases = ["zagreb arena", "arena zagreb (zagreb arena)"]
+
+[venues."dom sportova"]
+capacity = 6500
+city = "Zagreb"
+aliases = ["dom sportova zagreb", "dom sportova - velika dvorana"]
+
+[venues."tvornica kulture"]
+capacity = 1500
+city = "Zagreb"
+aliases = ["tvornica kulture zagreb"]
+
+[venues."bocarski dom"]
+capacity = 2500
+city = "Zagreb"
+
+[venues."salata"]
+capacity = 5000
+city = "Zagreb"
+aliases = ["sportski park salata", "salata zagreb"]
+
+[venues."hipodrom zagreb"]
+capacity = 60000
+city = "Zagreb"
+aliases = ["hipodrom"]
+
+[venues."stadion maksimir"]
+capacity = 35000
+city = "Zagreb"
+aliases = ["maksimir"]
+
+[venues."lisinski"]
+capacity = 1850
+city = "Zagreb"
+aliases = ["koncertna dvorana vatroslava lisinskog", "kd vatroslav lisinski"]
+
+[venues."stadion poljud"]
+capacity = 34000
+city = "Split"
+aliases = ["poljud", "gradski stadion poljud"]
+
+[venues."spaladium arena"]
+capacity = 12000
+city = "Split"
+aliases = ["arena gripe", "spaladium"]
+
+[venues."arena pula"]
+capacity = 7000
+city = "Pula"
+aliases = ["pula arena", "amfiteatar pula"]
+
+[venues."dvorana zamet"]
+capacity = 2900
+city = "Rijeka"
+
+[venues."arena stozice"]
+capacity = 12500
+city = "Ljubljana"
+aliases = ["stozice arena", "arena stozice ljubljana"]
+
+[venues."stadion stozice"]
+capacity = 16000
+city = "Ljubljana"
+
+[venues."wiener stadthalle"]
+capacity = 16000
+city = "Wien"
+aliases = ["wiener stadthalle - halle d", "stadthalle wien", "wiener stadthalle halle d"]
+
+[venues."ernst happel stadion"]
+capacity = 55000
+city = "Wien"
+aliases = ["ernst-happel-stadion"]
+
+[venues."mvm dome"]
+capacity = 20000
+city = "Budapest"
+aliases = ["mvm dome budapest"]
+
+[venues."budapest arena"]
+capacity = 12500
+city = "Budapest"
+aliases = ["papp laszlo budapest sportarena", "papp laszlo sportarena"]
+
+[venues."stark arena"]
+capacity = 20000
+city = "Beograd"
+aliases = ["beogradska arena", "stark arena beograd"]
+
+[venues."zetra"]
+capacity = 12000
+city = "Sarajevo"
+aliases = ["olimpijska dvorana juan antonio samaranch", "zetra sarajevo"]
+
+[venues."lanxess arena"]
+capacity = 20000
+city = "Koln"
+aliases = ["lanxess arena koln", "lanxess arena cologne"]
+
+[venues."uber arena"]
+capacity = 17000
+city = "Berlin"
+aliases = ["uber arena berlin", "mercedes-benz arena"]
+
+[venues."olympiahalle"]
+capacity = 15500
+city = "Munchen"
+aliases = ["olympiahalle munchen", "olympiahalle muenchen"]
+
+[venues."3arena"]
+capacity = 13000
+city = "Dublin"
+aliases = ["3arena dublin"]
+
+[venues."unipol forum"]
+capacity = 12700
+city = "Milano"
+aliases = ["mediolanum forum", "unipol forum milano"]
+
+[venues."the o2"]
+capacity = 20000
+city = "London"
+aliases = ["o2 arena", "the o2 arena"]
+
+[venues."o2 arena praha"]
+capacity = 18000
+city = "Praha"
+aliases = ["o2 arena prague"]
+
+[venues."tauron arena krakow"]
+capacity = 21000
+city = "Krakow"
+aliases = ["tauron arena"]

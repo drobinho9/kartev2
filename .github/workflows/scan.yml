@@ -1,0 +1,65 @@
+name: Tjedni radar ulaznica
+
+# Automatsko skeniranje svakog ponedjeljka i četvrtka ujutro + ručno pokretanje.
+# Postavi tajne u: Settings → Secrets and variables → Actions
+#   TICKETMASTER_API_KEY, LASTFM_API_KEY (obavezno za prave podatke), SEATGEEK_CLIENT_ID (opcionalno)
+# Bez TICKETMASTER_API_KEY workflow pokreće demo.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1,4"
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "Koncerti u idućih N dana"
+        default: "60"
+      onsale_days:
+        description: "Prodaje koje počinju u idućih N dana"
+        default: "30"
+      countries:
+        description: "Države (ISO, zarezom)"
+        default: "AT,DE,HU,CZ,PL,NL,BE,GB"
+      budget:
+        description: "Budžet (EUR)"
+        default: "1000"
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Skeniranje
+        env:
+          TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          SEATGEEK_CLIENT_ID: ${{ secrets.SEATGEEK_CLIENT_ID }}
+          DAYS: ${{ github.event.inputs.days || '60' }}
+          ONSALE_DAYS: ${{ github.event.inputs.onsale_days || '30' }}
+          COUNTRIES: ${{ github.event.inputs.countries || 'AT,DE,HU,CZ,PL,NL,BE,GB' }}
+          BUDGET: ${{ github.event.inputs.budget || '1000' }}
+        run: |
+          mkdir -p reports
+          EXTRA=""
+          if [ -z "$TICKETMASTER_API_KEY" ]; then
+            echo "::warning::TICKETMASTER_API_KEY nije postavljen – pokrećem demo."
+            EXTRA="--demo"
+          fi
+          if [ -f primjeri/moji_dogadaji.csv ]; then EXTRA="$EXTRA --csv primjeri/moji_dogadaji.csv"; fi
+          ARGS="--days $DAYS --onsale-days $ONSALE_DAYS --countries $COUNTRIES --budget $BUDGET $EXTRA"
+          karte scan $ARGS --format html --out reports/izvjestaj.html
+          karte scan $ARGS --format md --out reports/izvjestaj.md
+          karte scan $ARGS --format csv --out reports/izvjestaj.csv
+          karte scan $ARGS --format json --out reports/izvjestaj.json
+          karte scan $ARGS --only KUPI,RAZMOTRI --format md --top 15 > "$GITHUB_STEP_SUMMARY" || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: radar-ulaznica-${{ github.run_number }}
+          path: reports/
+          retention-days: 30

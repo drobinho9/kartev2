@@ -1,0 +1,4 @@
+izvodjac,naziv,dvorana,grad,drzava,datum,vrijeme,cijena_min,cijena_max,valuta,status,prodaja_od,presale_naziv,presale_od,kapacitet,limit,personalizirano,oznake,sek_najniza,sek_medijan,sek_izvor,slusatelji,prodavac,url,biljeske
+Primjer Izvođač,Primjer – veliki koncert,Arena Zagreb,Zagreb,HR,2027-02-14,20:00,39,79,EUR,u prodaji,,,,16000,4,ne,regional_star,85,110,ručno (viagogo),180000,entrio,https://www.entrio.hr/,Cijene upisane s viagoga (ukupna cijena kupca)
+Primjer Bend,Primjer – klupski koncert,Tvornica kulture,Zagreb,HR,2027-01-23,21:00,25,25,EUR,u prodaji,,,,1500,6,ne,,,,,350000,entrio,,
+Primjer Zvijezda,Primjer – ljetni koncert,Arena Pula,Pula,HR,2027-07-10,21:00,45,95,EUR,najava,2026-12-05 10:00,Fan presale,2026-12-03 10:00,7000,6,,first_visit,,,,1200000,eventim,,Provjeri personalizaciju u uvjetima

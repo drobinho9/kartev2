@@ -1,0 +1,46 @@
+{
+  "_embedded": {
+    "events": [
+      {
+        "name": "Test Band - World Tour 2027",
+        "id": "Z698xZ2qZa7Jq",
+        "url": "https://www.ticketmaster.at/event/Z698xZ2qZa7Jq",
+        "info": "Personalised tickets: the name on the ticket must match your ID.",
+        "dates": {
+          "start": {"localDate": "2027-03-14", "localTime": "20:00:00", "dateTime": "2027-03-14T19:00:00Z"},
+          "status": {"code": "onsale"}
+        },
+        "sales": {
+          "public": {"startDateTime": "2026-11-27T09:00:00Z", "endDateTime": "2027-03-14T19:00:00Z"},
+          "presales": [
+            {"name": "Artist Presale", "startDateTime": "2026-11-25T09:00:00Z", "endDateTime": "2026-11-26T21:00:00Z"}
+          ]
+        },
+        "priceRanges": [
+          {"type": "standard", "currency": "EUR", "min": 69.9, "max": 149.9},
+          {"type": "standard including fees", "currency": "EUR", "min": 74.9, "max": 159.9}
+        ],
+        "ticketLimit": {"info": "There is an 6 ticket limit for this event."},
+        "_embedded": {
+          "venues": [{"name": "Wiener Stadthalle - Halle D", "city": {"name": "Wien"}, "country": {"countryCode": "AT"}}],
+          "attractions": [{"name": "Test Band", "id": "K8vZ9171", "upcomingEvents": {"_total": 32, "ticketmaster": 20}}]
+        }
+      },
+      {
+        "name": "Another Artist",
+        "id": "Z698xZ2qZa7Jr",
+        "dates": {"start": {"localDate": "2026-12-20"}, "status": {"code": "offsale"}},
+        "_embedded": {
+          "venues": [{"name": "Lanxess Arena", "city": {"name": "Köln"}, "country": {"countryCode": "DE"}}],
+          "attractions": [{"name": "Another Artist"}]
+        }
+      },
+      {
+        "name": "Broken event without date",
+        "id": "bad",
+        "dates": {"start": {}}
+      }
+    ]
+  },
+  "page": {"size": 200, "totalElements": 3, "totalPages": 1, "number": 0}
+}
