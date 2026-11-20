@@ -1,0 +1,259 @@
+# Pravila preprodaje ulaznica za sport – prvenstveno NOGOMET (stanje istraživanja: studeni 2026.).
+# Vrijede DODATNO uz opća pravila države (laws.toml); primjenjuje se strože pravilo.
+#
+# rule:
+#   "criminal"             – neovlaštena preprodaja je kazneno djelo (bez obzira na cijenu)
+#   "face"                 – zakonom zabranjeno iznad nominalne cijene
+#   "club_terms"           – uvjeti klubova/saveza zabranjuju preprodaju; ulaznice se poništavaju, članstva blokiraju
+#   "official_only"        – preprodaja samo preko službenog kanala organizatora (obično po nominalnoj cijeni)
+#   "official_marketplace" – preprodaja samo na službenom tržištu organizatora, cijena slobodna, uz naknade
+#   "none"                 – nema posebnih sportskih ograničenja (vrijede opća pravila države)
+# personalized: tipično ulaznice na ime uz provjeru osobne
+# official: službeni kanal za preprodaju (ako ne možeš ići)
+#
+# Nije pravni savjet – provjeri uvjete prodaje konkretnog kluba/natjecanja.
+
+# ===================================================================== NOGOMET PO DRŽAVAMA
+[football.default]
+name = "Nogomet (općenito)"
+rule = "club_terms"
+personalized = true
+risk = 0.75
+official = "službena razmjena kluba (po nominalnoj cijeni)"
+summary = "Većina klubova i saveza u uvjetima prodaje zabranjuje neovlaštenu preprodaju; ulaznice su često na ime uz provjeru osobne, a preprodane se poništavaju."
+how_to_buy = [
+  "Klubovi prodaju redom: sezonske ulaznice → članovi (često po bodovima lojalnosti ili ždrijebom) → javna prodaja (za velike utakmice često je nema).",
+  "Ako ne možeš ići: koristi službenu razmjenu/prijenos kluba (vraća novac po nominalnoj cijeni).",
+]
+
+[football.HR]
+name = "Hrvatska – nogomet"
+rule = "club_terms"
+personalized = true
+risk = 0.85
+official = "službeni prijenos/oslobađanje mjesta kluba (npr. Dinamo – prijenos sjedala)"
+summary = "Dinamo prodaje samo online (tickets.gnkdinamo.hr), ulaznice glase na ime i na ulazu se traži osobni dokument; derbiji često samo za članove. Hajduk prodaje preko hajduk.mojekarte.hr s prednošću članovima (100.000+ članova) – za derbi ulaznice često ne dođu u slobodnu prodaju. HNS zadržava vlasništvo nad ulaznicama, poništava preprodane i prijavljuje policiji. Zakon o sprječavanju nereda na sportskim natjecanjima: kupnja ili omogućavanje kupnje osobi sa zabranom je prekršaj (novčana kazna ili zatvor do 30 dana)."
+how_to_buy = [
+  "Dinamo: tickets.gnkdinamo.hr – ulaznica na ime, osobna na ulazu; za derbije prednost/isključivo članovi.",
+  "Hajduk: hajduk.mojekarte.hr – prednost aktivnim članovima; za veće utakmice učlani se na vrijeme.",
+  "Reprezentacija (HNS): ulaznice na ime, provjera osobne; preprodane se poništavaju.",
+]
+sources = [
+  "https://gnkdinamo.hr/en/news/ulaznice-za-utakmicu-dinamo-hajduk",
+  "https://www.index.hr/clanak.aspx?id=2520221",
+  "https://www.croatiaweek.com/new-measures-to-stop-black-market-tickets-for-croatia-games/",
+  "https://www.zakon.hr/z/445/zakon-o-sprjecavanju-nereda-na-sportskim-natjecanjima",
+]
+
+[football.GB]
+name = "UK – nogomet"
+rule = "criminal"
+personalized = false
+risk = 0.95
+official = "službena Ticket Exchange kluba"
+summary = "Criminal Justice and Public Order Act 1994, čl. 166: prodaja ulaznice za nogometnu utakmicu bez ovlaštenja kluba/organizatora je kazneno djelo – po bilo kojoj cijeni, i online. Klubovi masovno poništavaju račune: Arsenal ~74.000 računa i 17.500 članstava, Chelsea 16.000 članstava, Liverpool 432 doživotne zabrane i 1,2 mil. £ zaplijenjene imovine (2026.). Novi zakon o preprodaji ulaznica nogomet ne mijenja."
+how_to_buy = [
+  "Članstvo (membership) + bodovi lojalnosti (loyalty points) + ždrijeb (ballot); za velike klubove bez bodova gotovo nemoguće.",
+  "Službena Ticket Exchange / Ticket Transfer kluba za karte koje ne možeš iskoristiti.",
+  "Hospitality samo izravno od kluba ili preko službenih ovlaštenih agenata.",
+]
+sources = [
+  "https://www.legislation.gov.uk/ukpga/1994/33/section/166",
+  "https://www.liverpoolfc.com/news/lfc-and-merseyside-police-work-together-seize-ps12m-assets-ticket-touts",
+  "https://www.arsenal.com/news/annual-mens-ticketing-update-2026-aO6Q33k1FAlw",
+  "https://www.insideworldfootball.com/2026/05/01/chelsea-weeds-ticket-touts-suspension-16000-club-memberships-season/",
+]
+
+[football.IE]
+name = "Irska – nogomet"
+rule = "face"
+personalized = false
+risk = 0.9
+summary = "Sale of Tickets Act 2021: preprodaja iznad nominalne cijene za određene događaje i stadione je kazneno djelo."
+
+[football.DE]
+name = "Njemačka – nogomet"
+rule = "club_terms"
+personalized = true
+risk = 0.8
+official = "službeni Zweitmarkt / Ticketbörse kluba (po nominalnoj cijeni)"
+summary = "Uvjeti klubova zabranjuju komercijalnu preprodaju; BGH (I ZR 74/06, 2008.) dopušta klubovima da spriječe preprodavače koji kupuju izravno skrivajući namjeru preprodaje. DFL je pred OLG München dobio spor protiv viagoga (zabrana oglasa prije službene prodaje i obmanjujućih jamstava). Za tražene utakmice ulaznice su često na ime; službeni Zweitmarkt kluba po nominalnoj cijeni."
+how_to_buy = [
+  "Prednost imaju članovi kluba (Mitglieder) i vlasnici sezonskih (Dauerkarten); javna prodaja za velike utakmice rijetko.",
+  "Za karte koje ne možeš iskoristiti: službeni Zweitmarkt/Ticketbörse kluba.",
+]
+sources = [
+  "https://www.wbs.legal/allgemein/bgh-handel-mit-bundesligakarten-nur-begrenzt-zulaessig-8254/",
+  "https://www.bundesliga.com/de/bundesliga/news/rechtsstreit-viagogo-schutz-fans-erfolg-nicht-autorisierter-ticketzweitmarkt-38704",
+  "https://cms.law/de/deu/legal-updates/wettbewerbsverstoesse-auf-dem-ticketzweitmarkt-fc-bayern-mit-einem-3-0-gegen-tickethaendler",
+]
+
+[football.AT]
+name = "Austrija – nogomet"
+rule = "club_terms"
+personalized = true
+risk = 0.75
+summary = "Klubovi i savez u uvjetima zabranjuju neovlaštenu preprodaju (detalji po klubu neprovjereni); za tražene utakmice ulaznice na ime."
+
+[football.ES]
+name = "Španjolska – nogomet"
+rule = "club_terms"
+personalized = true
+risk = 0.85
+official = "službeni programi klubova za oslobađanje mjesta"
+summary = "Ley 19/2007 i pravila LaLige: kontrola identiteta kupaca i pristupa stadionu. Klubovi kažnjavaju socios – Vrhovni sud potvrdio je sankcije za ~450 socios Barcelone koji su ustupili sezonske za preprodaju (suspenzija do 18 mjeseci ili isključenje)."
+how_to_buy = [
+  "Socios i abonados imaju prednost; javna prodaja za velike utakmice minimalna.",
+  "Sezonari mogu osloboditi mjesto preko službenog programa kluba (klub preprodaje i dijeli prihod).",
+]
+sources = ["https://www.economistjurist.es/?p=248235", "https://boe.es/buscar/pdf/2007/BOE-A-2007-13408-consolidado.pdf"]
+
+[football.IT]
+name = "Italija – nogomet"
+rule = "face"
+personalized = true
+risk = 0.95
+official = "promjena imena / ponovna prodaja preko kluba"
+summary = "Ulaznice su nominativne (na ime); preprodaja iznad cijene kažnjava se s 5.000–180.000 € (AGCOM), za gostovanja treba tessera del tifoso koja se može oduzeti. Promjena imena samo preko kluba."
+sources = ["https://www.agcom.it/sites/default/files/provvedimenti/delibera/2026/Delibera%2010_26_CONS%20con%20omissis.pdf"]
+
+[football.FR]
+name = "Francuska – nogomet"
+rule = "criminal"
+personalized = false
+risk = 0.95
+summary = "Čl. 313-6-2 Kaznenog zakona: redovita preprodaja bez dopuštenja organizatora je kazneno djelo (Ustavno vijeće potvrdilo 2019. u slučaju viagogo / Euro 2016)."
+sources = ["https://www.economie.gouv.fr/dgccrf/revente-de-billets-de-spectacles-ou-de-competitions-sportives"]
+
+[football.PT]
+name = "Portugal – nogomet"
+rule = "criminal"
+personalized = true
+risk = 0.95
+summary = "Prodaja iznad nominalne cijene je kazneno djelo špekulacije; FC Porto je 2025. razotkrio veliku mrežu preprodavača."
+sources = ["https://www.insideworldfootball.com/2025/10/23/porto-uncover-vast-ticket-scalping-operation/"]
+
+[football.NL]
+name = "Nizozemska – nogomet"
+rule = "club_terms"
+personalized = true
+risk = 0.8
+summary = "Za kupnju je potrebna clubcard ili članstvo kluba; liga upozorava na neslužbena tržišta, a uvodi se aplikacija za ulaz vezana uz osobnu iskaznicu."
+sources = ["https://nltimes.nl/2026/05/19/dutch-football-assoc-ready-link-stadium-tickets-cards-fans-worried", "https://english.ajax.nl/fans/clubcard/"]
+
+[football.BE]
+name = "Belgija – nogomet"
+rule = "face"
+personalized = true
+risk = 0.9
+summary = "Zakon iz 2013. zabranjuje preprodaju iznad originalne cijene; klubovi zahtijevaju kartice navijača."
+
+[football.PL]
+name = "Poljska – nogomet"
+rule = "face"
+personalized = true
+risk = 0.85
+summary = "Preprodaja iznad nominalne zabranjena; za stadionske utakmice ulaznice na ime (zakon o sigurnosti masovnih događaja)."
+
+[football.US]
+name = "SAD – nogomet (MLS, međunarodne utakmice)"
+rule = "none"
+personalized = false
+risk = 0.35
+summary = "Preprodaja je u pravilu legalna (vrijede pravila savezne države). Za utakmice koje organizira FIFA vrijede FIFA pravila."
+how_to_buy = ["Klubovi prodaju preko Ticketmastera/SeatGeeka; sezonske ulaznice i presaleovi za članove/sezonare."]
+
+[football.CA]
+name = "Kanada – nogomet"
+rule = "none"
+personalized = false
+risk = 0.45
+summary = "Bez posebnih sportskih pravila – vrijede pokrajinski zakoni (Ontario: ne iznad nominalne)."
+
+[football.MX]
+name = "Meksiko – nogomet"
+rule = "none"
+personalized = false
+risk = 0.65
+summary = "Nema saveznog limita, ali Profeco aktivno nadzire preprodaju (postupci protiv StubHuba i viagoga 2026.)."
+
+# ===================================================================== NATJECANJA / ORGANIZATORI
+[competitions.uefa]
+name = "UEFA natjecanja (Liga prvaka, Europska, Konferencijska, Liga nacija, EURO, Superkup)"
+match = ["uefa", "champions league", "liga prvaka", "europa league", "europska liga", "conference league", "konferencijska liga", "nations league", "liga nacija", "euro 2028", "euro 2032", "super cup", "superkup"]
+sports = ["football"]
+rule = "official_only"
+personalized = true
+risk = 0.9
+official = "UEFA službena preprodaja (po nominalnoj cijeni, bez naknade prodavatelju)"
+official_fee = 0.0
+official_cap = "face"
+summary = "Ulaznice su personalizirane i u UEFA Mobile Tickets aplikaciji; javna prodaja: kupac mora osobno prisustvovati i ne smije prenijeti ulaznicu. Jedini dopušteni kanal je službena UEFA preprodaja po nominalnoj cijeni; preprodaja drugdje nije dopuštena, a hospitality paketi se ne smiju preprodavati."
+how_to_buy = [
+  "Utakmice klubova: preko kluba domaćina (članovi/sezonari) i kluba gosta (gostujuća kvota).",
+  "Finala: UEFA javna prodaja (ždrijeb) na uefa.com + kvote finalista; ulaznice samo u UEFA aplikaciji.",
+]
+sources = [
+  "https://www.uefa.com/news-media/news/02a5-20a99f8db810-278e2d7a8e20-1000--uefa-warns-fans-over-risks-of-unauthorised-ticket-purchases/",
+  "https://global.espn.com/football/story/_/id/48223786/champions-league-final-tickets-frozen-last-year-prices",
+  "https://www.uefa.com/uefachampionsleague/ticketing/hospitality/faqs/",
+]
+
+[competitions.fifa]
+name = "FIFA natjecanja (Svjetsko prvenstvo, Klupsko SP)"
+match = ["fifa", "world cup", "svjetsko prvenstvo", "club world cup", "klupsko svjetsko"]
+sports = ["football"]
+rule = "official_marketplace"
+personalized = false
+risk = 0.5
+official = "FIFA Resale/Exchange Marketplace"
+official_fee = 0.15
+official_cap = "none"
+summary = "Na SP 2026 jedini službeni kanal bio je FIFA Resale/Exchange Marketplace: cijenu određuje prodavatelj (SAD i Kanada bez limita, osim Toronta), u Meksiku najviše originalna cijena; FIFA naplaćuje 15 % prodavatelju i 15 % kupcu (~30 % ukupno). Za buduća natjecanja pravila se mogu promijeniti (SP 2030 je u Španjolskoj, Portugalu i Maroku – stroži zakoni)."
+how_to_buy = [
+  "FIFA prodaje u fazama (ždrijeb/lutrija, faze 'prvi dođe – prvi uslužen', zadnja prodaja) na FIFA.com/tickets; jedan račun po osobi.",
+  "Preprodaja i prijenos samo kroz FIFA tržište; prijenos prijatelju besplatan, preprodaja uz 15 % naknade.",
+]
+sources = [
+  "https://gpcustomersupportfwc2026.tickets.fifa.com/hc/en-gb/articles/30546729938717-25-What-are-the-fees-for-reselling-exchanging-FIFA-World-Cup-26-tickets-on-the-FIFA-Resale-Exchange-Marketplace",
+  "https://www.ibtimes.co.uk/football-fans-outraged-fifa-resale-tickets-skyrocket-445-youll-lose-30-fees-1756226",
+]
+
+[competitions.nfl_international]
+name = "NFL utakmice izvan SAD-a (München, Berlin, London…)"
+match = ["nfl"]
+exclude_countries = ["US", "CA"]
+rule = "official_only"
+personalized = false
+risk = 0.8
+official = "Ticketmaster Resale (jedini službeni kanal NFL-a)"
+official_fee = 0.0
+official_cap = "face"
+summary = "NFL: Ticketmaster Resale je jedina ovlaštena preprodaja; preprodaja bez dopuštenja krši uvjete, a ulaznice s neslužbenih tržišta mogu se poništiti bez povrata."
+sources = ["https://www.nfl.com/news/2022-nfl-munich-game-ticket-faqs"]
+
+[competitions.nba_europe]
+name = "NBA utakmice u Europi (London, Berlin, Pariz)"
+match = ["nba"]
+exclude_countries = ["US", "CA"]
+rule = "official_only"
+personalized = false
+risk = 0.75
+official = "AXS Official Resale"
+official_fee = 0.0
+official_cap = "face"
+summary = "Prodaja kroz AXS (često ždrijeb); prema NBA FAQ-u jedini način prodaje je AXS Official Resale."
+sources = ["https://nbaevents.nba.com/london/tickets/faqs"]
+
+[competitions.f1]
+name = "Formula 1 / Grand Prix"
+match = ["formula 1", "formula one", "f1 grand prix", "grand prix", "f1 "]
+sports = ["motorsport", "other"]
+rule = "official_only"
+personalized = false
+risk = 0.75
+official = "službena preprodaja promotora (ako postoji)"
+official_fee = 0.0
+official_cap = "face"
+summary = "F1 i promotori utrka: preprodaja izvan službenih kanala krši uvjete i ulaznice nisu valjane za ulaz (F1 2024.); Silverstone kod neovlaštene preprodaje poništava sve ulaznice kupca."
+sources = ["https://www.gpblog.com/en/news/formula-1-makes-statement-on-illegal-ticket-sales.html", "https://help.silverstone.co.uk/hc/en-gb/articles/30284915238685--Silverstone-Reselling-Policy"]

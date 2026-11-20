@@ -15,7 +15,10 @@ from karte.pipeline import ScanOptions, run_scan
 from karte.platforms import available_platforms, blocked_for_seller, load_platforms
 from karte.report import RENDERERS, render_detail_text
 from karte.scoring import CATEGORIES
+from karte import sport
 from karte.service import calculate, categories, market_rows
+
+VRSTA = {"koncerti": "music", "sport": "sport", "sve": "all"}
 from karte.settings import Settings
 from karte.util import fmt_eur, fmt_pct
 
@@ -42,6 +45,7 @@ def cmd_scan(args, settings: Settings) -> int:
         seller_country=(args.seller_country or settings.seller_country).upper(),
         max_artists=args.max_artists,
         show_all=args.show_all,
+        segment=VRSTA[args.vrsta],
     )
     result = run_scan(opts, settings)
     if args.only:
@@ -90,6 +94,9 @@ def _calc_fields(args, settings: Settings) -> dict:
         "budget": args.budget,
         "strict": args.strict,
         "seller_country": args.seller_country or settings.seller_country,
+        "segment": "sport" if getattr(args, "vrsta", "koncert") == "sport" else "music",
+        "sport": getattr(args, "sport", None) or "football",
+        "league": getattr(args, "liga", None) or "",
     }
 
 
@@ -125,6 +132,22 @@ def cmd_categories(args, settings: Settings) -> int:
         print(f"{star}{r['name'][:26]:<26} {r['kind_label'][:26]:<26} {fmt_eur(r['face_eur']):>7} {fmt_eur(r['expected_resale']):>7} "
               f"{(r['multiplier'] or 0):>5.2f} {fmt_eur(r['profit']):>7} {fmt_pct(r['roi']):>8}  {r['verdict']}")
     print("\nDobit* = neto po ulaznici ako se proda. Vrste: front, parter, standard, tribina, vip, zaklonjeno.")
+    return 0
+
+
+def cmd_sport(args, settings: Settings) -> int:
+    for r in sport.rules_overview(args.country):
+        title = r.get("name", r["code"])
+        print(f"■ [{r['scope']}] {title} — {r['rule_label']} (rizik {float(r.get('risk', 0)) * 100:.0f}/100)")
+        print(f"    {r.get('summary', '')}")
+        if r.get("official"):
+            print(f"    Službeni kanal: {r['official']}")
+        for line in r.get("how_to_buy", []):
+            print(f"    • {line}")
+        for src in r.get("sources", [])[:3]:
+            print(f"    izvor: {src}")
+        print()
+    print("Vodič: karte gui → Vodiči → Nogomet i sport. Nije pravni savjet – provjeri uvjete konkretnog kluba/natjecanja.")
     return 0
 
 
@@ -271,6 +294,7 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--seller-country", help="država tvog prebivališta (zadano HR) – za dostupnost platformi i rizik pristupa")
     s.add_argument("--max-artists", type=int, default=300, help="koliko najperspektivnijih izvođača obogatiti Last.fm-om (zadano 300)")
     s.add_argument("--show-all", action="store_true", help="prikaži i događaje bez nominalne cijene u izvoru")
+    s.add_argument("--vrsta", choices=sorted(VRSTA), default="koncerti", help="koncerti (zadano), sport ili sve")
     s.add_argument("--budget", type=float, help="ukupni budžet u EUR (za preporuku količine)")
     s.add_argument("--category", choices=CATEGORIES, default="cheap", help="koju kategoriju ulaznica ciljaš (zadano: cheap)")
     s.add_argument("--strict", action="store_true", help="primijeni i najavljene (još nevažeće) zakonske limite, npr. DE, UK")
@@ -293,6 +317,9 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("--currency", default="EUR")
     c.add_argument("--country", default="HR")
     c.add_argument("--state", help="savezna država/pokrajina, npr. NY, VT, ON, NSW")
+    c.add_argument("--vrsta", choices=["koncert", "sport"], default="koncert")
+    c.add_argument("--sport", choices=sorted(sport.SPORT_LABELS), help="za --vrsta sport (zadano football = nogomet)")
+    c.add_argument("--liga", help="natjecanje/liga, npr. 'UEFA Champions League', 'Premier League', 'NFL'")
     c.add_argument("--seller-country")
     c.add_argument("--days", type=int, default=45, help="za koliko dana je događaj (ako nema --date)")
     c.add_argument("--date", help="datum događaja YYYY-MM-DD")
@@ -327,6 +354,10 @@ def build_parser() -> argparse.ArgumentParser:
     k.add_argument("--not-personalized", action="store_true")
     k.add_argument("--strict", action="store_true")
     k.set_defaults(func=cmd_categories, face=None)
+
+    sp = sub.add_parser("sport", help="pravila preprodaje za nogomet po državama i za natjecanja (UEFA, FIFA, NFL, F1…)")
+    sp.add_argument("--country", help="samo jedna država, npr. HR, GB, DE")
+    sp.set_defaults(func=cmd_sport)
 
     j = sub.add_parser("dnevnik", help="moje kupnje i prodaje: statistika, uvoz/izvoz CSV")
     j.add_argument("--file", help="putanja do dnevnika (zadano ~/.karte/dnevnik.json)")

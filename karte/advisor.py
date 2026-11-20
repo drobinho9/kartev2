@@ -73,6 +73,16 @@ def safety_checks(op: Opportunity) -> list[dict]:
     def add(level: str, text: str):
         out.append({"level": level, "text": text})
 
+    if op.legal.sport_rule == "criminal":
+        add("bad", "Neovlaštena preprodaja ulaznica za ovu utakmicu je kazneno djelo – bez obzira na cijenu.")
+    elif op.legal.contract_prohibited:
+        add("bad", "Uvjeti kluba/organizatora zabranjuju preprodaju: ulaznice se poništavaju, članstva trajno blokiraju "
+                   "(npr. Liverpool 432 doživotne zabrane, Arsenal 17.500 članstava u sezoni).")
+    elif op.legal.sport_rule == "official_marketplace":
+        add("warn", f"Preprodaja samo na službenom tržištu ({op.legal.official_channel}) uz naknade; ulaznice s drugih stranica mogu biti poništene.")
+    if e.segment == "sport":
+        add("warn", "Kupuj samo na svoje ime i svoj račun/članstvo – tuđa ili lažna članstva klubovi otkrivaju i gase.")
+
     if op.legal.profit_prohibited:
         add("bad", f"Zakon ({op.legal.country_name}) ne dopušta preprodaju radi zarade – ne kupuj radi preprodaje.")
     elif op.legal.cap_price is not None:
@@ -126,6 +136,8 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
         summary = f"{op.verdict}: {op.verdict_reason}"
 
     # ------------------------------------------------------------ kupnja
+    for note in op.legal.sport_notes:
+        buy.append(f"[Prodaja] {note}")
     if op.phase == "NAJAVA":
         for p in sorted(e.presales, key=lambda x: x.start or e.date):
             if p.start:
@@ -155,7 +167,10 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
         else:
             buy.append("Ciljaj srednje kategorije s dobrim pogledom; izbjegavaj zaklonjene sjedalice i najskuplje pakete.")
         limit = f", limit po kupcu: {e.ticket_limit}" if e.ticket_limit else ""
-        buy.append(f"Količina: {op.suggested_qty} kom (u parovima – parovi se najbrže prodaju){limit}.")
+        if op.suggested_qty == 1:
+            buy.append(f"Količina: 1 kom – budžet ne pokriva par (parovi se prodaju najbrže); razmisli o jeftinijoj kategoriji{limit}.")
+        else:
+            buy.append(f"Količina: {op.suggested_qty} kom (u parovima – parovi se najbrže prodaju){limit}.")
         if best and op.buy_cost:
             p = best.p_sell
             salvage = 0.0 if e.personalized else cfg.get("sell", "salvage_ratio", 0.5) * (op.face_ref or 0)
@@ -201,6 +216,20 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
             sell.append(f"Napomena ({best.name}): {best.payout} Datum događaja: {fmt_date(e.date)}")
         sell.append("Ulaznice prenosi samo službenim prijenosom (aplikacija prodavača) – nikad screenshot/PDF više kupaca.")
 
+    prohibited = op.legal.profit_prohibited or op.legal.contract_prohibited
+    if prohibited and e.segment == "sport":
+        buy = [f"[Prodaja] {note}" for note in op.legal.sport_notes] + [
+            "Kupuj samo ako sam ideš na utakmicu – na svoje ime, svojim računom/članstvom i unutar limita.",
+            NO_BOTS,
+        ]
+        label = op.legal.official_channel or "službena razmjena kluba/organizatora"
+        sell = [
+            "Preprodaja radi zarade za ovu utakmicu nije dopuštena – ne kupuj radi preprodaje.",
+            f"Ako ne možeš ići: {label} (u pravilu po nominalnoj cijeni) – tako vraćaš novac bez rizika.",
+            "Ne oglašavaj na viagogu, Njuškalu ni Facebooku: kupcu može biti odbijen ulaz, a tebi poništene ulaznice, "
+            "blokirano članstvo i kazna platforme.",
+        ]
+
     pravno = [op.legal.summary] if op.legal.summary else []
     if op.legal.cap_price is not None:
         pravno.append(f"Najviša dopuštena cijena po ulaznici (procjena): {fmt_eur(op.legal.cap_price)}.")
@@ -209,7 +238,7 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
         "summary": summary,
         "buy": buy,
         "sell": sell,
-        "ladder": _ladder(op, cfg),
+        "ladder": [] if (prohibited and e.segment == "sport") else _ladder(op, cfg),
         "platforms": [
             {
                 "name": o.name,

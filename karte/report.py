@@ -273,6 +273,7 @@ VERDICT_CLASS = {
     "RASPRODANO": "v-sold",
     "PRESKOČI": "v-skip",
     "ZAKONSKI OGRANIČENO": "v-legal",
+    "UVJETI ZABRANJUJU": "v-legal",
     "NEMA CIJENE": "v-skip",
     "OTKAZANO": "v-skip",
 }

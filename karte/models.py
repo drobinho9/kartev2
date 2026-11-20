@@ -55,6 +55,9 @@ class Event:
     primary_vendor: str | None = None
     notes: str | None = None
     region: str | None = None  # savezna država / pokrajina (npr. "NY", "ON", "NSW")
+    segment: str = "music"  # "music" (koncert) | "sport"
+    sport: str | None = None  # football, american_football, basketball, baseball, hockey, tennis, motorsport, other
+    league: str | None = None  # natjecanje / liga (npr. "Premier League", "UEFA Champions League", "NFL")
 
     @property
     def has_face_value(self) -> bool:
@@ -99,6 +102,10 @@ class LegalResult:
     risk: float
     profit_prohibited: bool
     sources: list[str] = field(default_factory=list)
+    sport_rule: str | None = None  # pravilo iz sport.toml (criminal, club_terms, official_only, …)
+    contract_prohibited: bool = False  # uvjeti kluba/organizatora zabranjuju preprodaju
+    official_channel: str | None = None  # službeni kanal preprodaje (UEFA, razmjena kluba, FIFA tržište)
+    sport_notes: list[str] = field(default_factory=list)  # kako klubovi/organizatori prodaju ulaznice
 
 
 @dataclass

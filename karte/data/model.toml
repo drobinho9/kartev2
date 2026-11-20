@@ -37,6 +37,14 @@ anniversary = 0.15     # obljetnička turneja
 new_album = 0.10
 festival_headliner = 0.10
 regional_star = 0.40   # jaka lokalna baza koju Last.fm podcjenjuje (balkanske zvijezde)
+# sport
+derby = 0.45           # derbi / lokalni rival
+final = 0.60           # finale
+playoff = 0.45         # doigravanje / nokaut faza
+rivalry = 0.35         # tradicionalno rivalstvo
+big_match = 0.30       # velika utakmica (vrhunski klubovi, prvo mjesto)
+title_decider = 0.35   # odlučuje o naslovu
+legend_farewell = 0.45 # oproštaj legende
 soldout = 0.50         # događaj je rasprodan na primarnom tržištu
 
 [resale]

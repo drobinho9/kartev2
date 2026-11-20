@@ -28,6 +28,7 @@ from karte.platforms import load_platforms
 from karte.providers.lastfm import LastFmProvider
 from karte.report import RENDERERS
 from karte.scoring import CATEGORIES
+from karte.sport import SPORT_LABELS
 from karte.service import calculate, categories, market_rows, opportunity_dict
 from karte.settings import Settings
 from karte.util import parse_float, parse_int
@@ -42,6 +43,13 @@ TAGS = {
     "anniversary": "Obljetnička turneja",
     "new_album": "Novi album",
     "festival_headliner": "Headliner festivala",
+    "derby": "Sport: derbi",
+    "final": "Sport: finale",
+    "playoff": "Sport: doigravanje / nokaut",
+    "rivalry": "Sport: rivalstvo",
+    "big_match": "Sport: velika utakmica",
+    "title_decider": "Sport: odlučuje o naslovu",
+    "legend_farewell": "Sport: oproštaj legende",
 }
 VENDORS = {"eventim": "Eventim", "entrio": "Entrio", "ulaznice_hr": "Ulaznice.hr", "ticketmaster": "Ticketmaster", "ticketek": "Ticketek", "": "Ostalo / ne znam"}
 CATEGORY_LABELS = {"cheap": "Najjeftinija kategorija", "mid": "Srednja", "premium": "Najskuplja"}
@@ -80,6 +88,7 @@ class App:
             "tags": TAGS,
             "vendors": VENDORS,
             "kinds": {k: v[0] for k, v in KINDS.items()},
+            "sports": SPORT_LABELS,
             "statuses": STATUSES,
             "platforms": sorted({p.name for p in load_platforms().values()}),
             "settings": {
@@ -110,6 +119,7 @@ class App:
             show_all=bool(body.get("show_all")),
             seller_country=(body.get("seller_country") or self.settings.seller_country).upper(),
             max_artists=parse_int(body.get("max_artists")) or 300,
+            segment=body.get("segment") if body.get("segment") in ("music", "sport", "all") else "music",
             model_path=self.model_path,
         )
 

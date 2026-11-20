@@ -6,10 +6,11 @@ i svi parametri su u karte/data/model.toml (mogu se kalibrirati vlastitim podaci
 
 from __future__ import annotations
 
+import dataclasses
 import math
 from datetime import datetime
 
-from karte import legal
+from karte import legal, sport
 from karte.knowledge import ModelConfig, market_info
 from karte.models import DemandResult, Event, Opportunity, PlatformOption
 from karte.platforms import Platform, available_platforms, blocked_for_seller
@@ -21,8 +22,9 @@ VERDICT_ORDER = {
     "RASPRODANO": 2,
     "PRESKOČI": 3,
     "ZAKONSKI OGRANIČENO": 4,
-    "NEMA CIJENE": 5,
-    "OTKAZANO": 6,
+    "UVJETI ZABRANJUJU": 5,
+    "NEMA CIJENE": 6,
+    "OTKAZANO": 7,
 }
 
 CATEGORIES = ("cheap", "mid", "premium")
@@ -99,7 +101,10 @@ class Evaluator:
         popularity = log_scale(listeners, d["listeners_low"], d["listeners_high"])
         if popularity is None:
             popularity = d["default_popularity"]
-            notes.append("Nema podatka o popularnosti izvođača (Last.fm) – korištena zadana vrijednost.")
+            if event.segment == "sport":
+                notes.append("Za sport nema podatka o popularnosti – upiši cijene sa sekundarnog tržišta ili oznake (derbi, finale, doigravanje…).")
+            else:
+                notes.append("Nema podatka o popularnosti izvođača (Last.fm) – korištena zadana vrijednost.")
 
         capacity = event.capacity
         if not capacity:
@@ -173,6 +178,12 @@ class Evaluator:
     def evaluate(self, event: Event, multiplier_adjust: float = 1.0, p_adjust: float = 1.0) -> Opportunity:
         """Procijeni događaj. multiplier_adjust/p_adjust koristi analiza kategorija (kad nema stvarnih cijena po kategoriji)."""
         cfg = self.cfg
+        sport_rule = sport.rule_for(event)
+        assumed_personalized = False
+        if sport_rule and event.personalized is None and sport_rule.get("personalized"):
+            # europski nogomet / UEFA: ulaznice su u pravilu na ime – računaj konzervativno
+            event = dataclasses.replace(event, personalized=True)
+            assumed_personalized = True
         face_ref = self.face_reference(event)
         demand = self.demand(event, face_ref)
         phase, days_to_onsale = self.phase(event)
@@ -199,13 +210,22 @@ class Evaluator:
             expected_resale = face_ref * multiplier
 
         legal_result = legal.evaluate(event.country, face_ref, buy_cost, strict=self.strict, region=event.region)
+        if sport_rule:
+            legal_result = sport.apply(legal_result, sport_rule, face_ref, buy_cost)
 
         options: list[PlatformOption] = []
         best: PlatformOption | None = None
         best_platform: Platform | None = None
         if face_ref and buy_cost and expected_resale:
             ranked: list[tuple[float, PlatformOption, Platform]] = []
-            for platform in available_platforms(event.country, event.primary_vendor, self.seller_country):
+            if sport_rule and (
+                sport_rule.get("rule") in sport.OFFICIAL_RULES
+                or (sport_rule.get("rule") in sport.LEGAL_RULES and sport_rule.get("official"))
+            ):
+                platforms = [sport.official_platform(sport_rule)]  # dopušten je samo službeni kanal
+            else:
+                platforms = available_platforms(event.country, event.primary_vendor, self.seller_country)
+            for platform in platforms:
                 option = self._platform_option(
                     platform, event, face_ref, buy_cost, expected_resale, legal_result.cap_price, demand.score, p_adjust
                 )
@@ -222,6 +242,11 @@ class Evaluator:
         roi = ev / buy_cost if (ev is not None and buy_cost) else None
 
         risk, flags = self._risk(event, demand, legal_result, best_platform, days_to_event, phase)
+        if sport_rule:
+            label = sport.RULE_LABELS.get(sport_rule.get("rule"), sport_rule.get("rule"))
+            flags.insert(0, f"Sport – {sport_rule.get('name', '')}: {label}.")
+            if assumed_personalized:
+                flags.insert(1, "Pretpostavka: ulaznice su na ime uz provjeru osobne (tipično za europski nogomet i UEFA).")
         verdict, reason = self._verdict(event, phase, face_ref, legal_result, roi, demand.score, risk)
         if phase == "NIJE U PRODAJI" and verdict in ("KUPI", "RAZMOTRI"):
             reason += " Napomena: izvor trenutno ne prodaje ulaznice (možda rasprodano) – provjeri dostupnost."
@@ -348,6 +373,11 @@ class Evaluator:
             return "NEMA CIJENE", "Izvor ne daje nominalnu cijenu – unesi je ručno (CSV) za izračun zarade."
         if legal_result.profit_prohibited:
             return "ZAKONSKI OGRANIČENO", f"{legal_result.country_name}: {legal.RULE_LABELS.get(legal_result.rule, legal_result.rule)} – preprodaja radi zarade nije dopuštena."
+        if legal_result.contract_prohibited:
+            channel = f" Dopušteno je samo: {legal_result.official_channel}." if legal_result.official_channel else ""
+            return "UVJETI ZABRANJUJU", (
+                "Uvjeti kluba/organizatora zabranjuju preprodaju – ulaznice se poništavaju, a računi i članstva blokiraju." + channel
+            )
         if phase == "RASPRODANO":
             return "RASPRODANO", "Primarna prodaja je rasprodana – po nominalnoj cijeni se više ne može kupiti. Ako već imaš ulaznice, slijedi plan prodaje."
         if roi is None:

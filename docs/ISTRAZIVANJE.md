@@ -29,7 +29,11 @@
    prebivalište u SAD-u); 4) UK samo do stupanja zabrane. Izbjegavati: IE, BE, IT, FR, PT, PL, DK, NO, ES,
    Ontario/Quebec, Australiju (+10 %), Japan, Koreju, Brazil.
    Realno: dodatni prihod od nekoliko stotina do par tisuća eura godišnje uz budžet od 1–3 tisuće eura — ne „plaća”.
-6. **Sustavna preprodaja = gospodarska djelatnost.** Treba obrt (ili d.o.o.) i porez; platforme od 2023.
+6. **Nogomet je posebna priča.** U UK je neovlaštena preprodaja nogometnih ulaznica kazneno djelo, a u HR, DE, ES, NL
+   klubovi personaliziraju ulaznice, poništavaju preprodane i trajno blokiraju članstva; UEFA dopušta samo službenu
+   preprodaju po nominalnoj. Legalno se na sportu zarađuje u SAD-u (NFL, NBA…) i na službenim tržištima organizatora
+   (FIFA 2026) – vidi §3.6.
+7. **Sustavna preprodaja = gospodarska djelatnost.** Treba obrt (ili d.o.o.) i porez; platforme od 2023.
    prijavljuju prodavatelje poreznim upravama (DAC7).
 
 ---
@@ -170,6 +174,27 @@ američkih država računa s limitom +10 %/+20 %, a uz `--strict` primjenjuje i 
   isplate nose tečajne troškove (PayPal ~3–4 %).
 - **Prijenos u inozemstvu**: neki prodavači dopuštaju prijenos samo unutar istog tržišta/aplikacije — provjeri prije kupnje.
 - **Porezi**: prihod je tvoj prihod u HR bez obzira gdje je koncert; EU platforme prijavljuju po DAC7.
+
+### 3.6 Nogomet i sport
+
+Za sport (posebno nogomet) vrijede **dodatna, znatno stroža pravila** – detaljno u vodiču
+[Nogomet i sport](../karte/data/guides/6_nogomet_sport.md) i u `karte sport`.
+
+| Gdje | Pravilo za nogomet | Što to znači |
+|---|---|---|
+| 🇬🇧 UK | **kazneno djelo** (CJPOA 1994, čl. 166) | i po nominalnoj cijeni, i online; klubovi gase članstva (Liverpool 432 doživotne zabrane, Arsenal 17.500 članstava, Chelsea 16.000) |
+| 🇫🇷 FR, 🇵🇹 PT | kazneno djelo | |
+| 🇮🇹 IT | nominativne ulaznice, kazne 5.000–180.000 € | promjena imena samo preko kluba |
+| 🇮🇪 IE, 🇧🇪 BE, 🇵🇱 PL | zabranjeno iznad nominalne | |
+| 🇭🇷 HR, 🇩🇪 DE, 🇪🇸 ES, 🇳🇱 NL, 🇦🇹 AT | uvjeti klubova zabranjuju | ulaznice na ime + osobna, poništavanje, zabrane; samo službena razmjena |
+| UEFA (LP, finala, EURO) | samo službena preprodaja po nominalnoj | ulaznice u UEFA aplikaciji, prijenos nije dopušten |
+| FIFA (SP 2026) | samo FIFA tržište, slobodna cijena u SAD/Kanadi | 15 % + 15 % naknade |
+| 🇺🇸 američki sportovi | legalno (pravila savezne države) | sezonari i brokeri preprodaju; timovi ograničavaju prevelike preprodavače |
+| NFL/NBA u Europi, F1 | samo službeni kanal | neslužbene ulaznice se poništavaju / nevaljane |
+
+**Zaključak za sport:** europski klupski nogomet je za preprodaju radi zarade ili protuzakonit ili ga klubovi aktivno
+sankcioniraju – aplikacija ga označava kao *ZAKONSKI OGRANIČENO* ili *UVJETI ZABRANJUJU*. Legalne prilike: američki
+sportovi u SAD-u, službena tržišta sa slobodnom cijenom (FIFA model) i dugoročno paketi preko ovlaštenih agenata.
 
 ## 4. Porezi i registracija (Hrvatska)
 

@@ -37,7 +37,7 @@ lokalno znanje (regionalne zvijezde, HR presaleovi, festivali i turistička sezo
 - Izvođač ima **više datuma u istom gradu** ili cijeloj regiji (velika ponuda).
 - **Dinamične cijene** („platinum”/„official resale” po tržišnoj cijeni) — kupuješ već po visokoj cijeni.
 - Države s limitom cijene (IE, BE, IT, PT, PL, DK, FR, ES; uskoro DE, UK).
-- Nogomet u HR (HNS poništava preprodane ulaznice).
+- **Europski nogomet** (UK kazneno djelo; HR, DE, ES, NL – ulaznice na ime, poništavanje, doživotne zabrane; UEFA samo službeno po nominalnoj) – vidi [vodič Nogomet i sport](../karte/data/guides/6_nogomet_sport.md). Za sport ciljaj američke lige u SAD-u.
 - Događaj za više od 6 mjeseci — kapital dugo zarobljen, rizik otkazivanja.
 - Organizator dopušta preprodaju samo preko službene platforme po nominalnoj cijeni.
 

@@ -1,5 +1,5 @@
 {
-  "_napomena": "DEMO PODACI: izvođači, cijene i brojke su IZMIŠLJENI (dvorane su stvarne). Datumi su relativni u danima od trenutka pokretanja.",
+  "_napomena": "DEMO PODACI: izvođači, klubovi, cijene i brojke su IZMIŠLJENI (dvorane i stadioni su stvarni). Datumi su relativni u danima od trenutka pokretanja.",
   "events": [
     {
       "artist": "Aurora Vale",
@@ -471,6 +471,216 @@
         "lowest": 140,
         "median": 175,
         "currency": "GBP"
+      }
+    },
+    {
+      "artist": "NK Demo Zagreb",
+      "name": "NK Demo Zagreb – HNK Primjer (derbi)",
+      "segment": "sport",
+      "sport": "football",
+      "league": "SuperSport HNL",
+      "venue": "Stadion Maksimir",
+      "city": "Zagreb",
+      "country": "HR",
+      "days": 24,
+      "time": "18:00",
+      "face_min": 15,
+      "face_max": 40,
+      "currency": "EUR",
+      "status": "onsale",
+      "onsale_days": -3,
+      "capacity": 24000,
+      "ticket_limit": 4,
+      "tags": [
+        "derby"
+      ],
+      "vendor": "",
+      "secondary": {
+        "source": "Njuškalo",
+        "lowest": 60,
+        "currency": "EUR"
+      }
+    },
+    {
+      "artist": "Demo City FC",
+      "name": "Demo City FC v Example United",
+      "segment": "sport",
+      "sport": "football",
+      "league": "Premier League",
+      "venue": "Demo Park",
+      "city": "London",
+      "country": "GB",
+      "days": 31,
+      "time": "16:00",
+      "face_min": 55,
+      "face_max": 95,
+      "currency": "GBP",
+      "status": "onsale",
+      "onsale_days": -14,
+      "capacity": 60000,
+      "ticket_limit": 1,
+      "tags": [
+        "big_match"
+      ],
+      "vendor": "ticketmaster",
+      "secondary": {
+        "source": "ručno (viagogo)",
+        "lowest": 260,
+        "currency": "GBP"
+      }
+    },
+    {
+      "artist": "FC Beispiel",
+      "name": "FC Beispiel – SV Muster",
+      "segment": "sport",
+      "sport": "football",
+      "league": "Bundesliga",
+      "venue": "Demo Arena München",
+      "city": "München",
+      "country": "DE",
+      "days": 38,
+      "time": "15:30",
+      "face_min": 30,
+      "face_max": 85,
+      "currency": "EUR",
+      "status": "onsale",
+      "onsale_days": -20,
+      "capacity": 75000,
+      "ticket_limit": 2,
+      "tags": [
+        "title_decider"
+      ],
+      "vendor": "ticketmaster"
+    },
+    {
+      "artist": "Demo FC",
+      "name": "UEFA Champions League: Demo FC – Example SC",
+      "segment": "sport",
+      "sport": "football",
+      "league": "UEFA Champions League",
+      "venue": "Ernst Happel Stadion",
+      "city": "Wien",
+      "country": "AT",
+      "days": 45,
+      "time": "21:00",
+      "face_min": 60,
+      "face_max": 180,
+      "currency": "EUR",
+      "status": "onsale",
+      "onsale_days": -7,
+      "ticket_limit": 2,
+      "tags": [
+        "big_match"
+      ],
+      "vendor": "ticketmaster"
+    },
+    {
+      "artist": "Demo Hawks",
+      "name": "Demo Hawks vs Example Bears",
+      "segment": "sport",
+      "sport": "american_football",
+      "league": "NFL",
+      "venue": "Soldier Field",
+      "city": "Chicago",
+      "country": "US",
+      "region": "IL",
+      "days": 27,
+      "time": "18:00",
+      "face_min": 120,
+      "face_max": 380,
+      "currency": "USD",
+      "status": "onsale",
+      "onsale_days": -60,
+      "capacity": 61500,
+      "ticket_limit": 8,
+      "personalized": false,
+      "tags": [
+        "rivalry"
+      ],
+      "vendor": "ticketmaster",
+      "secondary": {
+        "source": "seatgeek",
+        "lowest": 265,
+        "median": 340,
+        "listing_count": 2400,
+        "currency": "USD"
+      }
+    },
+    {
+      "artist": "Demo Knights",
+      "name": "Demo Knights vs Sample Kings – doigravanje",
+      "segment": "sport",
+      "sport": "basketball",
+      "league": "NBA",
+      "venue": "Madison Square Garden",
+      "city": "New York",
+      "country": "US",
+      "region": "NY",
+      "days": 52,
+      "time": "19:30",
+      "face_min": 150,
+      "face_max": 600,
+      "currency": "USD",
+      "status": "announced",
+      "onsale_days": 6,
+      "ticket_limit": 4,
+      "personalized": false,
+      "tags": [
+        "playoff",
+        "rivalry"
+      ],
+      "vendor": "ticketmaster"
+    },
+    {
+      "artist": "Demo Kings",
+      "name": "NFL Munich Game: Demo Kings vs Example Lions",
+      "segment": "sport",
+      "sport": "american_football",
+      "league": "NFL",
+      "venue": "Demo Arena München",
+      "city": "München",
+      "country": "DE",
+      "days": 58,
+      "time": "15:30",
+      "face_min": 85,
+      "face_max": 210,
+      "currency": "EUR",
+      "status": "onsale",
+      "onsale_days": -30,
+      "capacity": 75000,
+      "ticket_limit": 4,
+      "tags": [
+        "big_match"
+      ],
+      "vendor": "ticketmaster"
+    },
+    {
+      "artist": "FIFA Demo Cup",
+      "name": "FIFA Demo Cup – finale",
+      "segment": "sport",
+      "sport": "football",
+      "league": "FIFA",
+      "venue": "MetLife Stadium",
+      "city": "East Rutherford",
+      "country": "US",
+      "region": "NJ",
+      "days": 40,
+      "time": "15:00",
+      "face_min": 250,
+      "face_max": 1200,
+      "currency": "USD",
+      "status": "onsale",
+      "onsale_days": -40,
+      "ticket_limit": 4,
+      "personalized": false,
+      "tags": [
+        "final"
+      ],
+      "vendor": "",
+      "secondary": {
+        "source": "FIFA tržište (ručno)",
+        "lowest": 700,
+        "currency": "USD"
       }
     }
   ]

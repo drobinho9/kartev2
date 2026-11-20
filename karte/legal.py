@@ -5,7 +5,7 @@ from __future__ import annotations
 from karte import knowledge
 from karte.models import LegalResult
 
-PROFIT_PROHIBITED_RULES = {"face", "organizer_permission"}
+PROFIT_PROHIBITED_RULES = {"face", "organizer_permission", "criminal"}
 
 RULE_LABELS = {
     "none": "bez zakonskog limita cijene",
@@ -13,6 +13,7 @@ RULE_LABELS = {
     "percent": "limit postotka iznad originalne cijene",
     "percent_or_abs": "limit postotka / apsolutnog iznosa iznad originalne cijene",
     "organizer_permission": "samo uz dopuštenje organizatora",
+    "criminal": "neovlaštena preprodaja je kazneno djelo",
 }
 
 

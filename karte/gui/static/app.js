@@ -30,7 +30,7 @@ const todayIso = () => new Date().toISOString().slice(0, 10);
 
 const VERDICT_CLASS = {
   KUPI: "v-buy", RAZMOTRI: "v-maybe", RASPRODANO: "v-sold", "PRESKOČI": "v-skip",
-  "ZAKONSKI OGRANIČENO": "v-legal", "NEMA CIJENE": "v-skip", OTKAZANO: "v-skip",
+  "ZAKONSKI OGRANIČENO": "v-legal", "UVJETI ZABRANJUJU": "v-legal", "NEMA CIJENE": "v-skip", OTKAZANO: "v-skip",
 };
 const pill = (v) => `<span class="pill ${VERDICT_CLASS[v] || "v-skip"}">${esc(v)}</span>`;
 const REGION_LABELS = {
@@ -116,8 +116,11 @@ const CURRENCIES = ["EUR", "USD", "GBP", "CHF", "HUF", "CZK", "PLN", "SEK", "DKK
 
 function eventFields() {
   return [
-    { k: "artist", l: "Izvođač", req: true },
-    { k: "name", l: "Naziv koncerta (opcionalno)" },
+    { k: "segment", l: "Vrsta", t: "select", opts: [["music", "Koncert"], ["sport", "Sport"]] },
+    { k: "artist", l: "Izvođač / domaći klub", req: true },
+    { k: "name", l: "Naziv (npr. 'Dinamo – Hajduk')" },
+    { k: "sport", l: "Sport (ako je sport)", t: "select", opts: Object.entries(state.meta.sports) },
+    { k: "league", l: "Natjecanje / liga", ph: "npr. UEFA Champions League, NFL" },
     { k: "venue", l: "Dvorana", ph: "npr. Arena Zagreb" },
     { k: "city", l: "Grad" },
     { k: "country", l: "Država", t: "country", def: "HR" },
@@ -297,7 +300,7 @@ async function scanBody() {
   const body = {
     countries: (fd.get("custom") || "").trim() || fd.get("preset") || "otvoreno",
     days: fd.get("days"), onsale_days: fd.get("onsale_days"), budget: fd.get("budget"),
-    category: fd.get("category"), seller_country: fd.get("seller_country"),
+    category: fd.get("category"), seller_country: fd.get("seller_country"), segment: fd.get("segment"),
     demo: !!fd.get("demo"), strict: !!fd.get("strict"), show_all: !!fd.get("show_all"),
   };
   const file = fd.get("csv");
@@ -331,7 +334,7 @@ function renderScan() {
   ].map(([l, v]) => `<div class="kpi"><span>${l}</span><b>${v}</b></div>`).join("");
 
   const top = ops
-    .filter((o) => isNum(o.multiplier) && !["ZAKONSKI OGRANIČENO", "OTKAZANO"].includes(o.verdict))
+    .filter((o) => isNum(o.multiplier) && !["ZAKONSKI OGRANIČENO", "UVJETI ZABRANJUJU", "OTKAZANO"].includes(o.verdict))
     .sort((a, b) => b.multiplier - a.multiplier).slice(0, 10);
   $("#chartCard").hidden = !top.length;
   barChart("chartTop", top.map((o) => ({
@@ -366,7 +369,7 @@ function renderResults() {
   const ops = state.scan ? state.scan.opportunities : [];
   const counts = {};
   ops.forEach((o) => (counts[o.verdict] = (counts[o.verdict] || 0) + 1));
-  const order = ["SVE", "KUPI", "RAZMOTRI", "RASPRODANO", "PRESKOČI", "ZAKONSKI OGRANIČENO", "NEMA CIJENE", "OTKAZANO"];
+  const order = ["SVE", "KUPI", "RAZMOTRI", "RASPRODANO", "PRESKOČI", "ZAKONSKI OGRANIČENO", "UVJETI ZABRANJUJU", "NEMA CIJENE", "OTKAZANO"];
   $("#verdictChips").innerHTML = order.filter((v) => v === "SVE" || counts[v])
     .map((v) => `<button type="button" class="chip${state.filter === v ? " active" : ""}" data-f="${esc(v)}">${esc(v === "SVE" ? "Sve" : v)} <span class="muted">${v === "SVE" ? ops.length : counts[v]}</span></button>`).join("");
   $$("#verdictChips .chip").forEach((c) => c.addEventListener("click", () => { state.filter = c.dataset.f; renderResults(); }));
@@ -401,8 +404,10 @@ function timeline(op) {
   const e = op.event;
   const now = new Date();
   const items = [];
-  (e.presales || []).forEach((p) => p.start && items.push({ d: parseIso(p.start), cls: "buy", t: `Presale „${p.name}” – kupnja`, timed: true }));
-  if (e.public_onsale) items.push({ d: parseIso(e.public_onsale), cls: "buy", t: "Javna prodaja – kupi u prvom satu", timed: true });
+  const forbidden = ["ZAKONSKI OGRANIČENO", "UVJETI ZABRANJUJU"].includes(op.verdict);
+  const ownUse = forbidden ? " (samo za vlastiti odlazak)" : "";
+  (e.presales || []).forEach((p) => p.start && items.push({ d: parseIso(p.start), cls: "buy", t: `Presale „${p.name}” – kupnja${ownUse}`, timed: true }));
+  if (e.public_onsale) items.push({ d: parseIso(e.public_onsale), cls: "buy", t: forbidden ? `Javna prodaja${ownUse}` : "Javna prodaja – kupi u prvom satu", timed: true });
   const buyable = ["KUPI", "RAZMOTRI"].includes(op.verdict);
   if (op.phase === "U PRODAJI" && buyable) items.push({ d: now, cls: "buy", t: "Danas: ulaznice su u prodaji – kupi ako se slažeš s preporukom" });
   const firstSale = items.filter((i) => i.cls === "buy").map((i) => i.d).sort((a, b) => a - b)[0] || now;
@@ -412,7 +417,8 @@ function timeline(op) {
   });
   const ev = parseIso(e.date);
   const paysAfter = op.best && /nakon (održanog )?događaj/i.test(op.best.payout);
-  items.push({ d: ev, cls: "event", t: `Koncert${paysAfter ? ` · isplata (${op.best.name}) stiže tek nakon koncerta` : ""}`, timed: true });
+  const what = e.segment === "sport" ? "Utakmica" : "Koncert";
+  items.push({ d: ev, cls: "event", t: `${what}${paysAfter ? ` · isplata (${op.best.name}) stiže tek nakon događaja` : ""}`, timed: true });
   items.sort((a, b) => a.d - b.d);
   const next = items.find((i) => i.d >= new Date(now.getTime() - 3600e3));
   if (next) next.next = true;
@@ -511,7 +517,7 @@ function initCalc() {
 
 /* ------------------------------------------------------------------ KATEGORIJE */
 function catsEventFields() {
-  const keep = ["artist", "venue", "city", "country", "region", "date", "currency", "listeners", "capacity", "ticket_limit", "vendor", "personalized", "budget"];
+  const keep = ["segment", "artist", "name", "sport", "league", "venue", "city", "country", "region", "date", "currency", "listeners", "capacity", "ticket_limit", "vendor", "personalized", "budget"];
   return eventFields().filter((f) => keep.includes(f.k));
 }
 function addCatRow(c = {}) {
@@ -547,7 +553,8 @@ function initCats() {
 }
 function prefillCategories(op) {
   const e = op.event;
-  fillFields($("#catsFields"), { artist: e.artist, venue: e.venue, city: e.city, country: e.country, region: e.region || "", date: (e.date || "").slice(0, 10),
+  fillFields($("#catsFields"), { segment: e.segment || "music", sport: e.sport || "football", league: e.league || "", name: e.name,
+    artist: e.artist, venue: e.venue, city: e.city, country: e.country, region: e.region || "", date: (e.date || "").slice(0, 10),
     currency: e.currency, listeners: e.artist_listeners || "", capacity: e.capacity || "", ticket_limit: e.ticket_limit || "", vendor: e.primary_vendor || "",
     personalized: e.personalized === true ? "da" : e.personalized === false ? "ne" : "" }, $("#catsTags"));
   $$("#catsTags input").forEach((c) => (c.checked = (e.tags || []).includes(c.value)));
@@ -701,14 +708,16 @@ async function loadMarkets() {
   state.loaded.markets = true;
   const r = await api.get("/api/markets");
   const t = $("#mTable");
-  t.innerHTML = `<thead><tr><th class="num">#</th><th>Država</th><th class="num">Ocjena</th><th class="num">Veličina</th><th class="num">Pristup iz HR</th><th>Ticketmaster</th><th>Pravilo</th></tr></thead><tbody>`
+  t.innerHTML = `<thead><tr><th class="num">#</th><th>Država</th><th class="num">Ocjena</th><th class="num">Veličina</th><th class="num">Pristup iz HR</th><th>Ticketmaster</th><th>Koncerti</th><th>Nogomet</th></tr></thead><tbody>`
     + r.rows.map((m, i) => `<tr data-code="${esc(m.code)}"><td class="num">${i + 1}</td><td><b>${esc(m.name)}</b> <span class="muted">${esc(m.code)}</span></td>
       <td class="num"><span class="meter"><i style="width:${Math.min(100, Math.round(m.score * 200))}%"></i></span>${nf0.format(m.score * 100)}</td>
       <td class="num">${nf0.format(m.size * 100)}</td><td class="num">${nf0.format(m.access * 100)}</td><td>${esc(m.tm)}</td>
-      <td>${esc(m.rule_label)}${m.planned ? ` <span class="muted">(+ najavljeno: ${esc(m.planned)})</span>` : ""}</td></tr>`).join("") + "</tbody>";
+      <td>${esc(m.rule_label)}${m.planned ? ` <span class="muted">(+ najavljeno: ${esc(m.planned)})</span>` : ""}</td>
+      <td>${m.football_rule === "none" ? "bez posebnih ograničenja" : `<span class="pill v-legal">${esc(m.football_label)}</span>`}</td></tr>`).join("") + "</tbody>";
   $$("tbody tr", t).forEach((tr) => tr.addEventListener("click", () => {
     const m = r.rows.find((x) => x.code === tr.dataset.code);
-    $("#lawBox").innerHTML = `<div class="notice"><b>${esc(m.name)} (${esc(m.code)})</b> — ${esc(m.rule_label)}<p>${esc(m.law_summary)}</p>${m.access_note ? `<p class="muted">${esc(m.access_note)}</p>` : ""}</div>`;
+    $("#lawBox").innerHTML = `<div class="notice"><b>${esc(m.name)} (${esc(m.code)})</b> — ${esc(m.rule_label)}<p>${esc(m.law_summary)}</p>`
+      + `<p><b>Nogomet:</b> ${esc(m.football_label)} — ${esc(m.football_summary)}</p>${m.access_note ? `<p class="muted">${esc(m.access_note)}</p>` : ""}</div>`;
     $("#lawBox").scrollIntoView({ behavior: "smooth", block: "nearest" });
   }));
   $("#lawBtn").addEventListener("click", showLaw);

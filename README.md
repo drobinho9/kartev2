@@ -1,6 +1,6 @@
 # karte — radar za preprodaju ulaznica 🎟️
 
-Aplikacija koja **traži koncerte bilo gdje u svijetu** u idućih 1–2 mjeseca (i koncerte kojima **prodaja tek počinje**),
+Aplikacija koja **traži koncerte i sportske događaje bilo gdje u svijetu** u idućih 1–2 mjeseca (i događaje kojima **prodaja tek počinje**),
 **procjenjuje potencijalnu zaradu** od preprodaje nakon svih naknada i rizika te za svaki događaj daje
 **konkretan plan**: kako i kada kupiti, koju kategoriju i količinu, gdje prodati, po kojoj cijeni
 i kako spuštati cijenu prema datumu događaja. Uz to provjerava **zakonska ograničenja** po državama i saveznim
@@ -20,6 +20,7 @@ državama/pokrajinama (SAD, Kanada, Australija…) te **može li prodavatelj iz 
 | 2. Obogaćivanje | Last.fm popularnost izvođača, kapacitet dvorane (ugrađena baza), broj koncerata istog izvođača u državi (ponuda), veličina turneje |
 | 3. Procjena | Potražnja (0–100), očekivana prodajna cijena, trošak kupnje s naknadama, neto isplata po platformi, vjerojatnost prodaje, očekivana vrijednost, ROI, rizik |
 | 4. Pravna provjera | ~40 država + savezne države/pokrajine (US-VT, US-NC, CA-ON, CA-QC…): zabrane iznad nominalne (IE, BE, IT, PT, PL, NO, JP, KR, BR…), limit +10 % (AU, VT…), najavljeni limiti (DE, UK, DC) uz `--strict` |
+| 4a. Sport i nogomet | Posebna pravila za nogomet (UK kazneno djelo, HR/DE/ES/NL uvjeti klubova, Italija, Francuska…) i natjecanja (UEFA, FIFA, NFL/NBA u Europi, F1); presuda **UVJETI ZABRANJUJU** + službeni kanal za povrat novca |
 | 4b. Pristup tržištu | Može li prodavatelj iz HR prodavati na platformi (Vivid Seats/SeatGeek traže prebivalište u SAD-u), lokalni kanali u inozemstvu, rizik računa/isplata/valute |
 | 5. Savjet | **KUPI / RAZMOTRI / PRESKOČI / RASPRODANO / ZAKONSKI OGRANIČENO** + plan kupnje (presale datumi), plan prodaje (platforme, cjenik po datumima), rizici |
 | 6. Izvještaj | Terminal, HTML (sortabilna tablica, tamni način), Markdown, CSV, JSON; tjedno automatsko skeniranje preko GitHub Actions |
@@ -48,11 +49,12 @@ Najlakši način korištenja — sve radi lokalno na tvom računalu (server slu�
 | **Kategorije** | **Koje ulaznice se najviše isplati preprodati** za isti koncert: parter, tribine, VIP, zaklonjena mjesta… rangirano po očekivanom ROI-ju i zaradi. |
 | **Moje prodaje** | Dnevnik kupnji i prodaja (npr. tvoja **A$AP Rocky prodaja na viagogu** – gumb *Primjer*): dobit, ROI, koliko dana prije koncerta prodaješ, po platformi. Iz stvarnih prodaja **kalibrira model** i predlaže podešavanje. Uvoz/izvoz CSV. |
 | **Tržišta** | Rang država za prodavača iz HR + pravila po državama i saveznim državama (US-VT, CA-ON…). |
-| **Vodiči** | Virtualni redovi (kako najbolje doći do ulaznice), kada kupiti i prodati, viagogo korak po korak, koje karte se najviše preprodaju, **sigurna preprodaja bez kazni** (savjeti prodavača s foruma i iz pritužbi). |
+| **Vodiči** | Virtualni redovi (kako najbolje doći do ulaznice), kada kupiti i prodati, viagogo korak po korak, koje karte se najviše preprodaju, **sigurna preprodaja bez kazni** (savjeti prodavača s foruma i iz pritužbi), **nogomet i sport** (kako klubovi prodaju ulaznice i gdje je preprodaja legalna). |
 
 ![Radar](docs/img/gui_radar.png)
 ![Plan kupnje i prodaje](docs/img/gui_plan.png)
 ![Analiza kategorija](docs/img/gui_kategorije.png)
+![Sport: nogomet i američke lige](docs/img/gui_sport.png)
 
 ## Naredbeni redak
 
@@ -78,6 +80,7 @@ karte doctor             # provjera ključeva
 karte scan --days 60 --countries otvoreno --budget 1500 --format html --out izvjestaj.html
 karte scan --countries svijet --days 45 --only KUPI,RAZMOTRI          # cijeli svijet
 karte scan --countries sjeverna_amerika,GB --category mid             # regije i države zajedno
+karte scan --vrsta sport --countries sjeverna_amerika                  # sport (NFL, NBA, MLB, NHL, MLS…)
 ```
 
 ### Gdje se isplati? Regije i rangiranje tržišta
@@ -137,6 +140,7 @@ karte dnevnik              # statistika mojih prodaja (unos u: karte gui → Moj
 karte platforms --country US --vendor ticketmaster   # platforme, naknade, limiti, tko prima prodavatelje iz HR
 karte laws [--country US-VT]   # pravila po državama i saveznim državama
 karte markets --details        # rang tržišta za prodavača iz HR
+karte sport --country HR       # nogomet: kako klubovi prodaju ulaznice i što je dopušteno
 karte doctor                   # provjera API ključeva
 ```
 
@@ -150,6 +154,7 @@ Najvažnije opcije za `scan`:
 | `--seller-country` | `HR` | tvoje prebivalište – koje platforme te primaju i rizik pristupa |
 | `--max-artists` | 300 | koliko najperspektivnijih izvođača obogatiti Last.fm-om (bitno za `svijet`) |
 | `--show-all` | isključeno | prikaži i događaje bez nominalne cijene u izvoru |
+| `--vrsta` | `koncerti` | `koncerti`, `sport` ili `sve` |
 | `--budget` | 1000 | ukupni budžet; u jedan događaj ide najviše 25 % |
 | `--category` | `cheap` | `cheap` / `mid` / `premium` — koju kategoriju ciljaš |
 | `--strict` | isključeno | primijeni i najavljene limite (DE +20 %/max +20 €, UK nominalna cijena) |
@@ -185,7 +190,7 @@ ROI           = oček. vrij. / trošak
 - 📊 [docs/ISTRAZIVANJE.md](docs/ISTRAZIVANJE.md) — tržište, platforme i naknade, zakoni po državama, porezi u HR, slični projekti i alati, izvori podataka
 - 🧭 [docs/STRATEGIJA.md](docs/STRATEGIJA.md) — praktični priručnik: odabir događaja, kupnja, prodaja, cijene, rizik, porezi
 - 🧮 [docs/MODEL.md](docs/MODEL.md) — kako model radi i kako ga kalibrirati vlastitim podacima
-- 🎫 Vodiči (i u kartici *Vodiči*): [virtualni redovi](karte/data/guides/1_redovi.md) · [kada kupiti/prodati](karte/data/guides/2_kada_kupiti_prodati.md) · [viagogo za prodavatelje](karte/data/guides/3_viagogo.md) · [koje karte se najviše preprodaju](karte/data/guides/4_koje_karte.md) · [**sigurna preprodaja bez kazni**](karte/data/guides/5_sigurnost.md)
+- 🎫 Vodiči (i u kartici *Vodiči*): [virtualni redovi](karte/data/guides/1_redovi.md) · [kada kupiti/prodati](karte/data/guides/2_kada_kupiti_prodati.md) · [viagogo za prodavatelje](karte/data/guides/3_viagogo.md) · [koje karte se najviše preprodaju](karte/data/guides/4_koje_karte.md) · [**sigurna preprodaja bez kazni**](karte/data/guides/5_sigurnost.md) · [**nogomet i sport**](karte/data/guides/6_nogomet_sport.md)
 
 ## Struktura projekta
 
@@ -200,6 +205,7 @@ karte/
   service.py        zajednički sloj za CLI i sučelje
   gui/              lokalni web server + sučelje (HTML/CSS/JS, bez vanjskih biblioteka)
   legal.py          pravila po državama i saveznim državama/pokrajinama
+  sport.py          sport/nogomet: prepoznavanje sporta i natjecanja, posebna pravila (sport.toml)
   platforms.py      platforme za preprodaju i naknade
   report.py         terminal / HTML / Markdown / CSV / JSON
   providers/        ticketmaster, seatgeek, lastfm, manual (CSV), demo

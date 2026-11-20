@@ -10,6 +10,13 @@ from datetime import datetime
 
 from karte.models import Event, SecondaryMarket
 from karte.net import HttpClient
+from karte.sport import detect_sport
+
+SG_SPORTS = {
+    "nfl": "american_football", "ncaa_football": "american_football", "nba": "basketball", "wnba": "basketball",
+    "ncaa_basketball": "basketball", "mlb": "baseball", "nhl": "hockey", "mls": "football", "soccer": "football",
+    "international_soccer": "football", "tennis": "tennis", "auto_racing": "motorsport", "f1": "motorsport",
+}
 from karte.util import parse_datetime
 
 BASE_URL = "https://api.seatgeek.com/2/events"
@@ -51,6 +58,10 @@ def parse_event(raw: dict) -> Event | None:
         secondary=secondary,
         primary_vendor="seatgeek",
         region=(venue.get("state") or None),
+        segment="music" if (raw.get("type") or "concert") in ("concert", "music_festival") else "sport",
+        sport=None if (raw.get("type") or "concert") in ("concert", "music_festival")
+        else SG_SPORTS.get(raw.get("type"), detect_sport(raw.get("type"), venue.get("country"))),
+        league=(raw.get("type") or "").upper() or None if (raw.get("type") or "concert") not in ("concert", "music_festival") else None,
     )
 
 
@@ -61,13 +72,13 @@ class SeatGeekProvider:
         self.client_id = client_id
         self.http = http
 
-    def events_between(self, countries: list[str], start: datetime, end: datetime) -> list[Event]:
+    def events_between(self, countries: list[str], start: datetime, end: datetime, taxonomy: str = "concert") -> list[Event]:
         events: list[Event] = []
         for cc in countries:
             for page in range(1, MAX_PAGES + 1):
                 params = {
                     "client_id": self.client_id,
-                    "taxonomies.name": "concert",
+                    "taxonomies.name": taxonomy,
                     "venue.country": None if cc.upper() == "ALL" else cc,
                     "datetime_utc.gte": start.strftime("%Y-%m-%dT%H:%M:%S"),
                     "datetime_utc.lte": end.strftime("%Y-%m-%dT%H:%M:%S"),

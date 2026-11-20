@@ -40,6 +40,7 @@ class ScanOptions:
     seller_country: str = "HR"
     max_artists: int = 300
     show_all: bool = False
+    segment: str = "music"  # "music" (koncerti) | "sport" | "all"
 
 
 @dataclass
@@ -93,6 +94,14 @@ def annotate_supply(events: list[Event]) -> None:
                 e.capacity_estimated = True
 
 
+TM_CLASSIFICATIONS = {
+    "music": [("music", "koncerti")],
+    "sport": [("sports", "sport")],
+    "all": [("music", "koncerti"), ("sports", "sport")],
+}
+SG_TAXONOMIES = {"music": ["concert"], "sport": ["sports"], "all": ["concert", "sports"]}
+
+
 def enrichment_targets(events: list[Event], max_artists: int) -> list[Event]:
     """Odaberi događaje za Last.fm obogaćivanje: prvo oni s cijenom, pa po najvišoj cijeni (signal veličine izvođača)."""
     config = ModelConfig.load()
@@ -120,7 +129,7 @@ def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | Non
     opts.countries = expand_countries(opts.countries) or ["ALL"]
 
     if opts.demo:
-        events.extend(load_demo(now))
+        events.extend(e for e in load_demo(now) if opts.segment == "all" or e.segment == opts.segment)
         sources.append("demo (izmišljeni podaci)")
 
     for path in opts.manual_files:
@@ -141,15 +150,17 @@ def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | Non
         if settings.ticketmaster_api_key:
             tm = TicketmasterProvider(settings.ticketmaster_api_key, http)
             try:
-                found = tm.events_between(opts.countries, now, end)
-                events.extend(found)
-                sources.append(f"Ticketmaster – koncerti u idućih {opts.days} dana ({len(found)})")
-                if opts.include_far_onsales and opts.onsale_days > 0:
-                    onsales = tm.onsales_between(
-                        opts.countries, now, now + timedelta(days=opts.onsale_days), now + timedelta(days=opts.onsale_horizon_days)
-                    )
-                    events.extend(onsales)
-                    sources.append(f"Ticketmaster – prodaja počinje u idućih {opts.onsale_days} dana ({len(onsales)})")
+                for classification, label in TM_CLASSIFICATIONS[opts.segment]:
+                    found = tm.events_between(opts.countries, now, end, classification)
+                    events.extend(found)
+                    sources.append(f"Ticketmaster – {label} u idućih {opts.days} dana ({len(found)})")
+                    if opts.include_far_onsales and opts.onsale_days > 0:
+                        onsales = tm.onsales_between(
+                            opts.countries, now, now + timedelta(days=opts.onsale_days),
+                            now + timedelta(days=opts.onsale_horizon_days), classification,
+                        )
+                        events.extend(onsales)
+                        sources.append(f"Ticketmaster – {label}: prodaja počinje u idućih {opts.onsale_days} dana ({len(onsales)})")
             except ProviderError as exc:
                 warnings.append(f"Ticketmaster: {exc}")
             if tm.truncated:
@@ -162,9 +173,10 @@ def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | Non
         if opts.use_seatgeek and settings.seatgeek_client_id:
             sg = SeatGeekProvider(settings.seatgeek_client_id, http)
             try:
-                found = sg.events_between(opts.countries, now, end)
-                events.extend(found)
-                sources.append(f"SeatGeek ({len(found)})")
+                for taxonomy in SG_TAXONOMIES[opts.segment]:
+                    found = sg.events_between(opts.countries, now, end, taxonomy)
+                    events.extend(found)
+                    sources.append(f"SeatGeek – {taxonomy} ({len(found)})")
             except ProviderError as exc:
                 warnings.append(f"SeatGeek: {exc}")
 
@@ -173,11 +185,11 @@ def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | Non
     if not opts.demo and opts.use_lastfm:
         if settings.lastfm_api_key:
             http = http or HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=6 * 3600))
-            targets = enrichment_targets(events, opts.max_artists)
+            targets = enrichment_targets([e for e in events if e.segment == "music"], opts.max_artists)
             warnings.extend(LastFmProvider(settings.lastfm_api_key, http).enrich(targets))
             artists = len({normalize(e.artist) for e in targets})
             sources.append(f"Last.fm (popularnost {artists} izvođača)")
-            if len({normalize(e.artist) for e in events}) > artists:
+            if len({normalize(e.artist) for e in events if e.segment == "music"}) > artists:
                 warnings.append(
                     f"Last.fm: obogaćeno samo {artists} najperspektivnijih izvođača (--max-artists); ostali imaju zadanu popularnost."
                 )

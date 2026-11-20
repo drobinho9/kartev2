@@ -55,6 +55,9 @@ def load_demo(now: datetime | None = None) -> list[Event]:
                 primary_vendor=d.get("vendor"),
                 notes=d.get("notes"),
                 region=d.get("region"),
+                segment=d.get("segment", "music"),
+                sport=d.get("sport"),
+                league=d.get("league"),
             )
         )
     return events

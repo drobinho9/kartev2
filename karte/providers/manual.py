@@ -14,6 +14,7 @@ import io
 from pathlib import Path
 
 from karte.models import Event, Presale, SecondaryMarket
+from karte.sport import detect_sport
 from karte.util import normalize, parse_bool, parse_datetime, parse_float, parse_int
 
 ALIASES = {
@@ -23,6 +24,9 @@ ALIASES = {
     "city": ["grad", "city"],
     "country": ["drzava", "država", "country"],
     "region": ["regija", "savezna_drzava", "state", "region"],
+    "segment": ["vrsta", "segment", "type"],
+    "sport": ["sport"],
+    "league": ["natjecanje", "liga", "league", "competition"],
     "date": ["datum", "date"],
     "time": ["vrijeme", "time"],
     "face_min": ["cijena_min", "face_min", "min"],
@@ -61,6 +65,13 @@ STATUS_ALIASES = {
     "odgođeno": "postponed",
     "postponed": "postponed",
 }
+
+
+def _segment(value: str | None, sport_value: str | None) -> str:
+    v = normalize(value or "")
+    if v in ("sport", "sports", "utakmica", "nogomet", "match") or (not v and sport_value):
+        return "sport"
+    return "music"
 
 
 def _get(row: dict[str, str], field: str) -> str | None:
@@ -127,6 +138,9 @@ def parse_row(row: dict[str, str], source: str = "ručni unos") -> Event | None:
         primary_vendor=(_get(row, "vendor") or "").lower() or None,
         notes=_get(row, "notes"),
         region=(_get(row, "region") or "").upper() or None,
+        segment=_segment(_get(row, "segment"), _get(row, "sport")),
+        sport=detect_sport(_get(row, "sport"), country) if _segment(_get(row, "segment"), _get(row, "sport")) == "sport" else None,
+        league=_get(row, "league"),
     )
 
 

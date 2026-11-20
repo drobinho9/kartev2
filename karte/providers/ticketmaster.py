@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 
 from karte.models import Event, Presale
 from karte.net import HttpClient
+from karte.sport import detect_sport
 from karte.util import iso_z, parse_datetime
 
 BASE_URL = "https://app.ticketmaster.com/discovery/v2/events.json"
@@ -77,6 +78,12 @@ def parse_event(raw: dict) -> Event | None:
 
     upcoming = (attraction.get("upcomingEvents") or {}).get("_total")
     state = (venue.get("state") or {}).get("stateCode")
+    cls = (raw.get("classifications") or [{}])[0] or {}
+    segment_name = ((cls.get("segment") or {}).get("name") or "").lower()
+    genre = (cls.get("genre") or {}).get("name") or ""
+    sub_genre = (cls.get("subGenre") or {}).get("name") or ""
+    country_code = ((venue.get("country") or {}).get("countryCode") or "").upper()
+    is_sport = segment_name.startswith("sport")
     return Event(
         id=f"tm:{raw.get('id')}",
         name=raw.get("name", ""),
@@ -98,6 +105,9 @@ def parse_event(raw: dict) -> Event | None:
         artist_upcoming_events=int(upcoming) if upcoming else None,
         primary_vendor="ticketmaster",
         region=state.upper() if state else None,
+        segment="sport" if is_sport else "music",
+        sport=detect_sport(genre, country_code) if is_sport else None,
+        league=sub_genre if is_sport and sub_genre and sub_genre.lower() not in ("undefined", "other") else None,
     )
 
 
@@ -145,8 +155,8 @@ class TicketmasterProvider:
         return self._paginate(params, first)
 
     @staticmethod
-    def _country_params(cc: str) -> dict:
-        params = {"classificationName": "music", "includeTest": "no", "sort": "date,asc"}
+    def _country_params(cc: str, classification: str = "music") -> dict:
+        params = {"classificationName": classification, "includeTest": "no", "sort": "date,asc"}
         if cc and cc.upper() != "ALL":
             params["countryCode"] = cc.upper()
         return params
@@ -163,17 +173,19 @@ class TicketmasterProvider:
                 events.append(ev)
         return events
 
-    def events_between(self, countries: list[str], start: datetime, end: datetime) -> list[Event]:
-        """Koncerti koji se održavaju u zadanom razdoblju."""
+    def events_between(self, countries: list[str], start: datetime, end: datetime, classification: str = "music") -> list[Event]:
+        """Događaji (koncerti: 'music', sport: 'sports') koji se održavaju u zadanom razdoblju."""
         raws: list[dict] = []
         for cc in countries:
-            raws.extend(self._window(self._country_params(cc), "startDateTime", "endDateTime", start, end))
+            raws.extend(self._window(self._country_params(cc, classification), "startDateTime", "endDateTime", start, end))
         return self._parse_all(raws)
 
-    def onsales_between(self, countries: list[str], onsale_start: datetime, onsale_end: datetime, event_end: datetime) -> list[Event]:
-        """Koncerti (bilo kada do event_end) kojima prodaja počinje u zadanom razdoblju – prilika za kupnju."""
+    def onsales_between(
+        self, countries: list[str], onsale_start: datetime, onsale_end: datetime, event_end: datetime, classification: str = "music"
+    ) -> list[Event]:
+        """Događaji (bilo kada do event_end) kojima prodaja počinje u zadanom razdoblju – prilika za kupnju."""
         raws: list[dict] = []
         for cc in countries:
-            base = {**self._country_params(cc), "endDateTime": iso_z(event_end), "sort": "onSaleStartDate,asc"}
+            base = {**self._country_params(cc, classification), "endDateTime": iso_z(event_end), "sort": "onSaleStartDate,asc"}
             raws.extend(self._window(base, "onsaleStartDateTime", "onsaleEndDateTime", onsale_start, onsale_end))
         return self._parse_all(raws)

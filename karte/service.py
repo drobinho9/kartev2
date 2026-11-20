@@ -6,7 +6,7 @@ import dataclasses
 import json
 from datetime import datetime, timedelta
 
-from karte import legal
+from karte import legal, sport
 from karte.advisor import build_advice
 from karte.categories import CategoryInput, analyze
 from karte.knowledge import ModelConfig, estimate_capacity, market_info, markets, venue_capacity
@@ -74,6 +74,9 @@ def build_event(f: dict, now: datetime | None = None) -> Event:
         artist_upcoming_events=parse_int(f.get("upcoming")),
         primary_vendor=(f.get("vendor") or "").lower() or None,
         url=f.get("url") or None,
+        segment="sport" if (f.get("segment") or "music") in ("sport", "sports") else "music",
+        sport=(f.get("sport") or "football") if (f.get("segment") or "music") in ("sport", "sports") else None,
+        league=f.get("league") or None,
     )
 
 
@@ -154,6 +157,9 @@ def market_rows(codes: list[str] | None = None) -> list[dict]:
             "legal_risk": float(law.get("risk", 0.35)),
             "access_note": info.get("access", ""),
             "law_summary": law.get("summary", ""),
+            "football_rule": sport.football_rule(code).get("rule"),
+            "football_label": sport.RULE_LABELS.get(sport.football_rule(code).get("rule"), ""),
+            "football_summary": sport.football_rule(code).get("summary", ""),
         })
     rows.sort(key=lambda r: r["score"], reverse=True)
     return rows
