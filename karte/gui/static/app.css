@@ -82,6 +82,9 @@ button:disabled { opacity: .55; cursor: progress; }
 .notice.warn { background: var(--warn-bg); color: var(--warn); }
 .notice.demo { background: var(--warn-bg); color: var(--warn); font-weight: 600; }
 .notice.info { background: var(--info-bg); color: var(--info); }
+.linkgroups { display: grid; gap: 8px; margin-bottom: 8px; }
+.linkgroups .row { margin: 4px 0 0; }
+.linkgroups .btn { text-decoration: none; }
 .notice.info b { color: inherit; }
 .notice ul { margin: 4px 0 0; padding-left: 18px; }
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); gap: 12px; margin-bottom: 16px; }

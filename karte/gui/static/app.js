@@ -104,6 +104,7 @@ function showTab(name) {
   $$(".tab").forEach((s) => s.classList.toggle("active", s.id === `tab-${name}`));
   if (location.hash !== `#${name}`) history.replaceState(null, "", `#${name}`);
   if (name === "markets" && !state.loaded.markets) loadMarkets();
+  if (name === "plan" && !state.loaded.plan) { state.loaded.plan = true; loadPlan(); }
   if (name === "journal" && !state.loaded.journal) loadJournal();
   if (name === "guides" && !state.loaded.guides) loadGuides();
   rerenderCharts();
@@ -523,6 +524,7 @@ function detailHTML(op) {
     <h3>Plan: kada kupiti i kada prodati</h3><ul class="timeline">${tl}</ul>
     <div class="cols"><div><h3>Kako kupiti</h3>${list(a.buy)}</div><div><h3>Kako i gdje prodati</h3>${list(a.sell)}</div></div>
     ${plat ? `<h3>Usporedba platformi (po ulaznici)</h3><div class="tablewrap"><table><thead><tr><th>Platforma</th><th class="num">Oglasna</th><th class="num">Neto</th><th class="num">P(prodaja)</th><th class="num">Oček. vrijednost</th></tr></thead><tbody>${plat}</tbody></table></div>` : ""}
+    ${linksHTML(a.links)}
     ${(a.safety || []).length ? `<h3>Sigurnosna provjera (bez kazni)</h3><ul class="safety">${a.safety.map((c) => `<li class="s-${esc(c.level)}">${esc(c.text)}</li>`).join("")}</ul>` : ""}
     <div class="cols"><div><h3>Rizici</h3>${list(a.risks, "flags")}</div><div><h3>Pravno</h3>${list(a.legal)}</div></div>
     <div class="actions">
@@ -531,6 +533,14 @@ function detailHTML(op) {
       <button type="button" class="ghost" data-act="journal">Dodaj u Moje prodaje</button>
       ${e.url ? `<a class="btn ghost" href="${esc(e.url)}" target="_blank" rel="noopener">Stranica događaja ↗</a>` : ""}
     </div></div>`;
+}
+function linksHTML(links) {
+  if (!links || !links.length) return "";
+  const groups = {};
+  links.forEach((l) => (groups[l.group] = groups[l.group] || []).push(l));
+  return `<h3>Provjeri cijene i dostupnost <span class="muted small">(otvara pretragu na stranici; aplikacija ništa ne dohvaća)</span></h3>
+    <div class="linkgroups">${Object.entries(groups).map(([g, ls]) => `<div><b class="small">${esc(g)}</b><div class="row wrapgap">${ls
+      .map((l) => `<a class="btn ghost small" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.label)} ↗</a>`).join("")}</div></div>`).join("")}</div>`;
 }
 function bindDetailActions(root, op) {
   $$("[data-act]", root).forEach((b) => b.addEventListener("click", () => {
@@ -548,6 +558,66 @@ function openDetail(op) {
   $("#detail").showModal();
 }
 function closeDetail() { $("#detail").close(); }
+
+/* ------------------------------------------------------------------ PLAN ZARADE */
+async function loadPlan() {
+  await busy($("#planBtn"), async () => {
+    state.plan = await api.post("/api/plan", await scanBody());
+    renderPlan();
+  });
+}
+function planTable(rows, conditional) {
+  if (!rows.length) return "";
+  return `<div class="tablewrap"><table><thead><tr><th>Događaj</th><th>Datum</th><th class="num">Kom</th>${conditional ? '<th class="num">Nominalna ≤</th>' : ""}
+    <th class="num">Trošak</th><th class="num">Neto/kom</th><th class="num">P(prodaja)</th><th class="num">Oček. dobit</th><th class="num">ROI</th><th>Platforma</th></tr></thead><tbody>${rows.map((p) => `<tr>
+    <td><b>${esc(p.artist)}</b> <span class="muted">${esc(p.city)} (${esc(p.country)})</span></td><td>${esc(dateFmt(p.date))}</td><td class="num">${p.qty}</td>
+    ${conditional ? `<td class="num">${eur(p.assumed_face)}</td>` : ""}<td class="num">${eur(p.cost)}</td><td class="num">${eur(p.net)}</td>
+    <td class="num">${nf0.format(p.p_sell * 100)} %</td><td class="num">${eur(p.expected_profit)}</td><td class="num">${pct(p.roi)}</td><td>${esc(p.platform)}</td></tr>`).join("")}</tbody></table></div>`;
+}
+function renderPlan() {
+  const p = state.plan;
+  const sim = p.simulation || {};
+  let html = "";
+  if (p.is_demo) html += `<div class="notice demo">DEMO PODACI – izmišljeni događaji.</div>`;
+  html += `<div class="notice info"><ul>${p.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></div>`;
+  html += `<div class="kpis">${[
+    ["Uloženo", eur(p.invested)],
+    ["Očekivana dobit", eur(p.expected_profit)],
+    ["90 % ishoda", isNum(sim.p05) ? `${eur(sim.p05)} … ${eur(sim.p95)}` : "—"],
+    ["Vjerojatnost gubitka", isNum(sim.prob_loss) ? `${nf0.format(sim.prob_loss * 100)} %` : "—"],
+  ].map(([l, v]) => `<div class="kpi"><span>${l}</span><b>${v}</b></div>`).join("")}</div>`;
+  html += `<div class="card"><h3>Kupi (poznata nominalna cijena)</h3>${planTable(p.positions, false) || '<p class="muted">Trenutno nema događaja s poznatom nominalnom cijenom i dovoljnim povratom.</p>'}</div>`;
+  if ((sim.histogram || []).length) html += `<div class="card"><h3>Raspon ishoda plana <span class="muted small">(${nf0.format(sim.runs)} simulacija; udio ishoda po rasponu dobiti)</span></h3><div id="planHist"></div></div>`;
+  if (p.conditional.length) {
+    html += `<div class="card"><h3>Uvjetno – samo ako nominalnu cijenu dobiješ do granice</h3>
+      <p class="muted small">Za ove događaje nominalna cijena nije javna; tablica pokazuje što se očekuje ako kupiš najviše po navedenoj cijeni.
+      Ukupno ${eur(p.conditional_cost)} uloga → očekivano ${eur(p.conditional_profit)}.</p>${planTable(p.conditional, true)}</div>`;
+  }
+  if (p.watch.length) {
+    html += `<div class="card"><h3>Prati – nema cijene</h3><ul>${p.watch.map((w) => `<li>${pill(w.verdict)} <b>${esc(w.artist)}</b> · ${esc(w.city)} (${esc(w.country)}) · ${esc(dateFmt(w.date))} · potražnja ${score(w.demand)}${w.url ? ` · <a href="${esc(w.url)}" target="_blank" rel="noopener">izvor ↗</a>` : ""}</li>`).join("")}</ul></div>`;
+  }
+  if (p.calendar.length) {
+    html += `<div class="card"><h3>Kalendar radnji</h3><ul class="timeline">${p.calendar.map((it) => `<li class="${esc(it.kind === "event" || it.kind === "payout" ? "event" : it.kind)}"><span class="when">${esc(it.date ? dateFmt(it.date) : "odmah")}</span> <b>${esc(it.event)}</b>: ${esc(it.text)}</li>`).join("")}</ul></div>`;
+  }
+  $("#planOut").innerHTML = html;
+  $("#planIcs").hidden = !p.calendar.length;
+  if ((sim.histogram || []).length) {
+    barChart("planHist", sim.histogram.map((b) => ({ label: `${eur(b.from)} … ${eur(b.to)}`, value: b.share * 100 })),
+      { fmt: (v) => nf0.format(v) + " %", tick: (t) => nf0.format(t) + " %", title: "Raspon ishoda" });
+  }
+}
+function planIcs() {
+  const p = state.plan;
+  const fmtDay = (d) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+  const icsText = (s) => String(s).replace(/\\/g, "\\\\").replace(/[,;]/g, (c) => "\\" + c).replace(/\n/g, "\\n");
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//karte//plan zarade//HR", "CALSCALE:GREGORIAN"];
+  p.calendar.forEach((it, i) => {
+    const d = it.date ? parseIso(it.date) : new Date();
+    lines.push("BEGIN:VEVENT", `UID:plan-${i}-${fmtDay(d)}@karte`, `DTSTART;VALUE=DATE:${fmtDay(d)}`, `SUMMARY:${icsText(`${it.event}: ${it.text}`)}`, "END:VEVENT");
+  });
+  lines.push("END:VCALENDAR");
+  saveBlob(new Blob([lines.join("\r\n")], { type: "text/calendar" }), "plan_zarade.ics");
+}
 
 /* ------------------------------------------------------------------ KALKULATOR */
 function initCalc() {
@@ -832,11 +902,13 @@ async function init() {
   $("#detailClose").addEventListener("click", closeDetail);
   $("#detail").addEventListener("click", (e) => { if (e.target.id === "detail") closeDetail(); });
   initRadar();
+  $("#planBtn").addEventListener("click", loadPlan);
+  $("#planIcs").addEventListener("click", planIcs);
   initCalc();
   initCats();
   initJournal();
   const tab = (location.hash || "#radar").slice(1);
-  showTab(["radar", "calc", "cats", "journal", "markets", "guides"].includes(tab) ? tab : "radar");
+  showTab(["radar", "plan", "calc", "cats", "journal", "markets", "guides"].includes(tab) ? tab : "radar");
   if (!(m.settings.live_sources || []).length) runScan(); // bez ključeva odmah prikaži snimku stvarnih događaja
 }
 document.addEventListener("DOMContentLoaded", init);

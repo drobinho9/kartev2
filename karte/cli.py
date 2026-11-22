@@ -29,7 +29,7 @@ def _countries(value: str | None, settings: Settings) -> list[str]:
     return expand_countries(value or settings.countries)
 
 
-def cmd_scan(args, settings: Settings) -> int:
+def _scan_options(args, settings: Settings) -> tuple[ScanOptions, bool]:
     snapshot = bool(args.snimka)
     auto_snapshot = not (snapshot or args.demo or args.csv or settings.live_sources)
     opts = ScanOptions(
@@ -54,13 +54,20 @@ def cmd_scan(args, settings: Settings) -> int:
         use_wikipedia=not args.no_wikipedia,
         serpapi_cities=args.gradovi.split(",") if args.gradovi else [],
     )
+    return opts, auto_snapshot
+
+
+AUTO_SNAPSHOT_NOTE = (
+    "Nema API ključeva za događaje – prikazujem snimku stvarnih događaja. Zamjene za Ticketmaster: docs/IZVORI_PODATAKA.md "
+    "(npr. besplatni SERPAPI_KEY za Google Events)."
+)
+
+
+def cmd_scan(args, settings: Settings) -> int:
+    opts, auto_snapshot = _scan_options(args, settings)
     result = run_scan(opts, settings)
     if auto_snapshot:
-        result.warnings.insert(
-            0,
-            "Nema API ključeva za događaje – prikazujem snimku stvarnih događaja. Zamjene za Ticketmaster: docs/IZVORI_PODATAKA.md "
-            "(npr. besplatni SERPAPI_KEY za Google Events).",
-        )
+        result.warnings.insert(0, AUTO_SNAPSHOT_NOTE)
     if args.only:
         wanted = {v.strip().upper() for v in args.only.split(",")}
         result.opportunities = [op for op in result.opportunities if op.verdict.upper() in wanted]
@@ -256,6 +263,50 @@ def cmd_markets(args, settings: Settings) -> int:
     return 0
 
 
+def cmd_plan(args, settings: Settings) -> int:
+    """Plan zarade: koliko uložiti u koje događaje, raspon ishoda i kalendar radnji."""
+    from karte.portfolio import build_plan, describe_calendar
+
+    opts, auto_snapshot = _scan_options(args, settings)
+    result = run_scan(opts, settings)
+    plan = build_plan(result.opportunities, opts.budget, result.evaluator)
+    if auto_snapshot:
+        print("! " + AUTO_SNAPSHOT_NOTE)
+    print(f"PLAN ZARADE · budžet {fmt_eur(opts.budget)} · izvori: {'; '.join(result.sources) or '—'}\n")
+    for note in plan.notes:
+        print(f"• {note}")
+
+    def table(title: str, positions):
+        if not positions:
+            return
+        print(f"\n{title}")
+        print(f"  {'Događaj':<34} {'Datum':<11} {'Kom':>3} {'Trošak':>8} {'Neto/kom':>8} {'P(prod.)':>8} {'Oček. dobit':>11}  Platforma")
+        for p in positions:
+            e = p.op.event
+            name = f"{e.artist} – {e.city}"[:34]
+            face = f" (nom. ≤{p.assumed_face:.0f} €)" if p.conditional else ""
+            print(f"  {name:<34} {e.date:%d.%m.%Y} {p.qty:>3} {fmt_eur(p.cost):>8} {fmt_eur(p.net):>8} {p.p_sell * 100:>7.0f}% "
+                  f"{fmt_eur(p.expected_profit):>11}  {p.platform}{face}")
+
+    table("KUPI (poznata nominalna cijena):", plan.positions)
+    table("UVJETNO – samo ako nominalnu cijenu dobiješ do granice:", plan.conditional)
+    sim = plan.simulation
+    if sim:
+        print(f"\nSimulacija ({sim['runs']} ishoda): prosjek {fmt_eur(sim['mean'])}, medijan {fmt_eur(sim['p50'])}, "
+              f"90 % ishoda između {fmt_eur(sim['p05'])} i {fmt_eur(sim['p95'])}, najgore {fmt_eur(sim['worst'])}, "
+              f"vjerojatnost gubitka {sim['prob_loss'] * 100:.0f} %")
+    if plan.watch:
+        print("\nPRATI (nema cijene – provjeri kod prodavača):")
+        for op in plan.watch:
+            print(f"  {op.event.date:%d.%m.%Y}  {op.event.artist[:22]:<22} {op.event.city[:14]:<14} potražnja {op.demand.score * 100:.0f}  {op.verdict}")
+    if plan.calendar:
+        print("\nKALENDAR RADNJI:")
+        for line in describe_calendar(plan.calendar, limit=args.calendar):
+            print("  " + line)
+    print("\nDetalji i poveznice za provjeru cijena: karte gui → Plan zarade. Vodič: docs/PLAN_ZARADE.md")
+    return 0
+
+
 def cmd_snapshot(args, settings: Settings) -> int:
     """Snimka stvarnih događaja: pregled i osvježavanje (bez ključeva)."""
     if args.osvjezi:
@@ -348,6 +399,34 @@ def cmd_doctor(args, settings: Settings) -> int:
     return 0 if ok else 1
 
 
+def _add_scan_source_args(p: argparse.ArgumentParser) -> None:
+    """Zajedničke opcije za `scan` i `plan`: izvori, države, budžet, model."""
+    p.add_argument("--days", type=int, default=60, help="koncerti u idućih N dana (zadano 60)")
+    p.add_argument("--onsale-days", type=int, default=30, help="+ koncerti kojima prodaja počinje u idućih N dana (zadano 30)")
+    p.add_argument("--no-onsales", action="store_true", help="ne traži nadolazeće početke prodaje")
+    p.add_argument(
+        "--countries",
+        help="države i/ili regije: npr. US,GB,DE ili otvoreno, europa, dach, sjeverna_amerika, oceanija, svijet (vidi: karte markets)",
+    )
+    p.add_argument("--seller-country", help="država tvog prebivališta (zadano HR) – za dostupnost platformi i rizik pristupa")
+    p.add_argument("--max-artists", type=int, default=300, help="koliko najperspektivnijih izvođača obogatiti Last.fm-om (zadano 300)")
+    p.add_argument("--show-all", action="store_true", help="prikaži i događaje bez nominalne cijene u izvoru")
+    p.add_argument("--vrsta", choices=sorted(VRSTA), default="koncerti", help="koncerti (zadano), sport ili sve")
+    p.add_argument("--budget", type=float, help="ukupni budžet u EUR (za preporuku količine)")
+    p.add_argument("--category", choices=CATEGORIES, default="cheap", help="koju kategoriju ulaznica ciljaš (zadano: cheap)")
+    p.add_argument("--strict", action="store_true", help="primijeni i najavljene (još nevažeće) zakonske limite, npr. DE, UK")
+    p.add_argument("--snimka", action="store_true",
+                   help="snimka STVARNIH događaja (bez ključeva; zadano kad nema nijednog ključa za događaje)")
+    p.add_argument("--demo", action="store_true", help="izmišljeni demo podaci (samo za isprobavanje)")
+    p.add_argument("--no-deezer", action="store_true", help="ne dohvaćaj popularnost s Deezera")
+    p.add_argument("--no-wikipedia", action="store_true", help="ne dohvaćaj trend pregleda s Wikipedije")
+    p.add_argument("--gradovi", help="gradovi za Google Events (SerpApi), npr. 'Zagreb,Split,Vienna:AT'")
+    p.add_argument("--csv", action="append", help="dodaj događaje iz CSV-a (može više puta)")
+    p.add_argument("--no-lastfm", action="store_true")
+    p.add_argument("--no-seatgeek", action="store_true")
+    p.add_argument("--model", help="TOML datoteka s vlastitim parametrima modela")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="karte",
@@ -358,30 +437,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     s = sub.add_parser("scan", help="pretraži koncerte i rangiraj prilike")
-    s.add_argument("--days", type=int, default=60, help="koncerti u idućih N dana (zadano 60)")
-    s.add_argument("--onsale-days", type=int, default=30, help="+ koncerti kojima prodaja počinje u idućih N dana (zadano 30)")
-    s.add_argument("--no-onsales", action="store_true", help="ne traži nadolazeće početke prodaje")
-    s.add_argument(
-        "--countries",
-        help="države i/ili regije: npr. US,GB,DE ili otvoreno, europa, dach, sjeverna_amerika, oceanija, svijet (vidi: karte markets)",
-    )
-    s.add_argument("--seller-country", help="država tvog prebivališta (zadano HR) – za dostupnost platformi i rizik pristupa")
-    s.add_argument("--max-artists", type=int, default=300, help="koliko najperspektivnijih izvođača obogatiti Last.fm-om (zadano 300)")
-    s.add_argument("--show-all", action="store_true", help="prikaži i događaje bez nominalne cijene u izvoru")
-    s.add_argument("--vrsta", choices=sorted(VRSTA), default="koncerti", help="koncerti (zadano), sport ili sve")
-    s.add_argument("--budget", type=float, help="ukupni budžet u EUR (za preporuku količine)")
-    s.add_argument("--category", choices=CATEGORIES, default="cheap", help="koju kategoriju ulaznica ciljaš (zadano: cheap)")
-    s.add_argument("--strict", action="store_true", help="primijeni i najavljene (još nevažeće) zakonske limite, npr. DE, UK")
-    s.add_argument("--snimka", action="store_true",
-                   help="snimka STVARNIH događaja (bez ključeva; zadano kad nema nijednog ključa za događaje)")
-    s.add_argument("--demo", action="store_true", help="izmišljeni demo podaci (samo za isprobavanje)")
-    s.add_argument("--no-deezer", action="store_true", help="ne dohvaćaj popularnost s Deezera")
-    s.add_argument("--no-wikipedia", action="store_true", help="ne dohvaćaj trend pregleda s Wikipedije")
-    s.add_argument("--gradovi", help="gradovi za Google Events (SerpApi), npr. 'Zagreb,Split,Vienna:AT'")
-    s.add_argument("--csv", action="append", help="dodaj događaje iz CSV-a (može više puta)")
-    s.add_argument("--no-lastfm", action="store_true")
-    s.add_argument("--no-seatgeek", action="store_true")
-    s.add_argument("--model", help="TOML datoteka s vlastitim parametrima modela")
+    _add_scan_source_args(s)
     s.add_argument("--only", help="prikaži samo ove preporuke, npr. KUPI,RAZMOTRI")
     s.add_argument("--min-roi", type=float, help="minimalni ROI (npr. 0.2 = 20 %%)")
     s.add_argument("--top", type=int, default=25, help="broj redaka u tablici")
@@ -434,6 +490,11 @@ def build_parser() -> argparse.ArgumentParser:
     k.add_argument("--not-personalized", action="store_true")
     k.add_argument("--strict", action="store_true")
     k.set_defaults(func=cmd_categories, face=None)
+
+    pl = sub.add_parser("plan", help="plan zarade: raspodjela budžeta, raspon ishoda i kalendar radnji")
+    _add_scan_source_args(pl)
+    pl.add_argument("--calendar", type=int, default=25, help="koliko radnji iz kalendara ispisati")
+    pl.set_defaults(func=cmd_plan)
 
     sn = sub.add_parser("snimka", help="snimka stvarnih događaja (bez ključeva): pregled i osvježavanje")
     sn.add_argument("--osvjezi", action="store_true", help="dohvati svježe turneje (Wikipedia) i popularnost (Deezer, Wikipedia)")

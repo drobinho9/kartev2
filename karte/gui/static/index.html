@@ -18,6 +18,7 @@
 
 <nav class="tabs" role="tablist" id="tabs">
   <button role="tab" data-tab="radar" class="active">Radar</button>
+  <button role="tab" data-tab="plan">Plan zarade</button>
   <button role="tab" data-tab="calc">Kalkulator</button>
   <button role="tab" data-tab="cats">Kategorije</button>
   <button role="tab" data-tab="journal">Moje prodaje</button>
@@ -99,6 +100,19 @@
     <div class="tablewrap"><table class="results" id="resultsTable"></table></div>
     <p class="muted small">Klik na redak otvara detaljan plan: kako kupiti, kada i gdje prodati, cjenik po datumima.</p>
   </div>
+</section>
+
+<!-- ====================================================== PLAN ZARADE -->
+<section id="tab-plan" class="tab">
+  <div class="card">
+    <h2>Plan zarade</h2>
+    <p class="muted">Koristi postavke s Radara (izvor podataka, države, budžet, kategorija). Budžet raspoređuje na najbolje prilike
+      (najviše 25 % po događaju, ulaznice u parovima), simulira 4.000 mogućih ishoda i slaže kalendar radnji.
+      Vodič: <i>Vodiči → Kako zaraditi</i>.</p>
+    <div class="row"><button type="button" class="primary" id="planBtn">Složi plan</button>
+      <button type="button" class="ghost" id="planIcs" hidden>📅 Kalendar plana (.ics)</button></div>
+  </div>
+  <div id="planOut"></div>
 </section>
 
 <!-- ====================================================== KALKULATOR -->

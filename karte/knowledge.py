@@ -44,6 +44,40 @@ def platforms() -> dict[str, Any]:
 
 
 @lru_cache(maxsize=1)
+def vendors() -> dict[str, Any]:
+    """Primarni prodavači ulaznica (vendors.toml)."""
+    return _load_toml("vendors.toml")
+
+
+def vendor_info(key: str | None) -> dict[str, Any]:
+    return dict(vendors().get(key or "", {}))
+
+
+def vendors_for_country(code: str | None) -> list[tuple[str, dict[str, Any]]]:
+    """Prodavači važni u državi (redoslijed iz vendors.toml: veći prvi)."""
+    code = (code or "").upper()
+    return [(k, v) for k, v in vendors().items() if code in v.get("countries", [])]
+
+
+def vendor_domain(key: str | None, country: str | None = None) -> str:
+    info = vendors().get(key or "", {})
+    return (info.get("domains") or {}).get((country or "").upper()) or info.get("domain") or ""
+
+
+def vendor_key_for(text: str | None) -> str | None:
+    """Prepoznaj prodavača iz naziva ili adrese ('Eventim.hr', 'www.ticketmaster.co.uk', 'See Tickets')."""
+    t = normalize(text).replace(" ", "")
+    if not t:
+        return None
+    for key, info in vendors().items():
+        names = {normalize(key).replace(" ", ""), normalize(info.get("name")).replace(" ", "")}
+        domains = [normalize(d).replace(" ", "") for d in [info.get("domain", ""), *(info.get("domains") or {}).values()] if d]
+        if t in names or any(n and n in t for n in names if len(n) >= 6) or any(d and (d in t or (len(t) >= 6 and t in d)) for d in domains):
+            return key
+    return None
+
+
+@lru_cache(maxsize=1)
 def _venues_raw() -> dict[str, Any]:
     return _load_toml("venues.toml").get("venues", {})
 
@@ -183,4 +217,7 @@ class ModelConfig:
         if vendor and vendor in vendors:
             v = vendors[vendor]
             return float(v.get("pct", 0.0)), float(v.get("fixed", 0.0))
+        catalog = vendor_info(vendor)  # vendors.toml (strani prodavači)
+        if catalog and "fee_pct" in catalog:
+            return float(catalog.get("fee_pct", 0.0)), float(catalog.get("fee_fixed", 0.0))
         return float(fees.get("default_pct", 0.10)), float(fees.get("default_fixed", 1.0))

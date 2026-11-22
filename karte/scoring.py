@@ -11,7 +11,7 @@ import math
 from datetime import datetime
 
 from karte import legal, sport
-from karte.knowledge import ModelConfig, market_info
+from karte.knowledge import ModelConfig, market_info, vendor_info
 from karte.models import DemandResult, Event, Opportunity, PlatformOption
 from karte.platforms import Platform, available_platforms, blocked_for_seller
 from karte.util import clamp, days_between, fmt_eur, log_scale, parse_datetime, utcnow
@@ -199,6 +199,11 @@ class Evaluator:
             # europski nogomet / UEFA: ulaznice su u pravilu na ime – računaj konzervativno
             event = dataclasses.replace(event, personalized=True)
             assumed_personalized = True
+        vendor = vendor_info(event.primary_vendor)
+        locked_vendor = vendor.get("transferable") is False and event.personalized is None
+        if locked_vendor:
+            # npr. DICE: ulaznica je vezana uz kupčev mobitel – računaj kao neprenosivu
+            event = dataclasses.replace(event, personalized=True)
         face_ref = self.face_reference(event)
         demand = self.demand(event, face_ref)
         phase, days_to_onsale = self.phase(event)
@@ -262,6 +267,8 @@ class Evaluator:
             flags.insert(0, f"Sport – {sport_rule.get('name', '')}: {label}.")
             if assumed_personalized:
                 flags.insert(1, "Pretpostavka: ulaznice su na ime uz provjeru osobne (tipično za europski nogomet i UEFA).")
+        if locked_vendor:
+            flags.insert(0, f"{vendor.get('name')}: ulaznice se ne mogu prenijeti ni preprodati izvan službenog kanala.")
         stale = self._stale_secondary_days(event)
         if stale is not None:
             flags.append(

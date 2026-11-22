@@ -11,6 +11,12 @@ državama/pokrajinama (SAD, Kanada, Australija…) te **može li prodavatelj iz 
 > Ticketmaster ti ne odobrava ključ? Vidi [docs/IZVORI_PODATAKA.md](docs/IZVORI_PODATAKA.md) — uzroci i zamjene
 > (najbolja za HR/Europu: Google Events preko SerpApi, besplatno 250 pretraga mjesečno).
 
+> 💶 **Kako zaraditi?** Vodič [Kako zaraditi](karte/data/guides/8_kako_zaraditi.md) (brojke s tržišta, pravilo palca
+> „preprodaja ≥ ~2,5× nominalne”, pet strategija, plan za prvih 30 dana) i alat **Plan zarade** (`karte plan` ili kartica u sučelju):
+> raspodjela budžeta, 4.000 simuliranih ishoda i kalendar radnji. Za svaki događaj gumbi **Provjeri cijene** vode na službene
+> prodavače u toj državi (Ticketmaster, Eventim, See Tickets, AXS, DICE, TicketOne, jegy.hu, GoOut, Ticketportal, eBilet…),
+> platforme za preprodaju, usporedbe cijena i lokalne oglasnike.
+
 > ⚠️ Prije svega pročitaj [docs/ISTRAZIVANJE.md](docs/ISTRAZIVANJE.md) — iskrena analiza tržišta, platformi,
 > zakona (Europa, SAD, Kanada, Australija, Azija, Latinska Amerika) i poreza. Ukratko: zarada postoji, ali je
 > koncentrirana u malom broju događaja, naknade pojedu 25–35 %, a regulativa se u Europi i dijelu SAD-a postrožuje.
@@ -54,6 +60,7 @@ Najlakši način korištenja — sve radi lokalno na tvom računalu (server slu�
 | Kartica | Čemu služi |
 |---|---|
 | **Radar** | Odabereš izvor (snimka stvarnih događaja / živi API-ji / demo), regiju (ili cijeli svijet), dane i budžet → tablica preporuka (KUPI / RAZMOTRI / PROVJERI CIJENU / …), graf koncerata s najvećim očekivanim skokom cijene ili do koje se cijene isplati kupiti, filtri i sortiranje. Klik na koncert otvara **plan po datumima**: presale, javna prodaja, kada oglasiti i po kojoj cijeni, kada spuštati cijenu. Gumb **📅 Kalendar (.ics)** sve to doda u tvoj kalendar s podsjetnikom 30 min prije prodaje. |
+| **Plan zarade** | Raspodjela budžeta na najbolje prilike (najviše 25 % po događaju, parovi), uvjetne kupnje za događaje bez javne cijene („ako je nominalna ≤ X €”), raspon ishoda iz 4.000 simulacija, vjerojatnost gubitka, kalendar radnji (.ics). |
 | **Kalkulator** | Za jedan koncert (npr. s Entrija/Eventima) upišeš nominalnu cijenu i najnižu cijenu na viagogu → isplativost, platforme, cjenik. Gumb *Dohvati* uz **Deezer fanove** popuni popularnost i pokaže trend s Wikipedije (bez ključa). |
 | **Kategorije** | **Koje ulaznice se najviše isplati preprodati** za isti koncert: parter, tribine, VIP, zaklonjena mjesta… rangirano po očekivanom ROI-ju i zaradi. |
 | **Moje prodaje** | Dnevnik kupnji i prodaja (npr. tvoja **A$AP Rocky prodaja na viagogu** – gumb *Primjer*): dobit, ROI, koliko dana prije koncerta prodaješ, po platformi. Iz stvarnih prodaja **kalibrira model** i predlaže podešavanje. Uvoz/izvoz CSV. |
@@ -62,6 +69,7 @@ Najlakši način korištenja — sve radi lokalno na tvom računalu (server slu�
 
 ![Radar – snimka stvarnih događaja](docs/img/gui_radar.png)
 ![Provjeri cijenu – do koje cijene se isplati kupiti](docs/img/gui_provjeri.png)
+![Plan zarade – raspodjela budžeta i raspon ishoda](docs/img/gui_plan_zarade.png)
 ![Plan kupnje i prodaje](docs/img/gui_plan.png)
 ![Analiza kategorija](docs/img/gui_kategorije.png)
 ![Sport: nogomet i američke lige](docs/img/gui_sport.png)
@@ -156,6 +164,7 @@ Stupci (hrvatski ili engleski nazivi, razdjelnik `,` ili `;`):
 karte scan [opcije]        # glavna pretraga i rangiranje (bez ključeva: snimka stvarnih događaja)
 karte gui                  # grafičko sučelje u pregledniku
 karte snimka [--osvjezi] [--list]   # snimka stvarnih događaja: pregled i osvježavanje (bez ključeva)
+karte plan [--budget 1000]  # plan zarade: koliko u koji događaj, raspon ishoda, kalendar radnji
 karte calc --face 59 --resale 140 --country HR --listeners 1500000 --capacity 16000   # brzi kalkulator za jedan događaj
 karte kategorije --cat "Parter:59:parter" --cat "Tribina:79" --cat "VIP:189:vip" --venue "Arena Zagreb" --listeners 2000000
 karte dnevnik              # statistika mojih prodaja (unos u: karte gui → Moje prodaje)
@@ -213,10 +222,11 @@ ROI           = oček. vrij. / trošak
 ## Dokumentacija
 
 - 📊 [docs/ISTRAZIVANJE.md](docs/ISTRAZIVANJE.md) — tržište, platforme i naknade, zakoni po državama, porezi u HR, slični projekti i alati, izvori podataka
-- 🔌 [docs/IZVORI_PODATAKA.md](docs/IZVORI_PODATAKA.md) — **zamjene za Ticketmaster**, zašto ključ nije odobren, usporedba svih izvora, snimka stvarnih događaja
+- 🔌 [docs/IZVORI_PODATAKA.md](docs/IZVORI_PODATAKA.md) — **zamjene za Ticketmaster**, zašto ključ nije odobren, usporedba svih izvora, snimka stvarnih događaja, strani prodavači
+- 💶 [Kako zaraditi](karte/data/guides/8_kako_zaraditi.md) — plan zarade: brojke s tržišta, pravilo palca, strategije, kapital, karta tržišta, prvih 30 dana
 - 🧭 [docs/STRATEGIJA.md](docs/STRATEGIJA.md) — praktični priručnik: odabir događaja, kupnja, prodaja, cijene, rizik, porezi
 - 🧮 [docs/MODEL.md](docs/MODEL.md) — kako model radi i kako ga kalibrirati vlastitim podacima
-- 🎫 Vodiči (i u kartici *Vodiči*): [virtualni redovi](karte/data/guides/1_redovi.md) · [kada kupiti/prodati](karte/data/guides/2_kada_kupiti_prodati.md) · [viagogo za prodavatelje](karte/data/guides/3_viagogo.md) · [koje karte se najviše preprodaju](karte/data/guides/4_koje_karte.md) · [**sigurna preprodaja bez kazni**](karte/data/guides/5_sigurnost.md) · [**nogomet i sport**](karte/data/guides/6_nogomet_sport.md) · [**što rade preprodavači (forumi i zajednice)**](karte/data/guides/7_sto_rade_preprodavaci.md)
+- 🎫 Vodiči (i u kartici *Vodiči*): [virtualni redovi](karte/data/guides/1_redovi.md) · [kada kupiti/prodati](karte/data/guides/2_kada_kupiti_prodati.md) · [viagogo za prodavatelje](karte/data/guides/3_viagogo.md) · [koje karte se najviše preprodaju](karte/data/guides/4_koje_karte.md) · [**sigurna preprodaja bez kazni**](karte/data/guides/5_sigurnost.md) · [**nogomet i sport**](karte/data/guides/6_nogomet_sport.md) · [**što rade preprodavači (forumi i zajednice)**](karte/data/guides/7_sto_rade_preprodavaci.md) · [**kako zaraditi**](karte/data/guides/8_kako_zaraditi.md)
 
 ## Struktura projekta
 
@@ -225,6 +235,8 @@ karte/
   cli.py            naredbe
   pipeline.py       dohvat → spajanje → obogaćivanje → procjena
   snapshot.py       snimka stvarnih događaja (učitavanje, osvježavanje bez ključeva)
+  portfolio.py      plan zarade: raspodjela budžeta, simulacija ishoda, kalendar radnji
+  links.py          poveznice "Provjeri cijene" (službeni prodavači, preprodaja, usporedbe, oglasnici)
   geo.py            nazivi država → ISO kodovi
   scoring.py        model potražnje, cijene, rizika i preporuke
   advisor.py        savjeti: kupnja, prodaja, cjenik
@@ -237,7 +249,7 @@ karte/
   platforms.py      platforme za preprodaju i naknade
   report.py         terminal / HTML / Markdown / CSV / JSON
   providers/        ticketmaster, serpapi (Google Events), predicthq, seatgeek, lastfm, deezer, wikipedia (turneje, trend), manual (CSV), demo
-  data/             laws.toml, markets.toml (regije, pristup), platforms.toml, venues.toml, model.toml, snimka/ (stvarni događaji), demo_events.json, guides/
+  data/             laws.toml, markets.toml (regije, pristup), platforms.toml, vendors.toml (strani prodavači), venues.toml, model.toml, snimka/ (stvarni događaji), demo_events.json, guides/
 primjeri/           primjeri CSV-a (uklj. stvarnu HR watchlistu)
 docs/               istraživanje, strategija, model
 tests/              pytest (bez mreže; fixturei sa stvarnim odgovorima Deezera i Wikipedije)

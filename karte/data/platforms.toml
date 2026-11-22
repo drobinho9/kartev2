@@ -101,7 +101,23 @@ reach = 0.6
 trust_risk = 0.1
 countries = ["NL", "BE", "DE", "FR", "GB", "ES", "IT", "PT", "DK", "SE", "NO", "PL", "AT", "CH", "IE", "CZ", "FI", "US", "BR", "MX"]
 payout = "Brza isplata nakon prodaje (SecureSwap)."
-notes = "Fan-to-fan, cijena ograničena na +20 % iznad plaćenog. Siguran i brz, ali mala marža – dobar za izlaz bez gubitka, ne za veliku zaradu. Popularan za festivale (provjeri ima li događaj stranicu)."
+notes = "Fan-to-fan, cijena ograničena na +20 % iznad plaćenog. Prodavač plaća 5 % (min. ~1,50 €), kupac 7 % + 3 %. Siguran i brz, ali mala marža – dobar za izlaz bez gubitka, ne za veliku zaradu. U BE, FR, PL, IE i DK prodavač dobiva najviše nominalnu cijenu."
+
+[ticketswap.overrides.BE]
+cap = "face"
+cap_basis = "face"
+[ticketswap.overrides.FR]
+cap = "face"
+cap_basis = "face"
+[ticketswap.overrides.PL]
+cap = "face"
+cap_basis = "face"
+[ticketswap.overrides.IE]
+cap = "face"
+cap_basis = "face"
+[ticketswap.overrides.DK]
+cap = "face"
+cap_basis = "face"
 
 [fansale]
 name = "Eventim fanSALE"
@@ -112,10 +128,15 @@ seller_fee_fixed = 0.0
 cap = "none"
 reach = 0.55
 trust_risk = 0.1
-countries = ["DE", "AT", "CH", "NL", "ES", "SE", "NO", "DK", "FI"]
+countries = ["DE", "AT", "CH", "NL", "ES", "SE", "NO", "DK", "FI", "GB"]
 requires_vendor = "eventim"
 payout = "Nakon prodaje / prema uvjetima."
-notes = "Službena preprodaja Eventima. Za neke događaje organizator nameće limit ili personalizaciju (prijenos imena). Naknada je procjena – provjeri."
+notes = "Službena preprodaja Eventima. Za neke događaje organizator nameće limit ili personalizaciju (prijenos imena). U UK najviše +10 % iznad nominalne. Naknada je procjena – provjeri."
+
+[fansale.overrides.GB]
+cap = "percent"
+cap_pct = 0.10
+cap_basis = "face"
 
 [ticketmaster_resale]
 name = "Ticketmaster preprodaja"
@@ -210,6 +231,19 @@ countries = ["*"]
 payout = "Prema uvjetima platforme (provjeri)."
 notes = "Europska marketplace platforma (sport i koncerti). Naknada je procjena – provjeri."
 
+[gigsberg]
+name = "Gigsberg"
+url = "https://www.gigsberg.com"
+price_factor = 0.95
+seller_fee_pct = 0.10
+seller_fee_fixed = 0.0
+cap = "none"
+reach = 0.35
+trust_risk = 0.4
+countries = ["*"]
+payout = "Prema uvjetima platforme (provjeri)."
+notes = "Međunarodna sekundarna platforma (koncerti, sport), i na hrvatskom jeziku. Manji doseg od viagoga. Naknada je procjena – provjeri prije oglasa."
+
 [lokalni_oglasnik]
 name = "Lokalni oglasnik"
 url = ""
@@ -225,6 +259,9 @@ payout = "Odmah (gotovina/uplata) – ali pazi na lažne uplate i lažne kupce."
 notes = "Bez naknade i s brzom isplatom, ali manji doseg i veći rizik prijevare. Prodaj samo uz uplatu na račun prije slanja ili osobnu primopredaju. Za događaje u inozemstvu realno slabo upotrebljivo."
 
 [lokalni_oglasnik.names]
+IT = "Subito.it"
+FR = "Leboncoin"
+PT = "OLX.pt"
 HR = "Njuškalo"
 SI = "Bolha"
 AT = "willhaben"
@@ -253,6 +290,32 @@ CA = "Kijiji"
 AU = "Gumtree"
 NZ = "Trade Me"
 MX = "Facebook Marketplace"
+
+[lokalni_oglasnik.domains]
+HR = "njuskalo.hr"
+SI = "bolha.com"
+AT = "willhaben.at"
+HU = "jofogas.hu"
+RS = "kupujemprodajem.com"
+BA = "olx.ba"
+DE = "kleinanzeigen.de"
+NL = "marktplaats.nl"
+ES = "wallapop.com"
+CZ = "bazos.cz"
+SK = "bazos.sk"
+PL = "olx.pl"
+RO = "olx.ro"
+BG = "olx.bg"
+GB = "gumtree.com"
+IE = "donedeal.ie"
+SE = "blocket.se"
+NO = "finn.no"
+DK = "dba.dk"
+FI = "tori.fi"
+CH = "ricardo.ch"
+IT = "subito.it"
+FR = "leboncoin.fr"
+PT = "olx.pt"
 
 [facebook_grupe]
 name = "Facebook grupe / Instagram"

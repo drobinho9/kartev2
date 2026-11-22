@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+from karte import knowledge
 from karte.knowledge import ModelConfig
+from karte.links import price_links
 from karte.models import Opportunity
 from karte.util import add_days, fmt_date, fmt_datetime, fmt_eur, fmt_pct
 
@@ -92,6 +94,9 @@ def safety_checks(op: Opportunity) -> list[dict]:
     else:
         add("ok", "Zakon države ne ograničava cijenu preprodaje (vrijedi zabrana botova i zaobilaženja limita).")
 
+    vendor = knowledge.vendor_info(e.primary_vendor)
+    if vendor and vendor.get("transferable") is False:
+        add("bad", f"{vendor.get('name')}: {vendor.get('resale', 'ulaznice se ne mogu preprodati.')}")
     if e.personalized is True:
         add("bad", "Ulaznice su personalizirane – kupac možda neće ući; prodaj samo ako organizator dopušta službenu promjenu imena.")
     elif e.personalized is None:
@@ -179,6 +184,21 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
             buy.append(
                 f"Ne plaćaj više od ~{fmt_eur(max_cost)} po ulaznici s naknadama – iznad toga očekivani ROI pada ispod {buy_roi * 100:.0f} %."
             )
+    vendor = knowledge.vendor_info(e.primary_vendor)
+    if vendor:
+        tip = f"Službena prodaja: {vendor.get('name')}"
+        domain = knowledge.vendor_domain(e.primary_vendor, e.country)
+        tip += f" ({domain})" if domain else ""
+        buy.append(f"{tip} – {vendor.get('queue', '')}".rstrip(" –"))
+        if vendor.get("transfer"):
+            buy.append(f"Prijenos ulaznica: {vendor['transfer']}")
+    else:
+        names = [v.get("name", k) for k, v in knowledge.vendors_for_country(e.country)[:4]]
+        if names:
+            buy.append(
+                f"Službeni prodavači u državi {op.legal.country_name}: {', '.join(names)} – na stranici izvođača ili dvorane provjeri "
+                "tko prodaje baš ovaj koncert (poveznice „Provjeri cijene” ispod)."
+            )
     if op.verdict == "PROVJERI CIJENU":
         target = cfg.get("verdict", "buy_roi", 0.3) * 100
         tips = []
@@ -257,6 +277,9 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
             "blokirano članstvo i kazna platforme.",
         ]
 
+    if vendor and vendor.get("resale"):
+        sell.append(f"Pravila službenog prodavača ({vendor.get('name')}): {vendor['resale']}")
+
     pravno = [op.legal.summary] if op.legal.summary else []
     if op.legal.cap_price is not None:
         pravno.append(f"Najviša dopuštena cijena po ulaznici (procjena): {fmt_eur(op.legal.cap_price)}.")
@@ -281,4 +304,5 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
         "legal": pravno,
         "legal_sources": op.legal.sources,
         "safety": safety_checks(op),
+        "links": price_links(e, allow_profit=not prohibited and not op.legal.profit_prohibited),
     }

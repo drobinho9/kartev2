@@ -63,6 +63,7 @@ class ScanResult:
     is_demo: bool
     is_snapshot: bool = False
     snapshot: dict | None = None  # podaci o snimci (stanje, broj događaja, turneje)
+    evaluator: Evaluator | None = None  # isti model kojim su procijenjeni događaji (za plan zarade)
 
 
 def event_key(e: Event) -> str:
@@ -327,4 +328,5 @@ def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = No
         is_demo=opts.demo,
         is_snapshot=opts.snapshot,
         snapshot=meta.get("snapshot"),
+        evaluator=evaluator,
     )

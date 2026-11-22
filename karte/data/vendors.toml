@@ -1,0 +1,394 @@
+# Primarni prodavači ulaznica (službena prodaja) po državama – gdje se kupuje po NOMINALNOJ cijeni.
+# Stanje istraživanja: studeni 2026. Naknade su OKVIRNE procjene iz javnih primjera (npr. Which?: Ticketmaster UK
+# na ulaznicu od 45 £ ukupno 55,60 £, See Tickets 54,87 £; IQ International Ticketing Report: u Mađarskoj 2–10 %).
+# Stvarnu naknadu uvijek vidiš na blagajni – ovdje služi samo za procjenu troška kupnje.
+#
+# fee_pct / fee_fixed  – naknada kupca (postotak + fiksno po ulaznici u EUR)
+# countries            – države u kojima je prodavač važan za koncerte
+# domains.CC           – web adresa za državu CC (za poveznice "Provjeri cijene"); domain = zadana adresa
+# queue                – virtualni red / način prodaje
+# resale               – službena preprodaja i pravila
+# transferable = false – ulaznice se ne mogu prenijeti/preprodati izvan službenog kanala (npr. DICE)
+# kind                 – "ticketing" (prodavač) ili "promoter" (organizator s vlastitom stranicom; kupnja ide preko partnera)
+
+[ticketmaster]
+name = "Ticketmaster"
+kind = "ticketing"
+domain = "ticketmaster.com"
+countries = ["GB", "IE", "NL", "BE", "DE", "AT", "CH", "ES", "FR", "PL", "CZ", "SE", "NO", "DK", "FI", "US", "CA", "MX", "AU", "NZ", "AE", "TR"]
+fee_pct = 0.12
+fee_fixed = 2.5
+queue = "Smart Queue: tko uđe prije početka prodaje dobiva nasumično mjesto u redu; Verified Fan i presale kodovi za velike turneje."
+resale = "Ticketmaster Resale / Fan-to-Fan (UK i IE: najviše nominalna cijena); Face Value Exchange kad izvođač tako odluči."
+transfer = "Prijenos u aplikaciji (SafeTix) – često otključan tek nekoliko dana prije događaja."
+notes = "Jedan račun po osobi; narudžbe preko limita povezane imenom, e-mailom, adresom ili karticom se poništavaju."
+
+[ticketmaster.domains]
+GB = "ticketmaster.co.uk"
+IE = "ticketmaster.ie"
+NL = "ticketmaster.nl"
+BE = "ticketmaster.be"
+DE = "ticketmaster.de"
+AT = "ticketmaster.at"
+CH = "ticketmaster.ch"
+ES = "ticketmaster.es"
+FR = "ticketmaster.fr"
+PL = "ticketmaster.pl"
+CZ = "ticketmaster.cz"
+SE = "ticketmaster.se"
+NO = "ticketmaster.no"
+DK = "ticketmaster.dk"
+FI = "ticketmaster.fi"
+US = "ticketmaster.com"
+CA = "ticketmaster.ca"
+MX = "ticketmaster.com.mx"
+AU = "ticketmaster.com.au"
+NZ = "ticketmaster.co.nz"
+AE = "ticketmaster.ae"
+TR = "biletix.com"
+
+[eventim]
+name = "Eventim"
+kind = "ticketing"
+domain = "eventim.de"
+countries = ["DE", "AT", "CH", "HR", "SI", "RS", "BG", "RO", "GB", "NL", "PL", "SE", "DK", "FI", "BR"]
+fee_pct = 0.10
+fee_fixed = 1.5
+queue = "Virtualna čekaonica (Queue-it) prije početka prodaje; presale za članove fan kluba i EVENTIM Pass."
+resale = "fanSALE (službena preprodaja; u UK najviše +10 % iznad nominalne). Njemački sudovi priznaju zabranu preprodaje u uvjetima prodaje ako ona i dalje dopušta preprodaju do ~25 % iznad nominalne (CMS, 2025.)."
+transfer = "Ovisi o događaju: print@home/mobilna ulaznica ili personalizacija uz promjenu imena."
+notes = "Najveći europski prodavač (CTS Eventim); vlasnik i TicketOne (IT), Entradas.com (ES), oeticket (AT), Ticketcorner (CH), Lippupiste (FI), Billetlugen (DK), eBilet (PL)."
+
+[eventim.domains]
+DE = "eventim.de"
+AT = "oeticket.com"
+CH = "ticketcorner.ch"
+HR = "eventim.hr"
+SI = "eventim.si"
+RS = "eventim.rs"
+BG = "eventim.bg"
+RO = "eventim.ro"
+GB = "eventim.co.uk"
+NL = "eventim.nl"
+PL = "eventim.pl"
+SE = "eventim.se"
+DK = "billetlugen.dk"
+FI = "lippu.fi"
+BR = "eventim.com.br"
+
+[livenation]
+name = "Live Nation"
+kind = "promoter"
+domain = "livenation.com"
+countries = ["HU", "CZ", "PL", "SK", "GB", "NL", "BE", "SE", "DE", "AT", "IT", "ES", "FR", "US"]
+fee_pct = 0.12
+fee_fixed = 2.0
+queue = "Live Nation presale za registrirane članove (obično dan prije javne prodaje); ulaznice preko Ticketmastera ili lokalnog partnera."
+resale = "Prema pravilima prodavača kojeg Live Nation koristi u toj državi."
+transfer = "Ovisi o prodavaču."
+notes = "Najveći svjetski promotor (vlasnik Ticketmastera). Registriraj se na lokalnoj Live Nation stranici za presale kodove."
+
+[livenation.domains]
+HU = "livenation.hu"
+CZ = "livenation.cz"
+PL = "livenation.pl"
+SK = "livenation.sk"
+GB = "livenation.co.uk"
+NL = "livenation.nl"
+BE = "livenation.be"
+SE = "livenation.se"
+DE = "livenation.de"
+AT = "livenation.at"
+IT = "livenation.it"
+ES = "livenation.es"
+FR = "livenation.fr"
+US = "livenation.com"
+
+[axs]
+name = "AXS"
+kind = "ticketing"
+domain = "axs.com"
+countries = ["GB", "US", "SE", "DE"]
+fee_pct = 0.12
+fee_fixed = 2.9
+queue = "AXS Queue (virtualni red) za dvorane AEG-a (npr. The O2 London, Uber Arena Berlin, Avicii/Strawberry Arena Stockholm)."
+resale = "AXS Official Resale – u UK najviše nominalna cijena; drugdje prema organizatoru."
+transfer = "Mobilna ulaznica u AXS aplikaciji; prijenos samo kroz aplikaciju."
+notes = "Which? primjer: naknada za uslugu 5,94 £ + transakcijska 2,50 £ po narudžbi."
+
+[axs.domains]
+GB = "axs.com/uk"
+US = "axs.com"
+SE = "axs.com/se"
+DE = "axs.com/de"
+
+[see_tickets]
+name = "See Tickets"
+kind = "ticketing"
+domain = "seetickets.com"
+countries = ["GB", "NL", "FR", "US"]
+fee_pct = 0.14
+fee_fixed = 2.9
+queue = "Virtualni red za velike prodaje."
+resale = "Bez vlastite preprodaje iznad nominalne; preporučuju Twickets (nominalna ili niže)."
+transfer = "E-ulaznica ili mobilna; prijenos prema uvjetima događaja."
+notes = "Which? primjer: na ulaznicu od 45 £ naknada 7,37 £ + 1 £ obrada + 1,50 £ isporuka."
+
+[see_tickets.domains]
+GB = "seetickets.com"
+NL = "seetickets.nl"
+FR = "seetickets.fr"
+US = "seetickets.us"
+
+[dice]
+name = "DICE"
+kind = "ticketing"
+domain = "dice.fm"
+countries = ["GB", "FR", "ES", "IT", "DE", "NL", "US"]
+fee_pct = 0.10
+fee_fixed = 0.0
+transferable = false
+queue = "Prodaja u aplikaciji; kad se rasproda, lista čekanja."
+resale = "Preprodaja NIJE moguća: ulaznica je vezana uz mobitel kupca; povrat samo preko liste čekanja po nominalnoj cijeni."
+transfer = "Nema prijenosa izvan aplikacije."
+notes = "Dobar za odlazak na koncert, ne za preprodaju (vlasnik Fever)."
+
+[ticketone]
+name = "TicketOne"
+kind = "ticketing"
+domain = "ticketone.it"
+countries = ["IT"]
+fee_pct = 0.12
+fee_fixed = 1.5
+queue = "Virtualni red; presale za članove i partnere."
+resale = "Zakon u Italiji zabranjuje preprodaju iznad nominalne; dopuštena je službena promjena imena (uz naknadu) ili preprodaja po nominalnoj."
+transfer = "Personalizirane ulaznice za događaje > 5.000 posjetitelja (ime na ulaznici, provjera osobne)."
+notes = "Dio grupe CTS Eventim. AGCOM kažnjava platforme za preprodaju iznad nominalne."
+
+[vivaticket]
+name = "Vivaticket"
+kind = "ticketing"
+domain = "vivaticket.com"
+countries = ["IT"]
+fee_pct = 0.10
+fee_fixed = 1.0
+queue = "Standardna prodaja."
+resale = "Kao i za TicketOne: zakonom samo po nominalnoj cijeni."
+transfer = "Personalizirane ulaznice za velike događaje."
+notes = ""
+
+[fnac]
+name = "Fnac Spectacles (France Billet)"
+kind = "ticketing"
+domain = "fnacspectacles.com"
+countries = ["FR"]
+fee_pct = 0.10
+fee_fixed = 1.0
+queue = "Virtualni red."
+resale = "U Francuskoj je preprodaja bez dopuštenja organizatora kazneno djelo; službena preprodaja samo po pravilima organizatora."
+transfer = "Prema uvjetima."
+notes = ""
+
+[entradas]
+name = "Entradas.com"
+kind = "ticketing"
+domain = "entradas.com"
+countries = ["ES"]
+fee_pct = 0.10
+fee_fixed = 1.0
+queue = "Virtualni red."
+resale = "Prema organizatoru; u Španjolskoj su zakonski limiti najavljeni, provjeri stanje."
+transfer = "Prema uvjetima."
+notes = "Dio grupe CTS Eventim."
+
+[elcorteingles]
+name = "El Corte Inglés Entradas"
+kind = "ticketing"
+domain = "elcorteingles.es"
+countries = ["ES"]
+fee_pct = 0.10
+fee_fixed = 1.0
+queue = "Standardna prodaja."
+resale = "Prema organizatoru."
+transfer = "Prema uvjetima."
+notes = ""
+
+[ticketportal]
+name = "Ticketportal"
+kind = "ticketing"
+domain = "ticketportal.cz"
+countries = ["CZ", "SK"]
+fee_pct = 0.08
+fee_fixed = 0.5
+queue = "Standardna prodaja; za velike koncerte virtualni red."
+resale = "Bez službene preprodaje iznad nominalne."
+transfer = "E-ulaznica (PDF) ili fizička ulaznica u prodajnim mjestima."
+notes = "Dio estonske grupe PLG (Piletilevi), kao i Ticketstream – cijene u Češkoj rastu nakon spajanja platformi."
+
+[ticketportal.domains]
+CZ = "ticketportal.cz"
+SK = "ticketportal.sk"
+
+[goout]
+name = "GoOut"
+kind = "ticketing"
+domain = "goout.net"
+countries = ["CZ", "SK", "PL", "DE"]
+fee_pct = 0.08
+fee_fixed = 0.5
+queue = "Prodaja u aplikaciji i na webu."
+resale = "Bez službene preprodaje iznad nominalne."
+transfer = "Mobilna ulaznica."
+notes = "Popularan za klubske i srednje koncerte u Pragu i Bratislavi."
+
+[ebilet]
+name = "eBilet"
+kind = "ticketing"
+domain = "ebilet.pl"
+countries = ["PL"]
+fee_pct = 0.08
+fee_fixed = 1.0
+queue = "Virtualni red za velike prodaje."
+resale = "Preprodaja iznad nominalne u Poljskoj je zabranjena."
+transfer = "Prema uvjetima."
+notes = "Dio grupe CTS Eventim."
+
+[going]
+name = "Going."
+kind = "ticketing"
+domain = "goingapp.pl"
+countries = ["PL"]
+fee_pct = 0.08
+fee_fixed = 1.0
+queue = "Prodaja u aplikaciji."
+resale = "Preprodaja iznad nominalne u Poljskoj je zabranjena."
+transfer = "Mobilna ulaznica."
+notes = ""
+
+[jegy_hu]
+name = "Jegy.hu (InterTicket)"
+kind = "ticketing"
+domain = "jegy.hu"
+countries = ["HU"]
+fee_pct = 0.08
+fee_fixed = 0.5
+queue = "Standardna prodaja; za velike koncerte virtualni red."
+resale = "Bez službene preprodaje iznad nominalne."
+transfer = "E-ulaznica; za neke događaje dinamičko određivanje cijena."
+notes = "Naknada za uslugu prikazuje se odvojeno od cijene ulaznice (u Mađarskoj tipično 2–10 %)."
+
+[funcode]
+name = "Funcode"
+kind = "ticketing"
+domain = "funcode.hu"
+countries = ["HU"]
+fee_pct = 0.08
+fee_fixed = 0.5
+queue = "Standardna prodaja."
+resale = "Bez službene preprodaje."
+transfer = "E-ulaznica."
+notes = "Koristi ga i Live Nation Mađarska za velike koncerte."
+
+[entrio]
+name = "Entrio"
+kind = "ticketing"
+domain = "entrio.hr"
+countries = ["HR", "SI"]
+fee_pct = 0.0
+fee_fixed = 1.5
+queue = "Standardna prodaja (bez virtualnog reda za većinu događaja)."
+resale = "Bez službene preprodaje; prijenos imena prema organizatoru."
+transfer = "E-ulaznica (PDF) s QR kodom."
+notes = "Najveći domaći prodavač za klubske koncerte i festivale."
+
+[entrio.domains]
+HR = "entrio.hr"
+SI = "entrio.si"
+
+[ulaznice_hr]
+name = "Ulaznice.hr"
+kind = "ticketing"
+domain = "ulaznice.hr"
+countries = ["HR"]
+fee_pct = 0.0
+fee_fixed = 1.0
+queue = "Standardna prodaja; klubovi (Dinamo, Slaven Belupo…) prodaju preko nje."
+resale = "Bez službene preprodaje; za nogomet vrijede uvjeti klubova."
+transfer = "E-ulaznica ili ulaznica u aplikaciji kluba."
+notes = ""
+
+[core_event]
+name = "Core Event"
+kind = "ticketing"
+domain = ""
+countries = ["HR"]
+fee_pct = 0.05
+fee_fixed = 1.0
+queue = "Standardna prodaja."
+resale = "Bez službene preprodaje."
+transfer = "E-ulaznica."
+notes = "Prodaje velike koncerte u Areni Zagreb i na Šalati (npr. Scorpions 2027., Fontaines D.C.)."
+
+[mojekarte]
+name = "Moje karte"
+kind = "ticketing"
+domain = "mojekarte.si"
+countries = ["SI"]
+fee_pct = 0.05
+fee_fixed = 1.0
+queue = "Standardna prodaja."
+resale = "Bez službene preprodaje."
+transfer = "E-ulaznica."
+notes = ""
+
+[tickets_rs]
+name = "Tickets.rs"
+kind = "ticketing"
+domain = "tickets.rs"
+countries = ["RS"]
+fee_pct = 0.05
+fee_fixed = 0.5
+queue = "Standardna prodaja."
+resale = "Bez službene preprodaje."
+transfer = "E-ulaznica."
+notes = ""
+
+[ticketline]
+name = "Ticketline"
+kind = "ticketing"
+domain = "ticketline.sapo.pt"
+countries = ["PT"]
+fee_pct = 0.08
+fee_fixed = 1.0
+queue = "Virtualni red."
+resale = "Preprodaja iznad nominalne u Portugalu je kazneno djelo."
+transfer = "Prema uvjetima."
+notes = ""
+
+[ticketek]
+name = "Ticketek"
+kind = "ticketing"
+domain = "ticketek.com.au"
+countries = ["AU", "NZ"]
+fee_pct = 0.10
+fee_fixed = 2.0
+queue = "Virtualni red."
+resale = "Ticketek Marketplace – najviše +10 % (zakonski limit u većini saveznih država)."
+transfer = "Prema uvjetima."
+notes = ""
+
+[ticketek.domains]
+AU = "ticketek.com.au"
+NZ = "ticketek.co.nz"
+
+[seatgeek]
+name = "SeatGeek"
+kind = "ticketing"
+domain = "seatgeek.com"
+countries = ["US", "CA", "GB"]
+fee_pct = 0.15
+fee_fixed = 0.0
+queue = "Primarna prodaja za pojedine klubove i dvorane."
+resale = "Vlastito tržište preprodaje (SeatGeek)."
+transfer = "Mobilna ulaznica."
+notes = ""

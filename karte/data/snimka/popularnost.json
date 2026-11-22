@@ -85,6 +85,34 @@
    "wikipedia": "Karol G",
    "pregledi_dnevno": 2198,
    "trend": 0.771
+  },
+  "Bryan Adams": {
+   "deezer_fanovi": 1763031,
+   "deezer_id": 170,
+   "wikipedia": "Bryan Adams",
+   "pregledi_dnevno": 3062,
+   "trend": 1.097
+  },
+  "Severina": {
+   "deezer_fanovi": 167459,
+   "deezer_id": 5681,
+   "wikipedia": "Severina (singer)",
+   "pregledi_dnevno": 168,
+   "trend": 1.101
+  },
+  "Scorpions": {
+   "deezer_fanovi": 3694766,
+   "deezer_id": 863,
+   "wikipedia": "Scorpions (band)",
+   "pregledi_dnevno": 2102,
+   "trend": 0.995
+  },
+  "Eric Clapton": {
+   "deezer_fanovi": 2819354,
+   "deezer_id": 192,
+   "wikipedia": "Eric Clapton",
+   "pregledi_dnevno": 5434,
+   "trend": 0.969
   }
  }
 }

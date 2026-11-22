@@ -231,6 +231,8 @@ def render_markdown(result: ScanResult, top: int = 50, details: int = 10) -> str
         if a.get("safety"):
             icon = {"ok": "✅", "warn": "⚠️", "bad": "⛔"}
             md += ["**Sigurnosna provjera**", ""] + [f"- {icon.get(c['level'], '')} {c['text']}" for c in a["safety"]] + [""]
+        if a.get("links"):
+            md += ["**Provjeri cijene i dostupnost**", ""] + [f"- {link['group']}: [{link['label']}]({link['url']})" for link in a["links"]] + [""]
         if a.get("risks"):
             md += ["**Rizici**", ""] + [f"- {x}" for x in a["risks"]] + [""]
         if a.get("legal"):
@@ -445,6 +447,10 @@ def render_html(result: ScanResult, top: int = 200) -> str:
         if a.get("safety"):
             icon = {"ok": "✓", "warn": "!", "bad": "✕"}
             parts.append("<h3>Sigurnosna provjera</h3><ul>" + "".join(f"<li><b>{icon.get(c['level'], '')}</b> {_e(c['text'])}</li>" for c in a["safety"]) + "</ul>")
+        if a.get("links"):
+            parts.append("<h3>Provjeri cijene i dostupnost</h3><p class='small'>" + " · ".join(
+                f"{_e(link['group'])}: <a href='{_e(link['url'])}' rel='noopener noreferrer' target='_blank'>{_e(link['label'])}</a>"
+                for link in a["links"]) + "</p>")
         if a.get("risks"):
             parts.append("<h3>Rizici</h3><ul>" + "".join(f"<li>{_e(x)}</li>" for x in a["risks"]) + "</ul>")
         if a.get("legal"):

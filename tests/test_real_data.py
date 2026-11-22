@@ -14,7 +14,7 @@ from karte.net import ProviderError
 from karte.pipeline import ScanOptions, run_scan
 from karte.providers import deezer, predicthq, serpapi, wikipedia
 from karte.providers.manual import load_csv_text
-from karte.scoring import Evaluator
+from karte.scoring import VERDICT_ORDER, Evaluator
 from karte.settings import Settings
 from karte.snapshot import CURATED_SOURCE, load_snapshot, refresh_snapshot
 from karte.util import hr_plural
@@ -215,7 +215,9 @@ def test_snapshot_scan_runs_offline_with_real_events(tmp_path):
     assert result.is_snapshot and result.snapshot["date_hr"] == "22.11.2026."
     verdicts = [op.verdict for op in result.opportunities]
     assert verdicts.count("PROVJERI CIJENU") >= 5 and "NEMA CIJENE" in verdicts
-    assert verdicts[0] == "PROVJERI CIJENU"  # sortirano prije događaja bez ikakve cijene
+    orders = [VERDICT_ORDER[v] for v in verdicts]
+    assert orders == sorted(orders)  # KUPI/RAZMOTRI → PROVJERI CIJENU → … → NEMA CIJENE
+    assert "KUPI" in verdicts or "RAZMOTRI" in verdicts  # Scorpions (Zagreb) ima javnu nominalnu cijenu
     joksimovic = next(op for op in result.opportunities if op.event.artist == "Željko Joksimović" and op.event.date.day == 4)
     assert joksimovic.verdict == "RASPRODANO"
     sport = run_scan(ScanOptions(snapshot=True, countries=["HR"], now=SNAP_NOW, segment="sport"), _settings(tmp_path), http=http)

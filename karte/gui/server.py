@@ -20,7 +20,7 @@ from pathlib import Path
 from karte import __version__, legal
 from karte.categories import KINDS
 from karte.journal import STATUSES, Journal, default_path
-from karte.knowledge import ModelConfig, expand_countries, laws, markets, regions
+from karte.knowledge import ModelConfig, expand_countries, laws, markets, regions, vendors
 from karte.markdown import render, title_of
 from karte.net import FileCache, HttpClient, ProviderError
 from karte.pipeline import ScanOptions, run_scan
@@ -54,7 +54,14 @@ TAGS = {
     "title_decider": "Sport: odlučuje o naslovu",
     "legend_farewell": "Sport: oproštaj legende",
 }
-VENDORS = {"eventim": "Eventim", "entrio": "Entrio", "ulaznice_hr": "Ulaznice.hr", "ticketmaster": "Ticketmaster", "ticketek": "Ticketek", "": "Ostalo / ne znam"}
+def vendor_options() -> dict[str, str]:
+    """Primarni prodavači iz vendors.toml: ključ → 'Naziv (države)'; domaći prvi."""
+    items = []
+    for key, info in vendors().items():
+        countries = info.get("countries", [])
+        label = f"{info.get('name', key)} ({', '.join(countries[:5])}{'…' if len(countries) > 5 else ''})"
+        items.append((0 if "HR" in countries else 1, label.lower(), key, label))
+    return {**{key: label for _, _, key, label in sorted(items)}, "": "Ostalo / ne znam"}
 CATEGORY_LABELS = {"cheap": "Najjeftinija kategorija", "mid": "Srednja", "premium": "Najskuplja"}
 
 
@@ -89,7 +96,7 @@ class App:
             "subdivisions": subdivisions,
             "categories": CATEGORY_LABELS,
             "tags": TAGS,
-            "vendors": VENDORS,
+            "vendors": vendor_options(),
             "kinds": {k: v[0] for k, v in KINDS.items()},
             "sports": SPORT_LABELS,
             "statuses": STATUSES,
@@ -150,6 +157,20 @@ class App:
             "sources": result.sources,
             "warnings": result.warnings,
             "opportunities": [opportunity_dict(op) for op in result.opportunities],
+        }
+
+    def plan(self, body: dict) -> dict:
+        from karte.portfolio import build_plan
+
+        opts = self._scan_options(body)
+        result = run_scan(opts, self.settings)
+        plan = build_plan(result.opportunities, opts.budget, result.evaluator)
+        return {
+            **plan.as_dict(),
+            "is_snapshot": result.is_snapshot,
+            "is_demo": result.is_demo,
+            "sources": result.sources,
+            "warnings": result.warnings,
         }
 
     def report(self, body: dict) -> tuple[str, str, str]:
@@ -323,6 +344,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, text.encode("utf-8"), ctype, {"Content-Disposition": f'attachment; filename="{fname}"'})
             if path == "/api/calc":
                 return self._json(app.calc(body))
+            if path == "/api/plan":
+                return self._json(app.plan(body))
             if path == "/api/categories":
                 return self._json(app.cats(body))
             if path == "/api/journal":

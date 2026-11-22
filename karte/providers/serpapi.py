@@ -16,6 +16,7 @@ import re
 from datetime import datetime, timedelta
 
 from karte.geo import CA_PROVINCES, US_STATES, country_code
+from karte.knowledge import vendor_key_for
 from karte.models import Event
 from karte.net import HttpClient, ProviderError
 from karte.providers.wikipedia import MONTHS
@@ -130,7 +131,7 @@ def parse_events(data: dict, now: datetime, fallback_country: str | None = None,
         venue = ((item.get("venue") or {}).get("name") or ((item.get("address") or [""])[0].split(",")[0])).strip()
         tickets = [t for t in item.get("ticket_info") or [] if isinstance(t, dict)]
         vendor_link = next((t for t in tickets if t.get("link_type") == "tickets"), tickets[0] if tickets else None)
-        vendor = normalize((vendor_link or {}).get("source", "")).replace(" ", "")
+        vendor = (vendor_link or {}).get("source", "") or (vendor_link or {}).get("link", "")
         segment = "sport" if ("sports" in query or SPORT_WORDS.search(title)) else "music"
         ident = hashlib.sha1(f"{title}|{venue}|{when.isoformat()}".encode()).hexdigest()[:10]
         sources = ", ".join(sorted({t.get("source", "") for t in tickets if t.get("source")}))
@@ -146,7 +147,7 @@ def parse_events(data: dict, now: datetime, fallback_country: str | None = None,
                 source="Google Events (SerpApi)",
                 url=(vendor_link or {}).get("link") or item.get("link"),
                 status="onsale",
-                primary_vendor=_vendor_key(vendor),
+                primary_vendor=vendor_key_for(vendor) or vendor_key_for((vendor_link or {}).get("link")),
                 notes=("Prodaja/poveznice: " + sources + ". " if sources else "")
                 + "Izvođač je izveden iz naslova; nominalnu cijenu provjeri kod prodavača.",
                 region=region,
@@ -154,13 +155,6 @@ def parse_events(data: dict, now: datetime, fallback_country: str | None = None,
             )
         )
     return events
-
-
-def _vendor_key(source: str) -> str | None:
-    for key in ("ticketmaster", "eventim", "entrio", "ulaznice", "seatgeek", "axs", "seetickets"):
-        if key in source:
-            return "ulaznice_hr" if key == "ulaznice" else key
-    return None
 
 
 class SerpApiProvider:

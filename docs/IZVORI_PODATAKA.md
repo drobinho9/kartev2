@@ -111,7 +111,21 @@ Hrvatska – Francuska (Poljud, 3/2026.) 50/40/25 €, na dan utakmice +5 €
 ([Index](https://www.index.hr/sport/clanak/hrvatska-i-francuska-igrat-ce-na-poljudu-hns-je-objavio-cijene-ulaznica/2647766.aspx)).
 Za HR klubove vrijede uvjeti kluba (vidi vodič *Nogomet i sport*).
 
-## 6. Ograničenja
+## 6. Strani prodavači i poveznice „Provjeri cijene”
+
+`karte/data/vendors.toml` opisuje službene prodavače po državama (Ticketmaster s domenom za svaku državu, Eventim i njegove
+marke oeticket/Ticketcorner/Lippupiste/Billetlugen, Live Nation, AXS, See Tickets, DICE, TicketOne, Vivaticket, Fnac,
+Entradas.com, El Corte Inglés, Ticketportal, GoOut, eBilet, Going., jegy.hu, Funcode, Entrio, Ulaznice.hr, Core Event,
+Moje karte, Tickets.rs, Ticketline, Ticketek, SeatGeek): okvirne naknade, virtualni red, pravila prijenosa i službene
+preprodaje (npr. DICE ulaznice se ne mogu preprodati, TicketOne ulaznice su na ime, fanSALE u UK najviše +10 %).
+
+Za svaki događaj aplikacija slaže **poveznice za ručnu provjeru** (Google pretraga ograničena na stranicu — radi uvijek):
+službeni prodavači u državi događaja, platforme za preprodaju koje tamo rade (viagogo, StubHub, Ticombo, Gigsberg,
+TicketSwap, fanSALE, Twickets…), usporedbe cijena (SeatPick, Stereoboard, karlobag.eu) i lokalni oglasnik (Njuškalo, Bolha,
+willhaben, Jófogás, Kleinanzeigen, Marktplaats, Subito…). U državama gdje preprodaja iznad nominalne nije dopuštena
+nudi samo kanale s limitom cijene. Aplikacija te stranice **ne dohvaća** — samo otvara pretragu u tvom pregledniku.
+
+## 7. Ograničenja
 
 - Deezer fanovi ne mjere lokalnu potražnju: Thompson ima ~12 tisuća fanova, a puni stadione → oznaka `regional_star`.
 - Wikipedia tablice mogu kasniti ili imati greške; mjerodavan je službeni prodavač.

@@ -262,6 +262,14 @@ dobivaju kroz **presaleove** (fan klubovi, kartice, Verified Fan, Spotify pozivn
 cijenu postavljaju prema tempu prodaje i oglašavaju na više mjesta. Najveće prijetnje: prijevare na Telegramu/Facebooku,
 dvostruka prodaja i kazneni progon za botove i lažne identitete (Hunter & Smith: 4 godine i 30 mjeseci zatvora).
 
+## 5.7 Kako se stvarno zarađuje (sažetak, studeni 2026.)
+
+Which? procjenjuje da su preprodavači na 66 izvođača u UK (travanj–rujan 2026.) mogli zaraditi gotovo 24 mil. £, od čega
+profesionalci 18,5 mil. £ (mjereno po oglasima); Vanderbilt procjenjuje preprodajne marže u Sjevernoj Americi na ~4,5 mlrd. $;
+izvješće američkog Senata pokazuje da fanovi-preprodavači naplaćuju više od brokera. Iz parametara modela slijedi pravilo palca:
+najniži oglas na viagogu mora biti ~1,9× nominalne da ne izgubiš, a ~2,5× za ROI od 30 %. Detaljno, sa strategijama i planom
+za prvih 30 dana: [Kako zaraditi](../karte/data/guides/8_kako_zaraditi.md).
+
 ## 6. Izvori podataka (API) — što je dostupno
 
 > 🆕 Detaljna usporedba, uzroci zašto Ticketmaster ne odobrava ključ i zamjene (SerpApi Google Events, PredictHQ, Deezer,
