@@ -113,7 +113,7 @@ def test_run_scan_with_apis(tmp_path, now):
         lastfm.BASE_URL: load_fixture("lastfm_artist.json"),
     })
     settings = _settings(tmp_path, ticketmaster_api_key="K", lastfm_api_key="L")
-    result = run_scan(ScanOptions(days=60, onsale_days=30, countries=["AT"], now=now), settings, http=http)
+    result = run_scan(ScanOptions(use_deezer=False, use_wikipedia=False, days=60, onsale_days=30, countries=["AT"], now=now), settings, http=http)
     artists = {op.event.artist for op in result.opportunities}
     assert "Test Band" in artists  # izvan 60 dana, ali prodaja počinje za 7 dana
     assert any("Ticketmaster" in s for s in result.sources)
@@ -123,16 +123,16 @@ def test_run_scan_with_apis(tmp_path, now):
 def test_run_scan_hides_events_without_price_unless_show_all(tmp_path, now):
     http = FakeHttp({ticketmaster.BASE_URL: load_fixture("ticketmaster_events.json")})
     settings = _settings(tmp_path, ticketmaster_api_key="K")
-    hidden = run_scan(ScanOptions(countries=["DE"], now=now, use_lastfm=False), settings, http=http)
+    hidden = run_scan(ScanOptions(use_deezer=False, use_wikipedia=False, countries=["DE"], now=now, use_lastfm=False), settings, http=http)
     assert "Another Artist" not in {op.event.artist for op in hidden.opportunities}
     assert any("bez nominalne cijene" in w for w in hidden.warnings)
-    shown = run_scan(ScanOptions(countries=["DE"], now=now, use_lastfm=False, show_all=True), settings, http=http)
+    shown = run_scan(ScanOptions(use_deezer=False, use_wikipedia=False, countries=["DE"], now=now, use_lastfm=False, show_all=True), settings, http=http)
     assert "Another Artist" in {op.event.artist for op in shown.opportunities}
 
 
 def test_run_scan_expands_regions(tmp_path, now):
     http = FakeHttp({ticketmaster.BASE_URL: load_fixture("ticketmaster_events.json")})
-    opts = ScanOptions(countries=["dach"], now=now, use_lastfm=False, onsale_days=0)
+    opts = ScanOptions(use_deezer=False, use_wikipedia=False, countries=["dach"], now=now, use_lastfm=False, onsale_days=0)
     run_scan(opts, _settings(tmp_path, ticketmaster_api_key="K"), http=http)
     assert [c[1]["countryCode"] for c in http.calls] == ["DE", "AT", "CH"]
 

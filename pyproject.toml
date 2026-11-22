@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "karte"
-version = "0.1.0"
+version = "0.6.0"
 description = "Radar za preprodaju ulaznica: traži koncerte, procjenjuje potencijalnu zaradu i daje savjete kako kupiti i preprodati."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -21,7 +21,7 @@ karte = "karte.cli:main"
 include = ["karte*"]
 
 [tool.setuptools.package-data]
-"karte.data" = ["*.toml", "*.json", "guides/*.md"]
+"karte.data" = ["*.toml", "*.json", "guides/*.md", "snimka/*"]
 "karte.gui" = ["static/*"]
 
 [tool.pytest.ini_options]

@@ -23,7 +23,16 @@ Oznake (`[buzz]`): `farewell` 0,45 · `reunion` 0,45 · `added_date` 0,35 · `re
 > Last.fm brojke su ~5–10× manje od Spotify „mjesečnih slušatelja”; top izvođači imaju ~5–9 mil. Balkanske zvijezde su
 > na Last.fm-u jako podcijenjene → oznaka `regional_star` ili ručni broj u stupcu `slusatelji`.
 
-**Pouzdanost** (0–1) raste s dostupnim podacima: slušatelji (+0,35), stvarni kapacitet (+0,15), nominalna cijena (+0,15), sekundarne cijene (+0,20).
+**Bez Last.fm-a → Deezer** (bez ključa): popularnost = log-skala Deezer fanova **20 tis. → 0, 8 mil. → 1** (`fans_low`,
+`fans_high`); isti broj ulazi i u omjer rijetkosti. Primjeri (studeni 2026.): U2 7,4 mil. → 0,99 · Fall Out Boy 2,6 mil. → 0,81 ·
+Rod Stewart 1,5 mil. → 0,72 · Sabaton 415 tis. → 0,51 · Seka Aleksić 162 tis. → 0,35 · Željko Joksimović 106 tis. → 0,28.
+Deezer je jak u Europi, a slab za neke američke i balkanske izvođače (Thompson ~12 tis.) → po potrebi oznaka `regional_star`.
+
+**Trend s Wikipedije** (`[trend]`): omjer prosječnih dnevnih pregleda članka o izvođaču u zadnjih 14 dana i prethodnih 60 dana.
+Omjer ≤ 1,15 nema učinka, ≥ 2,5 dodaje puni buzz 0,25 (linearno između). Primjer: najava turneje i nova pjesma Fall Out Boya
+(studeni 2026.) → ×3,0; U2 nakon početka prodaje → ×2,0.
+
+**Pouzdanost** (0–1) raste s dostupnim podacima: slušatelji (+0,35) ili Deezer fanovi (+0,25), stvarni kapacitet (+0,15), nominalna cijena (+0,15), sekundarne cijene (+0,20).
 
 ## 2. Očekivana prodajna cijena
 
@@ -80,6 +89,19 @@ događaj > 180 dana +0,1 · isplata nakon događaja +0,05 · odgođeno +0,3 · s
 | **NEMA CIJENE** | izvor nema nominalnu cijenu — upiši je u CSV |
 
 Količina: KUPI → 4 (potražnja ≥ 0,75) ili 2; RAZMOTRI → 2; uvijek ≤ limit po kupcu, ≤ 25 % budžeta, zaokruženo na paran broj.
+
+## 6b. Bez nominalne cijene: *PROVJERI CIJENU*
+
+Kad izvor nema nominalnu cijenu (snimka stvarnih događaja, Google Events, PredictHQ), a postoje cijene s preprodaje,
+aplikacija binarnim pretraživanjem po hipotetskoj nominalnoj cijeni (kroz cijeli model: naknade, platforme, zakonski limiti,
+vjerojatnost prodaje) traži:
+
+- `max_buy` — najvišu nominalnu cijenu uz koju je očekivani ROI ≥ `verdict.buy_roi` (30 %),
+- `breakeven_buy` — cijenu uz koju je očekivana dobit 0.
+
+Ako ni uz vrlo nisku cijenu nema dobiti ili zakon zabranjuje preprodaju iznad nominalne (IT, BE, IE…), ostaje *NEMA CIJENE*.
+Rasprodani događaji bez nominalne cijene dobivaju *RASPRODANO*. Cijene s preprodaje starije od `risk.stale_secondary_days`
+(21 dan, stupac `sek_datum`) dobivaju upozorenje.
 
 ## 7. Kalibracija vlastitim podacima
 

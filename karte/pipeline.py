@@ -10,14 +10,19 @@ from karte.advisor import build_advice
 from karte.knowledge import ModelConfig, estimate_capacity, expand_countries, venue_capacity
 from karte.models import Event, Opportunity
 from karte.net import FileCache, HttpClient, ProviderError
+from karte.providers.deezer import DeezerProvider
 from karte.providers.demo import load_demo
 from karte.providers.lastfm import LastFmProvider
 from karte.providers.manual import load_csv, load_csv_text
+from karte.providers.predicthq import PredictHQProvider
 from karte.providers.seatgeek import SeatGeekProvider
+from karte.providers.serpapi import SerpApiProvider, default_cities, parse_cities
 from karte.providers.ticketmaster import TicketmasterProvider
+from karte.providers.wikipedia import WikipediaProvider
 from karte.scoring import Evaluator, sort_key
 from karte.settings import Settings
-from karte.util import normalize, utcnow
+from karte.snapshot import load_snapshot
+from karte.util import hr_plural, normalize, utcnow
 
 
 @dataclass
@@ -41,6 +46,11 @@ class ScanOptions:
     max_artists: int = 300
     show_all: bool = False
     segment: str = "music"  # "music" (koncerti) | "sport" | "all"
+    snapshot: bool = False  # snimka stvarnih događaja (bez ključeva) umjesto živih API-ja
+    use_deezer: bool = True  # popularnost iz Deezera (bez ključa) kad nema Last.fm podatka
+    use_wikipedia: bool = True  # trend pregleda na Wikipediji (bez ključa)
+    trend_artists: int = 40  # za koliko izvođača dohvatiti trend (svaki je jedan zahtjev)
+    serpapi_cities: list[str] = field(default_factory=list)  # gradovi za Google Events (SerpApi); prazno = zadani za države
 
 
 @dataclass
@@ -51,6 +61,8 @@ class ScanResult:
     generated_at: datetime
     options: ScanOptions
     is_demo: bool
+    is_snapshot: bool = False
+    snapshot: dict | None = None  # podaci o snimci (stanje, broj događaja, turneje)
 
 
 def event_key(e: Event) -> str:
@@ -94,6 +106,8 @@ def annotate_supply(events: list[Event]) -> None:
                 e.capacity_estimated = True
 
 
+DISCOVERY_SOURCES = ("CSV", "Google Events", "PredictHQ")
+
 TM_CLASSIFICATIONS = {
     "music": [("music", "koncerti")],
     "sport": [("sports", "sport")],
@@ -121,16 +135,40 @@ def enrichment_targets(events: list[Event], max_artists: int) -> list[Event]:
     return [e for e in events if normalize(e.artist) in wanted]
 
 
-def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | None = None) -> tuple[list[Event], list[str], list[str]]:
+def collect_events(
+    opts: ScanOptions, settings: Settings, http: HttpClient | None = None, meta: dict | None = None
+) -> tuple[list[Event], list[str], list[str]]:
     now = opts.now or utcnow()
     warnings: list[str] = []
     sources: list[str] = []
     events: list[Event] = []
     opts.countries = expand_countries(opts.countries) or ["ALL"]
+    live = not (opts.demo or opts.snapshot)
 
     if opts.demo:
         events.extend(e for e in load_demo(now) if opts.segment == "all" or e.segment == opts.segment)
         sources.append("demo (izmišljeni podaci)")
+
+    if opts.snapshot:
+        snap, info, snap_warnings = load_snapshot(now, opts.countries)
+        warnings.extend(snap_warnings)
+        chosen = [e for e in snap if opts.segment == "all" or e.segment == opts.segment]
+        events.extend(chosen)
+        if meta is not None:
+            meta["snapshot"] = info.as_dict(now)
+        sources.append(
+            f"Snimka stvarnih događaja (stanje {info.date_hr}: {info.curated} provjerenih + {info.tour_events} "
+            f"{hr_plural(info.tour_events, 'datum', 'datuma')} turneja s Wikipedije)"
+        )
+        age = info.age_days(now)
+        if age is not None and age > 30:
+            warnings.append(
+                f"Snimka je stara {age} dana – osvježi turneje i popularnost (karte snimka --osvjezi) i provjeri cijene kod prodavača."
+            )
+        if opts.segment == "sport" and not chosen:
+            warnings.append(
+                "Snimka zasad nema sportskih događaja s potvrđenim datumom i cijenom – za utakmice koristi Kalkulator ili CSV (vodič 6)."
+            )
 
     for path in opts.manual_files:
         try:
@@ -144,7 +182,7 @@ def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | Non
         events.extend(loaded)
         sources.append(f"CSV {name} ({len(loaded)})")
 
-    if not opts.demo:
+    if live:
         http = http or HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=6 * 3600))
         end = now + timedelta(days=opts.days)
         if settings.ticketmaster_api_key:
@@ -168,7 +206,10 @@ def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | Non
                     f"Ticketmaster: rezultati su djelomični ({tm.calls} poziva; limit poziva ili > 1000 događaja u 12 h) – suzi države ili smanji --days."
                 )
         else:
-            warnings.append("Nema TICKETMASTER_API_KEY – preskačem Ticketmaster (besplatan ključ: developer.ticketmaster.com).")
+            warnings.append(
+                "Nema TICKETMASTER_API_KEY – preskačem Ticketmaster (besplatan ključ: developer.ticketmaster.com; "
+                "zamjene bez Ticketmastera: docs/IZVORI_PODATAKA.md)."
+            )
 
         if opts.use_seatgeek and settings.seatgeek_client_id:
             sg = SeatGeekProvider(settings.seatgeek_client_id, http)
@@ -180,33 +221,74 @@ def collect_events(opts: ScanOptions, settings: Settings, http: HttpClient | Non
             except ProviderError as exc:
                 warnings.append(f"SeatGeek: {exc}")
 
-    events = merge_events(events)
+        if settings.serpapi_key:
+            sp = SerpApiProvider(settings.serpapi_key, http)
+            cities = parse_cities(opts.serpapi_cities or settings.serpapi_cities) or default_cities(opts.countries)
+            try:
+                found = sp.events(cities, now, end, opts.segment)
+                events.extend(found)
+                sources.append(f"Google Events / SerpApi – {len(cities)} gradova ({len(found)})")
+            except ProviderError as exc:
+                warnings.append(f"SerpApi: {exc}")
+            warnings.extend(sp.warnings)
 
-    if not opts.demo and opts.use_lastfm:
+        if settings.predicthq_token:
+            phq = PredictHQProvider(settings.predicthq_token, http, settings.predicthq_locations)
+            try:
+                found = phq.events(opts.countries, now, end, opts.segment)
+                events.extend(found)
+                sources.append(f"PredictHQ ({len(found)})")
+            except ProviderError as exc:
+                warnings.append(f"PredictHQ: {exc}")
+
+    events = merge_events(events)
+    music = [e for e in events if e.segment == "music"]
+
+    if live and opts.use_lastfm and music:
         if settings.lastfm_api_key:
             http = http or HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=6 * 3600))
-            targets = enrichment_targets([e for e in events if e.segment == "music"], opts.max_artists)
+            targets = enrichment_targets(music, opts.max_artists)
             warnings.extend(LastFmProvider(settings.lastfm_api_key, http).enrich(targets))
             artists = len({normalize(e.artist) for e in targets})
             sources.append(f"Last.fm (popularnost {artists} izvođača)")
-            if len({normalize(e.artist) for e in events if e.segment == "music"}) > artists:
+            if len({normalize(e.artist) for e in music}) > artists:
                 warnings.append(
                     f"Last.fm: obogaćeno samo {artists} najperspektivnijih izvođača (--max-artists); ostali imaju zadanu popularnost."
                 )
-        elif events:
+        elif not opts.use_deezer:
             warnings.append("Nema LASTFM_API_KEY – potražnja se procjenjuje bez popularnosti izvođača (manja točnost).")
+
+    if live and opts.use_deezer and music:
+        http = http or HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=6 * 3600))
+        targets = [e for e in enrichment_targets(music, opts.max_artists) if not e.artist_listeners]
+        if targets:
+            deezer_warnings, found = DeezerProvider(http).enrich(targets, limit=opts.max_artists)
+            warnings.extend(deezer_warnings)
+            sources.append(f"Deezer (popularnost {found} izvođača, bez ključa)")
+
+    if live and opts.use_wikipedia and music and opts.trend_artists > 0:
+        http = http or HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=6 * 3600))
+        targets = enrichment_targets(music, opts.trend_artists)
+        wiki_warnings, found = WikipediaProvider(http).enrich(targets, now, limit=opts.trend_artists)
+        warnings.extend(wiki_warnings)
+        if found:
+            sources.append(f"Wikipedia (trend pregleda za {found} izvođača)")
 
     annotate_supply(events)
 
-    if not events and not opts.demo:
-        warnings.append("Nema događaja. Dodaj API ključeve u .env, ručni CSV (--csv) ili pokreni s --demo.")
+    if not events and not (opts.demo or opts.snapshot):
+        warnings.append(
+            "Nema događaja. Bez ključeva koristi snimku stvarnih događaja (--snimka), dodaj API ključeve u .env "
+            "(vidi docs/IZVORI_PODATAKA.md) ili učitaj vlastiti CSV (--csv)."
+        )
     return events, warnings, sources
 
 
 def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = None) -> ScanResult:
     now = opts.now or utcnow()
     opts.now = now
-    events, warnings, sources = collect_events(opts, settings, http)
+    meta: dict = {}
+    events, warnings, sources = collect_events(opts, settings, http, meta)
     config = ModelConfig.load(opts.model_path)
     evaluator = Evaluator(
         config, budget=opts.budget, category=opts.category, strict=opts.strict, now=now, seller_country=opts.seller_country
@@ -222,10 +304,11 @@ def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = No
         # događaji izvan prozora ostaju samo ako im prodaja tek počinje (prilika za kupnju)
         in_window = event.date <= window_end
         onsale_soon = op.days_to_onsale is not None and op.days_to_onsale <= max(opts.onsale_days, 0)
-        if not (in_window or (opts.include_far_onsales and onsale_soon) or opts.demo or event.source.startswith("CSV")):
+        # ručni/otkrivajući izvori (bez nominalnih cijena po prirodi) uvijek se prikazuju
+        manual = opts.demo or opts.snapshot or event.source.startswith(DISCOVERY_SOURCES)
+        if not (in_window or (opts.include_far_onsales and onsale_soon) or manual):
             continue
-        # bez nominalne cijene nema izračuna – iz API-ja ih skrivamo (CSV/demo uvijek prikazujemo)
-        manual = opts.demo or event.source.startswith("CSV")
+        # bez nominalne cijene nema izračuna – iz API-ja ih skrivamo (CSV/demo/snimku uvijek prikazujemo)
         if op.verdict == "NEMA CIJENE" and not (manual or opts.show_all):
             hidden += 1
             continue
@@ -242,4 +325,6 @@ def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = No
         generated_at=now,
         options=opts,
         is_demo=opts.demo,
+        is_snapshot=opts.snapshot,
+        snapshot=meta.get("snapshot"),
     )

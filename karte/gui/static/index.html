@@ -32,6 +32,13 @@
   <form class="card" id="scanForm">
     <h2>Pretraga koncerata</h2>
     <div class="grid">
+      <label>Izvor podataka
+        <select name="source" id="sourceSel">
+          <option value="snapshot">Snimka stvarnih događaja (bez ključeva)</option>
+          <option value="live">Živi izvori (API ključevi)</option>
+          <option value="demo">Izmišljeni demo (za isprobavanje)</option>
+        </select>
+      </label>
       <label>Vrsta događaja
         <select name="segment" id="segmentSel">
           <option value="music">Koncerti</option>
@@ -65,7 +72,6 @@
       </label>
     </div>
     <div class="row checks">
-      <label class="check"><input type="checkbox" name="demo"> Demo podaci (izmišljeni)</label>
       <label class="check"><input type="checkbox" name="strict"> Strogo: primijeni najavljene zakone</label>
       <label class="check"><input type="checkbox" name="show_all"> Prikaži i događaje bez cijene</label>
     </div>

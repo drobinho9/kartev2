@@ -1,0 +1,90 @@
+{
+ "azurirano": "2026-11-22",
+ "izvor": "api.deezer.com (nb_fan) + wikimedia.org (pregledi, zadnjih 14 / prethodnih 60 dana)",
+ "izvodjaci": {
+  "Željko Joksimović": {
+   "deezer_fanovi": 106111,
+   "deezer_id": 124087,
+   "wikipedia": "Željko Joksimović",
+   "pregledi_dnevno": 57,
+   "trend": 0.807
+  },
+  "Seka Aleksić": {
+   "deezer_fanovi": 162230,
+   "deezer_id": 1095291,
+   "wikipedia": "Seka Aleksić",
+   "pregledi_dnevno": 139,
+   "trend": 1.351
+  },
+  "Fontaines D.C.": {
+   "deezer_fanovi": 146888,
+   "deezer_id": 14175163,
+   "wikipedia": "Fontaines D.C.",
+   "pregledi_dnevno": 6867,
+   "trend": 0.996
+  },
+  "Rod Stewart": {
+   "deezer_fanovi": 1467168,
+   "deezer_id": 1440,
+   "wikipedia": "Rod Stewart",
+   "pregledi_dnevno": 4347,
+   "trend": 0.971
+  },
+  "Simply Red": {
+   "deezer_fanovi": 936146,
+   "deezer_id": 1516,
+   "wikipedia": "Simply Red",
+   "pregledi_dnevno": 969,
+   "trend": 0.853
+  },
+  "Laura Pausini": {
+   "deezer_fanovi": 1065138,
+   "deezer_id": 1456,
+   "wikipedia": "Laura Pausini",
+   "pregledi_dnevno": 309,
+   "trend": 0.824
+  },
+  "Fall Out Boy": {
+   "deezer_fanovi": 2622802,
+   "deezer_id": 404,
+   "wikipedia": "Fall Out Boy",
+   "pregledi_dnevno": 5362,
+   "trend": 2.959
+  },
+  "Nickelback": {
+   "deezer_fanovi": 3191965,
+   "deezer_id": 338,
+   "wikipedia": "Nickelback",
+   "pregledi_dnevno": 2060,
+   "trend": 0.852
+  },
+  "Sabaton": {
+   "deezer_fanovi": 415342,
+   "deezer_id": 12022,
+   "wikipedia": "Sabaton (band)",
+   "pregledi_dnevno": 1123,
+   "trend": 1.065
+  },
+  "U2": {
+   "deezer_fanovi": 7382215,
+   "deezer_id": 163,
+   "wikipedia": "U2",
+   "pregledi_dnevno": 9302,
+   "trend": 1.982
+  },
+  "Olivia Rodrigo": {
+   "deezer_fanovi": 1863845,
+   "deezer_id": 11152580,
+   "wikipedia": "Olivia Rodrigo",
+   "pregledi_dnevno": 12258,
+   "trend": 0.989
+  },
+  "Karol G": {
+   "deezer_fanovi": 3429307,
+   "deezer_id": 5297021,
+   "wikipedia": "Karol G",
+   "pregledi_dnevno": 2198,
+   "trend": 0.771
+  }
+ }
+}

@@ -140,3 +140,13 @@ def parse_int(value) -> int | None:
 
 def add_days(dt: datetime, days: float) -> datetime:
     return dt + timedelta(days=days)
+
+
+def hr_plural(n: int, one: str, few: str, many: str | None = None) -> str:
+    """Hrvatska množina: 1 datum, 2 datuma, 5 datuma, 21 datum (11–14 → many)."""
+    many = many or few
+    if n % 10 == 1 and n % 100 != 11:
+        return one
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return few
+    return many

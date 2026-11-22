@@ -23,6 +23,7 @@ class SecondaryMarket:
     average: float | None = None
     listing_count: int | None = None
     currency: str = "EUR"
+    observed: str | None = None  # kad je cijena zabilježena (YYYY-MM-DD) – stare cijene treba provjeriti
 
 
 @dataclass
@@ -49,7 +50,10 @@ class Event:
     personalized: bool | None = None
     tags: list[str] = field(default_factory=list)
     secondary: SecondaryMarket | None = None
-    artist_listeners: int | None = None
+    artist_listeners: int | None = None  # Last.fm slušatelji
+    artist_fans: int | None = None  # Deezer fanovi (bez ključa) – zamjena kad nema Last.fm podatka
+    artist_trend: float | None = None  # Wikipedia: prosjek pregleda zadnjih 14 dana / prethodnih 60 dana
+    artist_pageviews: int | None = None  # Wikipedia: prosječni dnevni pregledi (zadnjih 14 dana)
     artist_upcoming_events: int | None = None
     shows_in_region: int = 1
     primary_vendor: str | None = None
@@ -132,6 +136,9 @@ class Opportunity:
     verdict_reason: str
     suggested_qty: int
     advice: dict = field(default_factory=dict)
+    # kad nominalna cijena nije poznata, ali postoje cijene s preprodaje:
+    max_buy: float | None = None  # najviša nominalna cijena (EUR) uz koju je očekivani ROI ≥ cilj (verdict.buy_roi)
+    breakeven_buy: float | None = None  # nominalna cijena (EUR) uz koju je očekivana dobit 0
 
     @property
     def listings_share(self) -> float | None:

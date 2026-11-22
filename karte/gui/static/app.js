@@ -29,9 +29,10 @@ function dtFmt(iso) {
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
 const VERDICT_CLASS = {
-  KUPI: "v-buy", RAZMOTRI: "v-maybe", RASPRODANO: "v-sold", "PRESKOČI": "v-skip",
+  KUPI: "v-buy", RAZMOTRI: "v-maybe", "PROVJERI CIJENU": "v-check", RASPRODANO: "v-sold", "PRESKOČI": "v-skip",
   "ZAKONSKI OGRANIČENO": "v-legal", "UVJETI ZABRANJUJU": "v-legal", "NEMA CIJENE": "v-skip", OTKAZANO: "v-skip",
 };
+const plural = (n, one, other) => (n % 10 === 1 && n % 100 !== 11 ? one : other);
 const pill = (v) => `<span class="pill ${VERDICT_CLASS[v] || "v-skip"}">${esc(v)}</span>`;
 const REGION_LABELS = {
   otvoreno: "Otvorena tržišta (preporučeno)", svijet: "Cijeli svijet", europa: "Europa", zapadna_europa: "Zapadna Europa",
@@ -132,6 +133,7 @@ function eventFields() {
     { k: "resale_lowest", l: "Najniža cijena na viagogu", t: "number", step: "0.01", ph: "ukupna cijena koju vidi kupac" },
     { k: "listing_count", l: "Broj oglasa na viagogu", t: "number" },
     { k: "listeners", l: "Last.fm slušatelji", t: "number", lastfm: true },
+    { k: "fans", l: "Deezer fanovi (bez ključa)", t: "number", deezer: true },
     { k: "capacity", l: "Kapacitet (prazno = automatski)", t: "number" },
     { k: "ticket_limit", l: "Limit ulaznica po kupcu", t: "number" },
     { k: "vendor", l: "Gdje se kupuje", t: "select", opts: Object.entries(state.meta.vendors) },
@@ -152,6 +154,9 @@ function buildFields(container, fields) {
       const on = state.meta.settings.lastfm;
       input = `<div class="row" style="margin:0;flex-wrap:nowrap">${input}<button type="button" class="ghost small" data-lastfm="${container.id}"${on ? "" : ' disabled title="Dodaj LASTFM_API_KEY u .env"'}>Dohvati</button></div>`;
     }
+    if (f.deezer) {
+      input = `<div class="row" style="margin:0;flex-wrap:nowrap">${input}<button type="button" class="ghost small" data-deezer="${container.id}" title="Deezer fanovi + trend na Wikipediji (bez ključa)">Dohvati</button></div>`;
+    }
     return `<label for="${id}">${esc(f.l)}${input}</label>`;
   }).join("");
   $$("[data-lastfm]", container).forEach((b) => b.addEventListener("click", async () => {
@@ -161,6 +166,16 @@ function buildFields(container, fields) {
       const r = await api.get(`/api/listeners?artist=${encodeURIComponent(artist)}`);
       if (r.listeners) $(`[name="listeners"]`, container).value = r.listeners;
       else toast(r.error || "Izvođač nije pronađen na Last.fm-u.");
+    });
+  }));
+  $$("[data-deezer]", container).forEach((b) => b.addEventListener("click", async () => {
+    const artist = $(`[name="artist"]`, container).value.trim();
+    if (!artist) return toast("Upiši izvođača.");
+    await busy(b, async () => {
+      const r = await api.get(`/api/popularity?artist=${encodeURIComponent(artist)}`);
+      if (r.fans) $(`[name="fans"]`, container).value = r.fans;
+      const trend = isNum(r.trend) ? ` · Wikipedia trend ×${r.trend.toFixed(2)}${r.trend >= 1.15 ? " (raste interes)" : ""}` : "";
+      toast(r.fans ? `Deezer: ${nf0.format(r.fans)} fanova${trend}` : (r.error || "Izvođač nije pronađen na Deezeru (provjeri točno ime)."));
     });
   }));
 }
@@ -282,10 +297,17 @@ function initRadar() {
   $("#categorySel").innerHTML = Object.entries(m.categories).map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("");
   $("#sellerSel").innerHTML = countryOptions(m.settings.seller_country);
   $("#scanForm [name=budget]").value = m.settings.budget;
-  if (!m.settings.ticketmaster) {
-    $("#scanForm [name=demo]").checked = true;
-    $("#scanHint").textContent = "Nema Ticketmaster ključa – uključen je demo. Dodaj TICKETMASTER_API_KEY u .env ili učitaj vlastiti CSV.";
-  }
+  const live = (m.settings.live_sources || []).length > 0;
+  $("#sourceSel").value = live ? "live" : "snapshot";
+  const hint = () => {
+    const src = $("#sourceSel").value, snap = m.snapshot;
+    $("#scanHint").textContent = src === "snapshot"
+      ? (snap ? `Snimka od ${snap.date_hr}: ukupno ${snap.curated} provjerenih + ${snap.tour_events} ${plural(snap.tour_events, "datum", "datuma")} turneja u Europi. Osvježi: karte snimka --osvjezi` : "Snimka nije dostupna.")
+      : src === "demo" ? "Izmišljeni podaci – samo za isprobavanje sučelja."
+      : live ? `Izvori: ${m.settings.live_sources.join(", ")}` : "Nema ključa ni za jedan živi izvor – vidi docs/IZVORI_PODATAKA.md (npr. besplatni SERPAPI_KEY).";
+  };
+  $("#sourceSel").addEventListener("change", hint);
+  hint();
   $("#scanForm").addEventListener("submit", (e) => { e.preventDefault(); runScan(); });
   $$("[data-export]").forEach((b) => b.addEventListener("click", () => busy(b, async () => {
     const body = await scanBody();
@@ -301,7 +323,7 @@ async function scanBody() {
     countries: (fd.get("custom") || "").trim() || fd.get("preset") || "otvoreno",
     days: fd.get("days"), onsale_days: fd.get("onsale_days"), budget: fd.get("budget"),
     category: fd.get("category"), seller_country: fd.get("seller_country"), segment: fd.get("segment"),
-    demo: !!fd.get("demo"), strict: !!fd.get("strict"), show_all: !!fd.get("show_all"),
+    source: fd.get("source") || "snapshot", strict: !!fd.get("strict"), show_all: !!fd.get("show_all"),
   };
   const file = fd.get("csv");
   if (file && file.size) { body.csv_text = await file.text(); body.csv_name = file.name; }
@@ -319,6 +341,12 @@ function renderScan() {
   const ops = s.opportunities;
   let html = "";
   if (s.is_demo) html += `<div class="notice demo">DEMO PODACI – izvođači, cijene i brojke su izmišljeni (služe samo za prikaz rada aplikacije).</div>`;
+  if (s.is_snapshot && s.snapshot) {
+    const sn = s.snapshot;
+    html += `<div class="notice info"><b>Stvarni podaci – snimka od ${esc(sn.date_hr)}</b> (${sn.curated} provjerenih ${plural(sn.curated, "događaj", "događaja")} + ${sn.tour_events} ${plural(sn.tour_events, "datum", "datuma")} turneja s Wikipedije). `
+      + `Nominalne cijene najčešće nisu javne, pa za takve događaje piše <b>PROVJERI CIJENU</b> i do koje se cijene isplati kupiti (izračunato iz cijena na preprodaji). `
+      + `Cijene s preprodaje su „od” cijene s agregatora uz datum – provjeri aktualne prije kupnje.${sn.age_days > 30 ? ` <b>Snimka je stara ${sn.age_days} dana – osvježi: karte snimka --osvjezi.</b>` : ""}</div>`;
+  }
   html += `<div class="notice small"><b>Države:</b> ${esc(s.countries.join(", "))} · <b>Izvori:</b> ${esc(s.sources.join("; ") || "—")}</div>`;
   if (s.warnings.length) html += `<div class="notice warn small"><b>Napomene</b><ul>${s.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul></div>`;
   $("#scanStatus").innerHTML = html;
@@ -326,9 +354,11 @@ function renderScan() {
   const buys = ops.filter((o) => o.verdict === "KUPI" || o.verdict === "RAZMOTRI");
   const invest = buys.reduce((a, o) => a + (o.buy_cost || 0) * o.suggested_qty, 0);
   const ev = buys.reduce((a, o) => a + (o.total_expected_value || 0), 0);
+  const checks = ops.filter((o) => o.verdict === "PROVJERI CIJENU").length;
   $("#scanKpis").innerHTML = [
     ["Događaja", nf0.format(ops.length)],
     ["KUPI / RAZMOTRI", `${ops.filter((o) => o.verdict === "KUPI").length} / ${ops.filter((o) => o.verdict === "RAZMOTRI").length}`],
+    ...(checks ? [["Provjeri cijenu", nf0.format(checks)]] : []),
     ["Preporučeno ulaganje", eur(invest)],
     ["Očekivana dobit (uz rizik)", eur(ev)],
   ].map(([l, v]) => `<div class="kpi"><span>${l}</span><b>${v}</b></div>`).join("");
@@ -336,6 +366,22 @@ function renderScan() {
   const top = ops
     .filter((o) => isNum(o.multiplier) && !["ZAKONSKI OGRANIČENO", "UVJETI ZABRANJUJU", "OTKAZANO"].includes(o.verdict))
     .sort((a, b) => b.multiplier - a.multiplier).slice(0, 10);
+  const ceilings = ops.filter((o) => isNum(o.max_buy)).sort((a, b) => b.max_buy - a.max_buy).slice(0, 10);
+  if (top.length < 3 && ceilings.length) {
+    $("#chartCard").hidden = false;
+    $("#chartCard h3").innerHTML = 'Do koje nominalne cijene se isplati kupiti <span class="muted small">(cilj ROI ≥ 30 %, iz cijena na preprodaji)</span>';
+    barChart("chartTop", ceilings.map((o) => ({
+      label: `${o.event.artist} · ${o.event.city || o.event.country} ${dateFmt(o.event.date).slice(0, 6)}`,
+      value: o.max_buy,
+      tooltip: `<b>${esc(o.event.artist)}</b><br>${esc(o.location)} · ${esc(dateFmt(o.event.date))}<br>`
+        + `Kupi do ${esc(eur(o.max_buy))} · granica ${esc(eur(o.breakeven_buy))}<br>Realna prodajna ~${esc(eur(o.expected_resale))} · potražnja ${esc(score(o.demand.score))}/100`,
+      onClick: () => openDetail(o),
+    })), { fmt: (v) => eur(v), tick: (t) => eur(t), title: "Kupi najviše do" });
+    $("#resultsCard").hidden = !ops.length;
+    renderResults();
+    return;
+  }
+  $("#chartCard h3").innerHTML = 'Najveći očekivani skok cijene <span class="muted small">(očekivana prodajna ÷ nominalna, samo dopuštena tržišta)</span>';
   $("#chartCard").hidden = !top.length;
   barChart("chartTop", top.map((o) => ({
     label: `${o.event.artist} · ${o.event.city || o.event.country}`,
@@ -355,7 +401,8 @@ const COLS = [
   { k: "artist", l: "Izvođač", v: (o) => o.event.artist, h: (o) => `<b>${esc(o.event.artist)}</b>` },
   { k: "loc", l: "Mjesto", v: (o) => o.location, h: (o) => esc(o.location) },
   { k: "phase", l: "Faza", v: (o) => o.phase, h: (o) => esc(o.phase === "NAJAVA" && o.days_to_onsale != null ? `prodaja za ${o.days_to_onsale} d` : o.phase.toLowerCase()) },
-  { k: "face", l: "Nomin.", n: 1, v: (o) => o.face_ref, h: (o) => eur(o.face_ref) },
+  { k: "face", l: "Nomin.", n: 1, v: (o) => o.face_ref ?? o.max_buy, h: (o) => (o.face_ref == null && isNum(o.max_buy)
+    ? `<span class="muted" title="Nominalna cijena nije poznata – kupnja se isplati do ovog iznosa">≤ ${eur(o.max_buy)}</span>` : eur(o.face_ref)) },
   { k: "resale", l: "Oček. prodaja", n: 1, v: (o) => o.expected_resale, h: (o) => eur(o.expected_resale) },
   { k: "mult", l: "×", n: 1, v: (o) => o.multiplier, h: (o) => mult(o.multiplier) },
   { k: "profit", l: "Dobit*", n: 1, v: (o) => o.profit, h: (o) => eur(o.profit) },
@@ -369,7 +416,7 @@ function renderResults() {
   const ops = state.scan ? state.scan.opportunities : [];
   const counts = {};
   ops.forEach((o) => (counts[o.verdict] = (counts[o.verdict] || 0) + 1));
-  const order = ["SVE", "KUPI", "RAZMOTRI", "RASPRODANO", "PRESKOČI", "ZAKONSKI OGRANIČENO", "UVJETI ZABRANJUJU", "NEMA CIJENE", "OTKAZANO"];
+  const order = ["SVE", "KUPI", "RAZMOTRI", "PROVJERI CIJENU", "RASPRODANO", "PRESKOČI", "ZAKONSKI OGRANIČENO", "UVJETI ZABRANJUJU", "NEMA CIJENE", "OTKAZANO"];
   $("#verdictChips").innerHTML = order.filter((v) => v === "SVE" || counts[v])
     .map((v) => `<button type="button" class="chip${state.filter === v ? " active" : ""}" data-f="${esc(v)}">${esc(v === "SVE" ? "Sve" : v)} <span class="muted">${v === "SVE" ? ops.length : counts[v]}</span></button>`).join("");
   $$("#verdictChips .chip").forEach((c) => c.addEventListener("click", () => { state.filter = c.dataset.f; renderResults(); }));
@@ -449,19 +496,29 @@ function detailHTML(op) {
   const plat = (a.platforms || []).map((p) => `<tr><td>${esc(p.name)}</td><td class="num">${eur(p.list_price)}${p.capped ? " (limit)" : ""}</td><td class="num">${eur(p.net)}</td><td class="num">${nf0.format(p.p_sell * 100)} %</td><td class="num">${eur(p.ev)}</td></tr>`).join("");
   const tl = timeline(op).map((it) => `<li class="${it.cls}${it.next ? " next" : ""}"><span class="when">${esc(it.timed ? dtFmt(it.d.toISOString()) : dateFmt(it.d.toISOString()))}</span> ${esc(it.t)}${it.next ? " ← sljedeći korak" : ""}</li>`).join("");
   const share = isNum(op.listings_share) ? `<div class="metric"><span>Oglasa / kapacitet</span><b>${nf0.format(op.listings_share * 100)} %</b></div>` : "";
-  return `<div class="detail">
-    <h2>${pill(op.verdict)} ${esc(e.name)}</h2>
-    <div class="muted">${esc(op.location)} · ${esc(dtFmt(e.date))} · ${esc(op.phase)}</div>
-    <p>${esc(a.summary || op.verdict_reason)}</p>
-    <div class="metrics">
+  const sec = e.secondary;
+  const ceiling = op.face_ref == null && (isNum(op.max_buy) || isNum(op.breakeven_buy));
+  const secText = sec && isNum(sec.lowest) ? `${nf0.format(sec.lowest)} ${esc(sec.currency)} <span class="muted small">${esc(sec.source)}${sec.observed ? ", " + esc(dateFmt(sec.observed)) : ""}</span>` : "—";
+  const metrics = ceiling ? `
+      <div class="metric"><span>Kupi najviše do</span><b>${eur(op.max_buy)}</b></div>
+      <div class="metric"><span>Granica isplativosti</span><b>${eur(op.breakeven_buy)}</b></div>
+      <div class="metric"><span>Najniža na preprodaji</span><b>${secText}</b></div>
+      <div class="metric"><span>Realna prodajna (procjena)</span><b>${eur(op.expected_resale)}</b></div>
+      <div class="metric"><span>Potražnja / rizik</span><b>${score(op.demand.score)} / ${score(op.risk)}</b></div>` : `
       <div class="metric"><span>Nominalna (ref.)</span><b>${eur(op.face_ref)}</b></div>
       <div class="metric"><span>Trošak s naknadama</span><b>${eur(op.buy_cost, 2)}</b></div>
       <div class="metric"><span>Očekivana prodajna</span><b>${eur(op.expected_resale)} <span class="muted">${mult(op.multiplier)}</span></b></div>
       <div class="metric"><span>Dobit ako se proda</span><b>${eur(op.profit)}</b></div>
       <div class="metric"><span>Očekivani ROI</span><b>${pct(op.roi)}</b></div>
       <div class="metric"><span>Potražnja / rizik</span><b>${score(op.demand.score)} / ${score(op.risk)}</b></div>
-      <div class="metric"><span>Preporučeno komada</span><b>${op.suggested_qty || "–"}</b></div>${share}
+      <div class="metric"><span>Preporučeno komada</span><b>${op.suggested_qty || "–"}</b></div>${share}`;
+  return `<div class="detail">
+    <h2>${pill(op.verdict)} ${esc(e.name)}</h2>
+    <div class="muted">${esc(op.location)} · ${esc(dtFmt(e.date))} · ${esc(op.phase)}</div>
+    <p>${esc(a.summary || op.verdict_reason)}</p>
+    <div class="metrics">${metrics}
     </div>
+    ${op.face_ref == null ? '<div class="row"><button type="button" class="primary" data-act="calc">Upiši nominalnu cijenu → izračun</button></div>' : ""}
     <p class="muted small">Izvor procjene: ${esc(op.multiplier_source)} · pouzdanost ${score(op.demand.confidence)} %</p>
     <h3>Plan: kada kupiti i kada prodati</h3><ul class="timeline">${tl}</ul>
     <div class="cols"><div><h3>Kako kupiti</h3>${list(a.buy)}</div><div><h3>Kako i gdje prodati</h3>${list(a.sell)}</div></div>
@@ -480,6 +537,7 @@ function bindDetailActions(root, op) {
     const act = b.dataset.act;
     if (act === "ics") saveBlob(new Blob([icsFor(op)], { type: "text/calendar" }), `${op.event.artist.replace(/[^\w-]+/g, "_")}.ics`);
     if (act === "cats") { closeDetail(); prefillCategories(op); showTab("cats"); }
+    if (act === "calc") { closeDetail(); prefillCalc(op); showTab("calc"); }
     if (act === "journal") { closeDetail(); prefillJournal(op); showTab("journal"); }
   }));
 }
@@ -515,9 +573,23 @@ function initCalc() {
   });
 }
 
+function prefillCalc(op) {
+  const e = op.event;
+  fillFields($("#calcFields"), { segment: e.segment || "music", sport: e.sport || "football", league: e.league || "", name: e.name,
+    artist: e.artist, venue: e.venue, city: e.city, country: e.country, region: e.region || "", date: (e.date || "").slice(0, 10),
+    currency: "EUR", face: "", face_max: "", resale_lowest: op.secondary_lowest_eur ?? "", listing_count: e.secondary && e.secondary.listing_count || "",
+    listeners: e.artist_listeners || "", fans: e.artist_fans || "", capacity: e.capacity || "", ticket_limit: e.ticket_limit || "",
+    vendor: e.primary_vendor || "", personalized: e.personalized === true ? "da" : e.personalized === false ? "ne" : "" }, $("#calcTags"));
+  $$("#calcTags input").forEach((c) => (c.checked = (e.tags || []).includes(c.value)));
+  $("#calcResult").innerHTML = "";
+  const field = $("#calcFields [name=face]");
+  if (field) setTimeout(() => field.focus(), 50);
+  toast(isNum(op.max_buy) ? `Upiši nominalnu cijenu (EUR). Isplati se do ~${eur(op.max_buy)}.` : "Upiši nominalnu cijenu (EUR) i klikni Izračunaj.");
+}
+
 /* ------------------------------------------------------------------ KATEGORIJE */
 function catsEventFields() {
-  const keep = ["segment", "artist", "name", "sport", "league", "venue", "city", "country", "region", "date", "currency", "listeners", "capacity", "ticket_limit", "vendor", "personalized", "budget"];
+  const keep = ["segment", "artist", "name", "sport", "league", "venue", "city", "country", "region", "date", "currency", "listeners", "fans", "capacity", "ticket_limit", "vendor", "personalized", "budget"];
   return eventFields().filter((f) => keep.includes(f.k));
 }
 function addCatRow(c = {}) {
@@ -555,7 +627,7 @@ function prefillCategories(op) {
   const e = op.event;
   fillFields($("#catsFields"), { segment: e.segment || "music", sport: e.sport || "football", league: e.league || "", name: e.name,
     artist: e.artist, venue: e.venue, city: e.city, country: e.country, region: e.region || "", date: (e.date || "").slice(0, 10),
-    currency: e.currency, listeners: e.artist_listeners || "", capacity: e.capacity || "", ticket_limit: e.ticket_limit || "", vendor: e.primary_vendor || "",
+    currency: e.currency, listeners: e.artist_listeners || "", fans: e.artist_fans || "", capacity: e.capacity || "", ticket_limit: e.ticket_limit || "", vendor: e.primary_vendor || "",
     personalized: e.personalized === true ? "da" : e.personalized === false ? "ne" : "" }, $("#catsTags"));
   $$("#catsTags input").forEach((c) => (c.checked = (e.tags || []).includes(c.value)));
   $("#catsTable tbody").innerHTML = "";
@@ -752,8 +824,10 @@ async function init() {
   catch (e) { document.body.insertAdjacentHTML("afterbegin", `<div class="notice warn">Ne mogu se spojiti na server: ${esc(e.message)}</div>`); return; }
   const m = state.meta;
   $("#version").textContent = ` v${m.version}`;
-  $("#keys").innerHTML = [["Ticketmaster", m.settings.ticketmaster], ["Last.fm", m.settings.lastfm], ["SeatGeek", m.settings.seatgeek]]
-    .map(([n, on]) => `<span class="key ${on ? "on" : "off"}" title="${on ? "Ključ postavljen" : "Nema ključa u .env"}">${n}</span>`).join("");
+  $("#keys").innerHTML = [["Ticketmaster", m.settings.ticketmaster], ["SerpApi", m.settings.serpapi], ["PredictHQ", m.settings.predicthq],
+    ["SeatGeek", m.settings.seatgeek], ["Last.fm", m.settings.lastfm]]
+    .map(([n, on]) => `<span class="key ${on ? "on" : "off"}" title="${on ? "Ključ postavljen" : "Nema ključa u .env"}">${n}</span>`).join("")
+    + `<span class="key on" title="Deezer i Wikipedia rade bez ključa">Deezer · Wikipedia</span>`;
   $$("#tabs button").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
   $("#detailClose").addEventListener("click", closeDetail);
   $("#detail").addEventListener("click", (e) => { if (e.target.id === "detail") closeDetail(); });
@@ -763,6 +837,6 @@ async function init() {
   initJournal();
   const tab = (location.hash || "#radar").slice(1);
   showTab(["radar", "calc", "cats", "journal", "markets", "guides"].includes(tab) ? tab : "radar");
-  if (!m.settings.ticketmaster) runScan(); // demo odmah, da se vidi kako radi
+  if (!(m.settings.live_sources || []).length) runScan(); // bez ključeva odmah prikaži snimku stvarnih događaja
 }
 document.addEventListener("DOMContentLoaded", init);

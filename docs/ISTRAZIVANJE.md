@@ -253,7 +253,19 @@ zadržavanja za „visokorizičnu” kategoriju ulaznica i chargebackovi kod pri
 **sigurnosnu provjeru** koju aplikacija ispisuje za svaki koncert i u vodič
 [Sigurna preprodaja bez kazni](../karte/data/guides/5_sigurnost.md).
 
+## 5.6 Što rade preprodavači (forumi, Discord zajednice, brokeri)
+
+Detaljno u vodiču [Što rade preprodavači](../karte/data/guides/7_sto_rade_preprodavaci.md). Ukratko:
+biraju događaje prema **stvarnim prodajama** (ne oglasima), brzini rasprodaje i omjeru ponude i kapaciteta; ulaznice
+dobivaju kroz **presaleove** (fan klubovi, kartice, Verified Fan, Spotify pozivnice); plaćaju Discord „cook” grupe
+(40–200 $/mj.; neke nude i botove, što je u EU nezakonito) i brokerski softver (Lysted 7–16 % naknade, Skybox, AutoPricer);
+cijenu postavljaju prema tempu prodaje i oglašavaju na više mjesta. Najveće prijetnje: prijevare na Telegramu/Facebooku,
+dvostruka prodaja i kazneni progon za botove i lažne identitete (Hunter & Smith: 4 godine i 30 mjeseci zatvora).
+
 ## 6. Izvori podataka (API) — što je dostupno
+
+> 🆕 Detaljna usporedba, uzroci zašto Ticketmaster ne odobrava ključ i zamjene (SerpApi Google Events, PredictHQ, Deezer,
+> Wikipedia, snimka stvarnih događaja): [IZVORI_PODATAKA.md](IZVORI_PODATAKA.md).
 
 | Izvor | Status (studeni 2026.) | Korišteno |
 |---|---|---|
@@ -262,13 +274,18 @@ zadržavanja za „visokorizičnu” kategoriju ulaznica i chargebackovi kod pri
 | Last.fm API | besplatno; broj slušatelja izvođača | ✅ |
 | Spotify Web API | od veljače 2026. Development Mode zahtijeva Premium, ograničen broj korisnika i endpointa | ❌ |
 | Songkick | API zatvoren za nove korisnike | ❌ |
-| Bandsintown | traži odobren `app_id`, orijentiran na izvođača | ❌ (moguće proširenje) |
+| Bandsintown | `app_id` samo za izvođače i njihove timove (pisani pristanak) | ❌ |
+| SerpApi — Google Events | 250 pretraga/mj. besplatno; pokriva i HR; bez cijena | ✅ (beta) |
+| PredictHQ | 14 dana probno, zatim samo spremljene lokacije; predviđena posjećenost | ✅ (beta) |
+| Deezer API | bez ključa; broj fanova izvođača | ✅ |
+| Wikipedia / Wikimedia | bez ključa; tablice turneja i trend pregleda | ✅ |
 | Entrio / Eventim.hr / Ulaznice.hr | nema javnog API-ja | ➡️ ručni CSV |
 | viagogo | nema javnog API-ja za prodavatelje | ➡️ ručno upiši najnižu cijenu u CSV |
 
-## 7. Što pratiti sada (stanje 18. 11. 2026., prema medijskim objavama — provjeri)
+## 7. Što pratiti sada (stanje 22. 11. 2026., prema medijskim objavama — provjeri)
 
-U `primjeri/hr_watchlist_2026-11.csv` su upisani — dopuni nominalne cijene i najniže cijene s viagoga/Njuškala pa pokreni `karte scan --csv`:
+Sve dolje navedeno (s izvorima i „od” cijenama s preprodaje) nalazi se u **snimci stvarnih događaja** — `karte scan`
+bez ključeva ili `karte snimka --list`. Stariji popis za ručno dopunjavanje: `primjeri/hr_watchlist_2026-11.csv`.
 
 - **Željko Joksimović** — Arena Zagreb, 4. 12. 2026.
 - **Seka Aleksić** — treći zagrebački koncert 20. 3. 2027. (prva dva u studenom rasprodana → signal `added_date`)

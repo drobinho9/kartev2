@@ -8,6 +8,10 @@
 # Napomena: Last.fm brojke su ~5–10× manje od Spotify mjesečnih slušatelja (top izvođači ~5–9 mil.).
 listeners_low = 50_000
 listeners_high = 5_000_000
+# Kad nema Last.fm podatka: Deezer fanovi (bez ključa). Deezer brojke su drugačije raspodijeljene
+# (npr. Coldplay ~18 mil., U2 ~7 mil., Rod Stewart ~1,5 mil., Seka Aleksić ~160 tis.) – zasebna skala.
+fans_low = 20_000
+fans_high = 8_000_000
 # Omjer slušatelja i ukupnog kapaciteta (kapacitet × broj koncerata u državi)
 ratio_low = 10
 ratio_high = 1_000
@@ -46,6 +50,13 @@ big_match = 0.30       # velika utakmica (vrhunski klubovi, prvo mjesto)
 title_decider = 0.35   # odlučuje o naslovu
 legend_farewell = 0.45 # oproštaj legende
 soldout = 0.50         # događaj je rasprodan na primarnom tržištu
+
+[trend]
+# Wikipedia pregledi članka o izvođaču: prosjek zadnjih 14 dana / prosjek prethodnih 60 dana.
+# Omjer ≤ ratio_low = bez učinka, ≥ ratio_high = puni dodatak "buzza" (max_buzz) – rani signal potražnje.
+ratio_low = 1.15
+ratio_high = 2.5
+max_buzz = 0.25
 
 [resale]
 # Bez podataka sa sekundarnog tržišta: multiplikator = base + slope × potražnja^exponent
@@ -88,7 +99,7 @@ ulaznice_hr = { pct = 0.0, fixed = 1.0 }
 seatgeek = { pct = 0.15, fixed = 0.0 }
 
 [verdict]
-buy_roi = 0.30          # minimalni očekivani ROI za "KUPI"
+buy_roi = 0.30          # minimalni očekivani ROI za "KUPI" (i cilj za "kupi najviše do" kad nema nominalne cijene)
 buy_min_demand = 0.60
 buy_max_risk = 0.50
 consider_roi = 0.10     # minimalni ROI za "RAZMOTRI"
@@ -105,6 +116,8 @@ legal_weight = 0.5
 low_confidence = 0.20
 far_event_days = 180
 far_event = 0.10
+# Cijena sa sekundarnog tržišta starija od ovoliko dana – upozorenje (provjeri aktualne oglase)
+stale_secondary_days = 21
 payout_after_event = 0.05
 postponed = 0.30
 low_demand = 0.20

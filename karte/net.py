@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import time
 import urllib.error
@@ -15,6 +16,11 @@ from typing import Any
 from karte import __version__
 
 SECRET_PARAMS = {"apikey", "api_key", "client_id", "client_secret", "key", "token"}
+
+
+def user_agent() -> str:
+    """User-Agent za sve zahtjeve. Wikimedia traži kontakt (e-mail ili URL) – postavi KARTE_USER_AGENT u .env."""
+    return os.environ.get("KARTE_USER_AGENT") or f"karte/{__version__} (osobni alat za analizu ulaznica)"
 
 
 class ProviderError(RuntimeError):
@@ -73,7 +79,15 @@ class HttpClient:
         self._last_request = 0.0
         self._sleep = sleep
 
-    def get_json(self, url: str, params: dict[str, Any] | None = None, cache_ttl: float | None = None) -> Any:
+    def get_json(
+        self,
+        url: str,
+        params: dict[str, Any] | None = None,
+        cache_ttl: float | None = None,
+        headers: dict[str, str] | None = None,
+        cache_if=None,
+    ) -> Any:
+        """GET + JSON. headers – dodatna zaglavlja (npr. Authorization); cache_if(data) → spremi u cache samo valjane odgovore."""
         query = urllib.parse.urlencode({k: v for k, v in (params or {}).items() if v is not None}, doseq=True)
         full_url = f"{url}?{query}" if query else url
         if self.cache is not None:
@@ -89,18 +103,25 @@ class HttpClient:
             self._last_request = time.monotonic()
             request = urllib.request.Request(
                 full_url,
-                headers={"User-Agent": f"karte/{__version__}", "Accept": "application/json"},
+                headers={"User-Agent": user_agent(), "Accept": "application/json", **(headers or {})},
             )
             try:
                 with urllib.request.urlopen(request, timeout=self.timeout) as resp:
                     data = json.loads(resp.read().decode("utf-8"))
-                if self.cache is not None:
+                if self.cache is not None and (cache_if is None or cache_if(data)):
                     self.cache.set(full_url, data)
                 return data
             except urllib.error.HTTPError as exc:
                 last_error = exc
                 if exc.code in (429, 500, 502, 503, 504) and attempt < self.retries:
-                    self._sleep(2 ** attempt)
+                    # poštuj Retry-After (Wikipedia/Wikimedia ga šalju uz 429), inače eksponencijalno čekanje
+                    try:
+                        delay = float(exc.headers.get("Retry-After")) if exc.headers else None
+                    except (TypeError, ValueError):
+                        delay = None
+                    if delay is None:
+                        delay = 2 ** (attempt + 1) if exc.code == 429 else 2 ** attempt
+                    self._sleep(min(delay, 30))
                     continue
                 body = ""
                 try:

@@ -11,7 +11,7 @@ from dataclasses import asdict
 from karte import __version__
 from karte.models import Opportunity
 from karte.pipeline import ScanResult
-from karte.util import fmt_date, fmt_datetime, fmt_eur, fmt_pct
+from karte.util import fmt_date, fmt_datetime, fmt_eur, fmt_pct, hr_plural
 
 DISCLAIMER = (
     "Procjene su informativne i temelje se na heurističkom modelu i javnim podacima – nisu financijski ni pravni savjet. "
@@ -19,6 +19,37 @@ DISCLAIMER = (
 )
 
 DEMO_BANNER = "DEMO PODACI – izvođači, cijene i brojke su izmišljeni (služe samo za prikaz rada aplikacije)."
+
+
+def snapshot_banner(result: ScanResult) -> str | None:
+    """Napomena za snimku stvarnih događaja (stanje, porijeklo cijena)."""
+    if not result.is_snapshot:
+        return None
+    info = result.snapshot or {}
+    return (
+        f"STVARNI PODACI – snimka od {info.get('date_hr', '?')} ({info.get('curated', 0)} provjerenih "
+        f"{hr_plural(info.get('curated', 0), 'događaj', 'događaja')} + {info.get('tour_events', 0)} "
+        f"{hr_plural(info.get('tour_events', 0), 'datum', 'datuma')} turneja s Wikipedije). Cijene s preprodaje su 'od' cijene s agregatora "
+        "(uz datum) – prije kupnje provjeri aktualne; gdje nominalna cijena nije javna, prikazano je do koje se cijene isplati kupiti."
+    )
+
+
+def _face_text(op: Opportunity) -> str:
+    if op.face_ref is None and op.max_buy:
+        return f"≤{fmt_eur(op.max_buy)}"
+    return fmt_eur(op.face_ref)
+
+
+def _ceiling_text(op: Opportunity) -> str | None:
+    if op.max_buy is None and op.breakeven_buy is None:
+        return None
+    sec = op.event.secondary
+    seen = f", {sec.observed}" if sec and sec.observed else ""
+    market = f" · najniža na preprodaji {sec.lowest:g} {sec.currency} ({sec.source}{seen})" if sec and sec.lowest else ""
+    return (
+        f"Kupi najviše do: {fmt_eur(op.max_buy)} po ulaznici (cilj ROI) · granica isplativosti: {fmt_eur(op.breakeven_buy)}"
+        f" · realna prodajna ~{fmt_eur(op.expected_resale)}{market}"
+    )
 
 
 def _phase_text(op: Opportunity) -> str:
@@ -41,7 +72,7 @@ def _row_values(i: int, op: Opportunity) -> list[str]:
         e.artist,
         f"{e.city} ({e.country}{'-' + e.region if e.region else ''})",
         _phase_text(op),
-        fmt_eur(op.face_ref),
+        _face_text(op),
         fmt_eur(op.expected_resale),
         fmt_eur(op.profit),
         fmt_pct(op.roi),
@@ -55,7 +86,8 @@ def _row_values(i: int, op: Opportunity) -> list[str]:
 HEADERS = ["#", "Preporuka", "Datum", "Izvođač", "Mjesto", "Faza", "Nomin.", "Oček.prod.", "Dobit*", "Oček.ROI", "Potr.", "Rizik", "Kom", "Platforma"]
 WIDTHS = [3, 19, 11, 22, 18, 16, 8, 10, 7, 8, 5, 5, 3, 22]
 LEGEND = (
-    "Nomin. = nominalna cijena odabrane kategorije · Oček.prod. = očekivana oglasna cijena · Dobit* = neto dobit po ulaznici AKO se proda "
+    "Nomin. = nominalna cijena odabrane kategorije (≤X = nije poznata, isplati se kupiti do X) · Oček.prod. = očekivana oglasna cijena · "
+    "Dobit* = neto dobit po ulaznici AKO se proda "
     "(nakon svih naknada) · Oček.ROI = očekivani povrat uz vjerojatnost prodaje i rizik · Potr./Rizik = 0–100 · Kom = preporučena količina"
 )
 
@@ -66,6 +98,8 @@ def render_terminal(result: ScanResult, top: int = 25, details: int = 5) -> str:
     w(f"karte {__version__} · radar za preprodaju ulaznica · {fmt_datetime(result.generated_at)} UTC\n")
     if result.is_demo:
         w(f"\n*** {DEMO_BANNER} ***\n")
+    if snapshot_banner(result):
+        w(f"\n*** {snapshot_banner(result)} ***\n")
     o = result.options
     w(f"Države: {', '.join(o.countries) or '—'} · prozor: {o.days} d · prodaje koje počinju u {o.onsale_days} d · "
       f"budžet {fmt_eur(o.budget)} · kategorija: {o.category}{' · STROGO (najavljeni zakoni)' if o.strict else ''}\n")
@@ -111,9 +145,12 @@ def render_detail_text(i: int, op: Opportunity) -> str:
         f"   {a.get('summary', '')}",
         f"   Nominalna (ref.): {fmt_eur(op.face_ref)} · trošak s naknadama: {fmt_eur(op.buy_cost, 2)} · "
         f"očekivana prodajna: {fmt_eur(op.expected_resale)} (×{op.multiplier:.2f}, {op.multiplier_source})" if op.multiplier else
-        f"   Nominalna (ref.): {fmt_eur(op.face_ref)}",
+        (f"   Nominalna (ref.): {fmt_eur(op.face_ref)}" if op.face_ref is not None or not _ceiling_text(op) else ""),
         f"   Potražnja {op.demand.score * 100:.0f}/100 (pouzdanost {op.demand.confidence * 100:.0f} %) · rizik {op.risk * 100:.0f}/100 · faza: {op.phase}",
     ]
+    if _ceiling_text(op):
+        lines.insert(3, "   " + _ceiling_text(op))
+    lines = [line for line in lines if line]
     for title, key in (("KAKO KUPITI", "buy"), ("KAKO I GDJE PRODATI", "sell")):
         items = a.get(key) or []
         if items:
@@ -147,6 +184,8 @@ def render_markdown(result: ScanResult, top: int = 50, details: int = 10) -> str
     md = [f"# Radar preprodaje ulaznica — {fmt_datetime(result.generated_at)} UTC", ""]
     if result.is_demo:
         md += [f"> **{DEMO_BANNER}**", ""]
+    if snapshot_banner(result):
+        md += [f"> **{snapshot_banner(result)}**", ""]
     md += [
         f"- **Države:** {', '.join(o.countries) or '—'}",
         f"- **Prozor:** koncerti u idućih {o.days} dana + prodaje koje počinju u idućih {o.onsale_days} dana",
@@ -173,6 +212,8 @@ def render_markdown(result: ScanResult, top: int = 50, details: int = 10) -> str
                 f"rizik {op.risk * 100:.0f}/100"
             )
             md.append("")
+        if _ceiling_text(op):
+            md += [_ceiling_text(op), ""]
         for title, key in (("Kako kupiti", "buy"), ("Kako i gdje prodati", "sell")):
             if a.get(key):
                 md += [f"**{title}**", ""] + [f"- {x}" for x in a[key]] + [""]
@@ -202,7 +243,8 @@ def render_markdown(result: ScanResult, top: int = 50, details: int = 10) -> str
 CSV_FIELDS = [
     "verdict", "date", "artist", "event", "venue", "city", "country", "region", "phase", "days_to_event", "days_to_onsale",
     "face_ref_eur", "buy_cost_eur", "expected_resale_eur", "profit_eur", "expected_value_eur", "roi", "demand", "confidence",
-    "risk", "qty", "best_platform", "legal_rule", "source", "url",
+    "risk", "qty", "best_platform", "legal_rule", "max_buy_eur", "breakeven_buy_eur", "secondary_lowest", "secondary_currency",
+    "secondary_source", "secondary_observed", "deezer_fans", "wiki_trend", "source", "url",
 ]
 
 
@@ -236,6 +278,14 @@ def render_csv(result: ScanResult) -> str:
             "qty": op.suggested_qty,
             "best_platform": op.best.name if op.best else "",
             "legal_rule": op.legal.rule,
+            "max_buy_eur": _r(op.max_buy),
+            "breakeven_buy_eur": _r(op.breakeven_buy),
+            "secondary_lowest": _r(e.secondary.lowest) if e.secondary else "",
+            "secondary_currency": e.secondary.currency if e.secondary else "",
+            "secondary_source": e.secondary.source if e.secondary else "",
+            "secondary_observed": (e.secondary.observed or "") if e.secondary else "",
+            "deezer_fans": e.artist_fans or "",
+            "wiki_trend": _r(e.artist_trend, 3),
             "source": e.source,
             "url": e.url or "",
         })
@@ -255,6 +305,8 @@ def to_dict(result: ScanResult) -> dict:
     return {
         "generated_at": result.generated_at.isoformat(),
         "is_demo": result.is_demo,
+        "is_snapshot": result.is_snapshot,
+        "snapshot": result.snapshot,
         "options": asdict(result.options),
         "sources": result.sources,
         "warnings": result.warnings,
@@ -270,6 +322,7 @@ def render_json(result: ScanResult) -> str:
 VERDICT_CLASS = {
     "KUPI": "v-buy",
     "RAZMOTRI": "v-maybe",
+    "PROVJERI CIJENU": "v-check",
     "RASPRODANO": "v-sold",
     "PRESKOČI": "v-skip",
     "ZAKONSKI OGRANIČENO": "v-legal",
@@ -298,6 +351,7 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}tr:last-child t
 .pill{display:inline-block;padding:2px 8px;border-radius:999px;font-weight:600;font-size:.78rem}
 .v-buy{color:var(--buy);background:var(--buy-bg)}.v-maybe{color:var(--maybe);background:var(--maybe-bg)}.v-sold{color:var(--sold);background:var(--sold-bg)}
 .v-legal{color:var(--legal);background:var(--legal-bg)}.v-skip{color:var(--skip);background:var(--skip-bg)}
+.v-check{color:var(--sold);background:transparent;box-shadow:inset 0 0 0 1px currentColor}.banner.info{background:var(--sold-bg);color:var(--sold)}
 .bar{display:inline-block;width:48px;height:6px;border-radius:3px;background:var(--border);vertical-align:middle;margin-right:6px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--accent)}
 .cards{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:28px}.card{min-width:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
@@ -342,7 +396,7 @@ def render_html(result: ScanResult, top: int = 200) -> str:
             f"<td><a href='#ev{i}'>{_e(e.artist)}</a></td>"
             f"<td>{_e(location(e))}</td>"
             f"<td>{_e(_phase_text(op))}</td>"
-            f"<td class='num' data-v='{_num(op.face_ref)}'>{_e(fmt_eur(op.face_ref))}</td>"
+            f"<td class='num' data-v='{_num(op.face_ref if op.face_ref is not None else op.max_buy)}'>{_e(_face_text(op))}</td>"
             f"<td class='num' data-v='{_num(op.expected_resale)}'>{_e(fmt_eur(op.expected_resale))}</td>"
             f"<td class='num' data-v='{_num(op.profit)}'>{_e(fmt_eur(op.profit))}</td>"
             f"<td class='num' data-v='{_num(op.roi)}'>{_e(fmt_pct(op.roi))}</td>"
@@ -369,6 +423,8 @@ def render_html(result: ScanResult, top: int = 200) -> str:
                 f"očekivana prodajna {_e(fmt_eur(op.expected_resale))} (×{op.multiplier:.2f}, {_e(op.multiplier_source)}) · "
                 f"potražnja {op.demand.score * 100:.0f}/100 (pouzdanost {op.demand.confidence * 100:.0f} %) · rizik {op.risk * 100:.0f}/100</p>"
             )
+        if _ceiling_text(op):
+            parts.append(f"<p class='small'><b>{_e(_ceiling_text(op))}</b></p>")
         parts.append("<div class='grid2'>")
         for title, key in (("Kako kupiti", "buy"), ("Kako i gdje prodati", "sell")):
             if a.get(key):
@@ -402,6 +458,8 @@ def render_html(result: ScanResult, top: int = 200) -> str:
 
     warnings = "".join(f"<div class='warn'>⚠ {_e(w)}</div>" for w in result.warnings)
     banner = f"<div class='banner'>{_e(DEMO_BANNER)}</div>" if result.is_demo else ""
+    if snapshot_banner(result):
+        banner += f"<div class='banner info'>{_e(snapshot_banner(result))}</div>"
     head_cells = "".join(
         f"<th data-k='{k}' class='{'num' if k in (0, 6, 7, 8, 9, 10, 11, 12) else ''}'>{_e(h)}</th>" for k, h in enumerate(HEADERS)
     )

@@ -1,0 +1,36 @@
+# Snimka stvarnih događaja – radi bez ikakvih API ključeva (zadani izvor u sučelju kad nema ključeva).
+#
+# Sastoji se od:
+#   dogadaji.csv      – ručno provjereni događaji (Hrvatska i regija + odabrani europski koncerti) s izvorima.
+#                       Nominalne cijene samo iz službenih/medijskih izvora; cijene s preprodaje su "od" cijene
+#                       s agregatora (uključuju kupčeve naknade) uz datum kad su zabilježene (sek_datum).
+#   turneje.json      – europski datumi velikih turneja preuzeti iz tablica na Wikipediji (bez cijena).
+#   popularnost.json  – Deezer fanovi i Wikipedia trend pregleda za sve izvođače iz snimke.
+#
+# Osvježavanje (turneje + popularnost; cijene se NE mogu osvježiti automatski bez ključeva):
+#   karte snimka --osvjezi     → sprema u ~/.karte/snimka/ (ili KARTE_DATA_DIR/snimka), ugrađena snimka ostaje netaknuta.
+# Vlastite događaje dodaj u ~/.karte/snimka/dogadaji.csv (isti stupci; predložak nastaje pri prvom osvježavanju).
+# Oni DOPUNJUJU ugrađenu snimku; redak za isti događaj (izvođač + datum + grad) zamjenjuje ugrađeni (npr. upišeš nominalnu cijenu).
+
+stanje = "2026-11-22"
+opis = "Stvarni koncerti iz Hrvatske i regije te europski datumi velikih turneja 2027. (Wikipedia), s cijenama s preprodaje gdje su javno dostupne."
+
+[[turneja]]
+izvodjac = "Fall Out Boy"
+naslov = "Twilight of the Punks"
+regija = "europa"
+
+[[turneja]]
+izvodjac = "Olivia Rodrigo"
+naslov = "The Unraveled Tour"
+regija = "europa"
+
+[[turneja]]
+izvodjac = "U2"
+naslov = "The Greatest Show on Earth World Tour"
+regija = "europa"
+
+[[turneja]]
+izvodjac = "Karol G"
+naslov = "Viajando Por El Mundo Tour"
+regija = "europa"

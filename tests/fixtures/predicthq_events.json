@@ -1,0 +1,37 @@
+{
+  "_napomena": "Oblik odgovora prema službenoj dokumentaciji PredictHQ (/v1/events); sadržaj je primjer za test, nije stvarni odgovor.",
+  "count": 2,
+  "overflow": false,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": "abc123",
+      "title": "Rod Stewart - The Final Encore",
+      "category": "concerts",
+      "labels": ["concert", "music"],
+      "rank": 78,
+      "local_rank": 92,
+      "phq_attendance": 6500,
+      "entities": [{"entity_id": "v1", "name": "Arena Pula", "type": "venue", "formatted_address": "Flavijevska ulica\nPula\nCroatia"}],
+      "start": "2027-06-22T19:00:00Z",
+      "end": "2027-06-22T22:00:00Z",
+      "timezone": "Europe/Zagreb",
+      "country": "HR",
+      "state": "active"
+    },
+    {
+      "id": "def456",
+      "title": "HNK Hajduk vs GNK Dinamo",
+      "category": "sports",
+      "labels": ["sport", "soccer"],
+      "phq_labels": [{"label": "soccer", "weight": 0.9}],
+      "rank": 70,
+      "phq_attendance": 33000,
+      "entities": [{"entity_id": "v2", "name": "Stadion Poljud", "type": "venue", "formatted_address": "8 Mediteranskih igara 2\nSplit\nCroatia"}],
+      "start": "2027-03-07T17:00:00Z",
+      "country": "HR",
+      "state": "predicted"
+    }
+  ]
+}

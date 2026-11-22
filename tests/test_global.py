@@ -95,7 +95,7 @@ class WindowHttp:
     def __init__(self):
         self.calls = []
 
-    def get_json(self, url, params=None, cache_ttl=None):
+    def get_json(self, url, params=None, cache_ttl=None, headers=None, cache_if=None):
         self.calls.append(dict(params))
         start = parse_datetime(params.get("startDateTime") or params.get("onsaleStartDateTime"))
         end = parse_datetime(params.get("endDateTime") if "startDateTime" in params else params.get("onsaleEndDateTime"))

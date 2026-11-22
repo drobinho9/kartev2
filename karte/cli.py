@@ -1,4 +1,4 @@
-"""Naredbeni redak: karte gui | scan | calc | kategorije | dnevnik | markets | platforms | laws | doctor."""
+"""Naredbeni redak: karte gui | scan | snimka | calc | kategorije | dnevnik | sport | markets | platforms | laws | doctor."""
 
 from __future__ import annotations
 
@@ -10,17 +10,18 @@ from pathlib import Path
 from karte import __version__, legal
 from karte.journal import Journal, default_path
 from karte.knowledge import ModelConfig, expand_countries, regions
-from karte.net import HttpClient, ProviderError
+from karte.net import FileCache, HttpClient, ProviderError
 from karte.pipeline import ScanOptions, run_scan
 from karte.platforms import available_platforms, blocked_for_seller, load_platforms
 from karte.report import RENDERERS, render_detail_text
 from karte.scoring import CATEGORIES
 from karte import sport
 from karte.service import calculate, categories, market_rows
+from karte.snapshot import load_snapshot, refresh_snapshot, user_dir
 
 VRSTA = {"koncerti": "music", "sport": "sport", "sve": "all"}
 from karte.settings import Settings
-from karte.util import fmt_eur, fmt_pct
+from karte.util import fmt_eur, fmt_pct, hr_plural
 
 
 def _countries(value: str | None, settings: Settings) -> list[str]:
@@ -29,6 +30,8 @@ def _countries(value: str | None, settings: Settings) -> list[str]:
 
 
 def cmd_scan(args, settings: Settings) -> int:
+    snapshot = bool(args.snimka)
+    auto_snapshot = not (snapshot or args.demo or args.csv or settings.live_sources)
     opts = ScanOptions(
         days=args.days,
         onsale_days=args.onsale_days,
@@ -46,8 +49,18 @@ def cmd_scan(args, settings: Settings) -> int:
         max_artists=args.max_artists,
         show_all=args.show_all,
         segment=VRSTA[args.vrsta],
+        snapshot=snapshot or auto_snapshot,
+        use_deezer=not args.no_deezer,
+        use_wikipedia=not args.no_wikipedia,
+        serpapi_cities=args.gradovi.split(",") if args.gradovi else [],
     )
     result = run_scan(opts, settings)
+    if auto_snapshot:
+        result.warnings.insert(
+            0,
+            "Nema API ključeva za događaje – prikazujem snimku stvarnih događaja. Zamjene za Ticketmaster: docs/IZVORI_PODATAKA.md "
+            "(npr. besplatni SERPAPI_KEY za Google Events).",
+        )
     if args.only:
         wanted = {v.strip().upper() for v in args.only.split(",")}
         result.opportunities = [op for op in result.opportunities if op.verdict.upper() in wanted]
@@ -89,6 +102,7 @@ def _calc_fields(args, settings: Settings) -> dict:
         "personalized": "da" if args.personalized else ("ne" if args.not_personalized else ""),
         "tags": args.tags or "",
         "listeners": args.listeners,
+        "fans": getattr(args, "fans", None),
         "vendor": args.vendor or "",
         "primary_fee": args.primary_fee,
         "budget": args.budget,
@@ -242,6 +256,39 @@ def cmd_markets(args, settings: Settings) -> int:
     return 0
 
 
+def cmd_snapshot(args, settings: Settings) -> int:
+    """Snimka stvarnih događaja: pregled i osvježavanje (bez ključeva)."""
+    if args.osvjezi:
+        http = HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=6 * 3600), min_interval=1.0)
+        print(f"Osvježavam turneje (Wikipedia) i popularnost (Deezer, Wikipedia) → {user_dir()}")
+        summary = refresh_snapshot(http)
+        print(f"Gotovo: {len(summary['tours'])} turneja, {summary['artists']} izvođača.")
+        for err in summary["errors"]:
+            print(f"! {err}")
+        print("Cijene se ne osvježavaju automatski (nema javnog izvora bez ključa) – vlastite događaje i svježe cijene upiši u "
+              f"{user_dir() / 'dogadaji.csv'} (dopunjuju ugrađenu snimku; isti događaj zamjenjuje ugrađeni).")
+    events, info, warnings = load_snapshot(countries=_countries(args.countries, settings) if args.countries else None)
+    print(f"Snimka stvarnih događaja – stanje {info.date_hr} ({info.origin})")
+    print(f"  {info.description}")
+    print(f"  Provjerenih događaja: {info.curated} · datuma turneja s Wikipedije: {info.tour_events}"
+          f" · turneje ažurirane: {info.tours_date or '—'} · popularnost: {info.popularity_date or '—'}")
+    for t in info.tours:
+        print(f"  – {t['artist']}: {t['title']} ({t['events']} budućih koncerata u odabranim državama) {t['url']}")
+    for w in warnings:
+        print(f"! {w}")
+    age = info.age_days()
+    if age is not None and age > 30:
+        print(f"! Snimka je stara {age} dana – pokreni: karte snimka --osvjezi")
+    if args.list:
+        print()
+        for e in sorted(events, key=lambda x: x.date):
+            price = (f"{e.face_min:g}–{e.face_max:g} {e.currency}" if e.has_face_value else
+                     (f"preprodaja od {e.secondary.lowest:g} {e.secondary.currency}" if e.secondary and e.secondary.lowest else "bez cijene"))
+            print(f"  {e.date:%d.%m.%Y.}  {e.artist[:22]:<22} {e.city[:14]:<14} {e.country}  {price}")
+    print("\nPokreni procjenu: karte scan --snimka   (ili u sučelju: Izvor podataka → Snimka stvarnih događaja)")
+    return 0
+
+
 def cmd_doctor(args, settings: Settings) -> int:
     print(f"karte {__version__} · Python {sys.version.split()[0]}")
     print(f"Države: {', '.join(expand_countries(settings.countries))} · prodavatelj iz: {settings.seller_country} · "
@@ -254,8 +301,11 @@ def cmd_doctor(args, settings: Settings) -> int:
          {"method": "artist.getinfo", "artist": "Radiohead", "api_key": settings.lastfm_api_key, "format": "json"}),
         ("SEATGEEK_CLIENT_ID", settings.seatgeek_client_id, "https://api.seatgeek.com/2/events",
          {"client_id": settings.seatgeek_client_id, "per_page": 1}),
+        ("SERPAPI_KEY", settings.serpapi_key, "https://serpapi.com/account.json", {"api_key": settings.serpapi_key}),
+        ("PREDICTHQ_TOKEN", settings.predicthq_token, "https://api.predicthq.com/v1/events/", {"limit": 1}),
     ]
     ok = True
+    print("Izvori s ključem:")
     for name, value, url, params in checks:
         if not value:
             print(f"  – {name}: nije postavljen")
@@ -264,13 +314,37 @@ def cmd_doctor(args, settings: Settings) -> int:
             print(f"  ✓ {name}: postavljen (bez provjere mreže)")
             continue
         try:
-            http.get_json(url, params)
-            print(f"  ✓ {name}: radi")
+            headers = {"Authorization": f"Bearer {value}"} if name == "PREDICTHQ_TOKEN" else None
+            data = http.get_json(url, params, headers=headers)
+            extra = ""
+            if name == "SERPAPI_KEY" and isinstance(data, dict) and data.get("plan_searches_left") is not None:
+                extra = f" (preostalo pretraga ovaj mjesec: {data.get('plan_searches_left')})"
+            print(f"  ✓ {name}: radi{extra}")
         except ProviderError as exc:
             ok = False
             print(f"  ✗ {name}: {exc}")
-    if not any(v for _, v, _, _ in checks):
-        print("\nNijedan ključ nije postavljen. Kopiraj .env.example u .env i upiši ključeve, ili probaj: karte scan --demo")
+    print("Izvori bez ključa:")
+    keyless = [
+        ("Deezer (popularnost)", "https://api.deezer.com/search/artist", {"q": "Rod Stewart", "limit": 1}),
+        ("Wikipedia (turneje)", "https://en.wikipedia.org/w/api.php", {"action": "query", "titles": "U2", "format": "json"}),
+        ("Wikimedia (pregledi)", "https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia/all-access/2026/01/01", None),
+    ]
+    for name, url, params in keyless:
+        if args.offline:
+            print(f"  · {name}: (bez provjere mreže)")
+            continue
+        try:
+            http.get_json(url, params)
+            print(f"  ✓ {name}: radi")
+        except ProviderError as exc:
+            print(f"  ✗ {name}: {exc}")
+    if not os.environ.get("KARTE_USER_AGENT"):
+        print("  · Savjet: Wikimedia traži kontakt u User-Agentu – postavi KARTE_USER_AGENT=\"karte/1.0 (tvoj@email)\" u .env")
+    events, info, _ = load_snapshot()
+    print(f"Snimka stvarnih događaja: stanje {info.date_hr}, {info.curated} provjerenih + {info.tour_events} "
+          f"{hr_plural(info.tour_events, 'datum', 'datuma')} turneja ({info.origin})")
+    if not settings.live_sources:
+        print("\nNema ključeva za događaje – 'karte scan' koristi snimku stvarnih događaja. Zamjene za Ticketmaster: docs/IZVORI_PODATAKA.md")
     return 0 if ok else 1
 
 
@@ -298,7 +372,12 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--budget", type=float, help="ukupni budžet u EUR (za preporuku količine)")
     s.add_argument("--category", choices=CATEGORIES, default="cheap", help="koju kategoriju ulaznica ciljaš (zadano: cheap)")
     s.add_argument("--strict", action="store_true", help="primijeni i najavljene (još nevažeće) zakonske limite, npr. DE, UK")
-    s.add_argument("--demo", action="store_true", help="koristi ugrađene demo podatke (bez API ključeva)")
+    s.add_argument("--snimka", action="store_true",
+                   help="snimka STVARNIH događaja (bez ključeva; zadano kad nema nijednog ključa za događaje)")
+    s.add_argument("--demo", action="store_true", help="izmišljeni demo podaci (samo za isprobavanje)")
+    s.add_argument("--no-deezer", action="store_true", help="ne dohvaćaj popularnost s Deezera")
+    s.add_argument("--no-wikipedia", action="store_true", help="ne dohvaćaj trend pregleda s Wikipedije")
+    s.add_argument("--gradovi", help="gradovi za Google Events (SerpApi), npr. 'Zagreb,Split,Vienna:AT'")
     s.add_argument("--csv", action="append", help="dodaj događaje iz CSV-a (može više puta)")
     s.add_argument("--no-lastfm", action="store_true")
     s.add_argument("--no-seatgeek", action="store_true")
@@ -325,6 +404,7 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("--date", help="datum događaja YYYY-MM-DD")
     c.add_argument("--listings", type=int, help="broj oglasa na viagogu")
     c.add_argument("--listeners", type=int, help="Last.fm slušatelji izvođača")
+    c.add_argument("--fans", type=int, help="Deezer fanovi izvođača (ako nemaš Last.fm)")
     c.add_argument("--capacity", type=int, help="kapacitet dvorane")
     c.add_argument("--limit", type=int, help="limit ulaznica po kupcu")
     c.add_argument("--tags", help="oznake: farewell,reunion,first_visit,added_date,anniversary,soldout...")
@@ -354,6 +434,12 @@ def build_parser() -> argparse.ArgumentParser:
     k.add_argument("--not-personalized", action="store_true")
     k.add_argument("--strict", action="store_true")
     k.set_defaults(func=cmd_categories, face=None)
+
+    sn = sub.add_parser("snimka", help="snimka stvarnih događaja (bez ključeva): pregled i osvježavanje")
+    sn.add_argument("--osvjezi", action="store_true", help="dohvati svježe turneje (Wikipedia) i popularnost (Deezer, Wikipedia)")
+    sn.add_argument("--list", action="store_true", help="ispiši sve događaje iz snimke")
+    sn.add_argument("--countries", help="samo ove države/regije (npr. HR,AT ili europa)")
+    sn.set_defaults(func=cmd_snapshot)
 
     sp = sub.add_parser("sport", help="pravila preprodaje za nogomet po državama i za natjecanja (UEFA, FIFA, NFL, F1…)")
     sp.add_argument("--country", help="samo jedna država, npr. HR, GB, DE")

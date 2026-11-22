@@ -1,0 +1,1574 @@
+{
+ "azurirano": "2026-11-22",
+ "izvor": "en.wikipedia.org (tablice 'Tour dates', CC BY-SA 4.0)",
+ "turneje": [
+  {
+   "izvodjac": "Fall Out Boy",
+   "naslov": "Twilight of the Punks",
+   "url": "https://en.wikipedia.org/wiki/Twilight_of_the_Punks",
+   "koncerti": [
+    {
+     "date": "2027-05-17",
+     "city": "Prague",
+     "country": "CZ",
+     "country_name": "Czech Republic",
+     "venue": "O2 Arena"
+    },
+    {
+     "date": "2027-05-19",
+     "city": "Budapest",
+     "country": "HU",
+     "country_name": "Hungary",
+     "venue": "László Papp Budapest Sports Arena"
+    },
+    {
+     "date": "2027-05-21",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Unipol Forum"
+    },
+    {
+     "date": "2027-05-23",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Movistar Arena"
+    },
+    {
+     "date": "2027-05-25",
+     "city": "Lyon",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "LDLC Arena"
+    },
+    {
+     "date": "2027-05-27",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "ING Arena"
+    },
+    {
+     "date": "2027-05-28",
+     "city": "Mönchengladbach",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "SparkassenPark"
+    },
+    {
+     "date": "2027-05-30",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "OVO Hydro"
+    },
+    {
+     "date": "2027-06-01",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "3Arena"
+    },
+    {
+     "date": "2027-06-03",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Co-op Live"
+    },
+    {
+     "date": "2027-06-05",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Tottenham Hotspur Stadium"
+    },
+    {
+     "date": "2027-06-08",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-06-10",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Accor Arena"
+    },
+    {
+     "date": "2027-06-12",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Zitadelle Spandau"
+    },
+    {
+     "date": "2027-06-13",
+     "city": "Łódź",
+     "country": "PL",
+     "country_name": "Poland",
+     "venue": "Atlas Arena"
+    },
+    {
+     "date": "2027-07-13",
+     "city": "Arlington",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Globe Life Field"
+    },
+    {
+     "date": "2027-07-16",
+     "city": "Atlanta",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Truist Park"
+    },
+    {
+     "date": "2027-07-18",
+     "city": "Washington, D.C.",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Nationals Park"
+    },
+    {
+     "date": "2027-07-20",
+     "city": "Detroit",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Fifth Third Park"
+    },
+    {
+     "date": "2027-07-22",
+     "city": "Toronto",
+     "country": "CA",
+     "country_name": "Canada",
+     "venue": "Rogers Stadium"
+    },
+    {
+     "date": "2027-07-24",
+     "city": "Chicago",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Soldier Field"
+    },
+    {
+     "date": "2027-07-27",
+     "city": "Nashville",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "FirstBank Stadium"
+    },
+    {
+     "date": "2027-07-30",
+     "city": "Boston",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Fenway Park"
+    },
+    {
+     "date": "2027-08-01",
+     "city": "Queens",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Citi Field"
+    },
+    {
+     "date": "2027-08-03",
+     "city": "Atlantic City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Atlantic City Beach"
+    },
+    {
+     "date": "2027-08-04",
+     "city": "Hershey",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Hersheypark Stadium"
+    },
+    {
+     "date": "2027-08-06",
+     "city": "St. Charles",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Roaming Hills"
+    },
+    {
+     "date": "2027-08-07",
+     "city": "Kansas City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Morton Amphitheater"
+    },
+    {
+     "date": "2027-08-10",
+     "city": "Commerce City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Dick's Sporting Goods Park"
+    },
+    {
+     "date": "2027-08-13",
+     "city": "Sandy",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "America First Field"
+    },
+    {
+     "date": "2027-08-15",
+     "city": "San Francisco",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Oracle Park"
+    },
+    {
+     "date": "2027-08-17",
+     "city": "San Diego",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Petco Park"
+    },
+    {
+     "date": "2027-08-19",
+     "city": "Phoenix",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Chase Field"
+    },
+    {
+     "date": "2027-08-21",
+     "city": "Los Angeles",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Dodger Stadium"
+    },
+    {
+     "date": "2027-08-24",
+     "city": "Seattle",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "T-Mobile Park"
+    },
+    {
+     "date": "2027-08-26",
+     "city": "Portland",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Providence Park"
+    }
+   ]
+  },
+  {
+   "izvodjac": "Olivia Rodrigo",
+   "naslov": "The Unraveled Tour",
+   "url": "https://en.wikipedia.org/wiki/The_Unraveled_Tour",
+   "koncerti": [
+    {
+     "date": "2026-09-25",
+     "city": "Hartford",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "PeoplesBank Arena"
+    },
+    {
+     "date": "2026-09-26",
+     "city": "Hartford",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "PeoplesBank Arena"
+    },
+    {
+     "date": "2026-09-29",
+     "city": "Pittsburgh",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "PPG Paints Arena"
+    },
+    {
+     "date": "2026-09-30",
+     "city": "Pittsburgh",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "PPG Paints Arena"
+    },
+    {
+     "date": "2026-10-03",
+     "city": "Washington, D.C.",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Capital One Arena"
+    },
+    {
+     "date": "2026-10-04",
+     "city": "Washington, D.C.",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Capital One Arena"
+    },
+    {
+     "date": "2026-10-07",
+     "city": "Charlotte",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Spectrum Center"
+    },
+    {
+     "date": "2026-10-08",
+     "city": "Charlotte",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Spectrum Center"
+    },
+    {
+     "date": "2026-10-11",
+     "city": "Chicago",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "United Center"
+    },
+    {
+     "date": "2026-10-12",
+     "city": "Chicago",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "United Center"
+    },
+    {
+     "date": "2026-10-15",
+     "city": "Boston",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "TD Garden"
+    },
+    {
+     "date": "2026-10-17",
+     "city": "Boston",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "TD Garden"
+    },
+    {
+     "date": "2026-10-18",
+     "city": "Boston",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "TD Garden"
+    },
+    {
+     "date": "2026-10-21",
+     "city": "Montreal",
+     "country": "CA",
+     "country_name": "Canada",
+     "venue": "Bell Centre"
+    },
+    {
+     "date": "2026-10-22",
+     "city": "Montreal",
+     "country": "CA",
+     "country_name": "Canada",
+     "venue": "Bell Centre"
+    },
+    {
+     "date": "2026-10-26",
+     "city": "Toronto",
+     "country": "CA",
+     "country_name": "Canada",
+     "venue": "Scotiabank Arena"
+    },
+    {
+     "date": "2026-10-27",
+     "city": "Toronto",
+     "country": "CA",
+     "country_name": "Canada",
+     "venue": "Scotiabank Arena"
+    },
+    {
+     "date": "2026-10-29",
+     "city": "Columbus",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Schottenstein Center"
+    },
+    {
+     "date": "2026-10-30",
+     "city": "Columbus",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Schottenstein Center"
+    },
+    {
+     "date": "2026-11-07",
+     "city": "Philadelphia",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Xfinity Mobile Arena"
+    },
+    {
+     "date": "2026-11-08",
+     "city": "Philadelphia",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Xfinity Mobile Arena"
+    },
+    {
+     "date": "2026-11-11",
+     "city": "Atlanta",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "State Farm Arena"
+    },
+    {
+     "date": "2026-11-12",
+     "city": "Atlanta",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "State Farm Arena"
+    },
+    {
+     "date": "2026-11-15",
+     "city": "Orlando",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Kia Center"
+    },
+    {
+     "date": "2026-11-16",
+     "city": "Orlando",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Kia Center"
+    },
+    {
+     "date": "2026-11-19",
+     "city": "Sunrise",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Amerant Bank Arena"
+    },
+    {
+     "date": "2026-11-20",
+     "city": "Sunrise",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Amerant Bank Arena"
+    },
+    {
+     "date": "2026-11-23",
+     "city": "Nashville",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Bridgestone Arena"
+    },
+    {
+     "date": "2026-11-24",
+     "city": "Nashville",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Bridgestone Arena"
+    },
+    {
+     "date": "2026-12-01",
+     "city": "Vancouver",
+     "country": "CA",
+     "country_name": "Canada",
+     "venue": "Rogers Arena"
+    },
+    {
+     "date": "2026-12-02",
+     "city": "Vancouver",
+     "country": "CA",
+     "country_name": "Canada",
+     "venue": "Rogers Arena"
+    },
+    {
+     "date": "2026-12-07",
+     "city": "Seattle",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Climate Pledge Arena"
+    },
+    {
+     "date": "2026-12-08",
+     "city": "Seattle",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Climate Pledge Arena"
+    },
+    {
+     "date": "2026-12-11",
+     "city": "Oakland",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Oakland Arena"
+    },
+    {
+     "date": "2026-12-12",
+     "city": "Oakland",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Oakland Arena"
+    },
+    {
+     "date": "2026-12-15",
+     "city": "Sacramento",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Golden 1 Center"
+    },
+    {
+     "date": "2026-12-16",
+     "city": "Sacramento",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Golden 1 Center"
+    },
+    {
+     "date": "2026-12-19",
+     "city": "Paradise",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "T-Mobile Arena"
+    },
+    {
+     "date": "2026-12-20",
+     "city": "Paradise",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "T-Mobile Arena"
+    },
+    {
+     "date": "2027-01-12",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Intuit Dome"
+    },
+    {
+     "date": "2027-01-13",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Intuit Dome"
+    },
+    {
+     "date": "2027-01-16",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Intuit Dome"
+    },
+    {
+     "date": "2027-01-17",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Intuit Dome"
+    },
+    {
+     "date": "2027-01-20",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Intuit Dome"
+    },
+    {
+     "date": "2027-01-21",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Intuit Dome"
+    },
+    {
+     "date": "2027-01-24",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Intuit Dome"
+    },
+    {
+     "date": "2027-01-25",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Intuit Dome"
+    },
+    {
+     "date": "2027-01-28",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Intuit Dome"
+    },
+    {
+     "date": "2027-01-29",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Intuit Dome"
+    },
+    {
+     "date": "2027-02-11",
+     "city": "New York City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Barclays Center"
+    },
+    {
+     "date": "2027-02-12",
+     "city": "New York City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Barclays Center"
+    },
+    {
+     "date": "2027-02-15",
+     "city": "New York City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Barclays Center"
+    },
+    {
+     "date": "2027-02-16",
+     "city": "New York City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Barclays Center"
+    },
+    {
+     "date": "2027-02-19",
+     "city": "New York City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Barclays Center"
+    },
+    {
+     "date": "2027-02-20",
+     "city": "New York City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Barclays Center"
+    },
+    {
+     "date": "2027-02-23",
+     "city": "New York City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Barclays Center"
+    },
+    {
+     "date": "2027-02-24",
+     "city": "New York City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Barclays Center"
+    },
+    {
+     "date": "2027-02-27",
+     "city": "New York City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Barclays Center"
+    },
+    {
+     "date": "2027-02-28",
+     "city": "New York City",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Barclays Center"
+    },
+    {
+     "date": "2027-03-19",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Avicii Arena"
+    },
+    {
+     "date": "2027-03-20",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Avicii Arena"
+    },
+    {
+     "date": "2027-03-23",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-03-24",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-03-27",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-03-28",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-04-01",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Olympiahalle"
+    },
+    {
+     "date": "2027-04-02",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Olympiahalle"
+    },
+    {
+     "date": "2027-04-05",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-04-06",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-04-08",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-04-09",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-04-12",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-04-14",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-04-15",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-04-19",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-04-20",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-04-23",
+     "city": "Nanterre",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Plenitude Arena"
+    },
+    {
+     "date": "2027-04-24",
+     "city": "Nanterre",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Plenitude Arena"
+    },
+    {
+     "date": "2027-04-27",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Unipol Dome"
+    },
+    {
+     "date": "2027-04-28",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Unipol Dome"
+    },
+    {
+     "date": "2027-05-01",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Palau Sant Jordi"
+    },
+    {
+     "date": "2027-05-02",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Palau Sant Jordi"
+    },
+    {
+     "date": "2027-05-05",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Palau Sant Jordi"
+    },
+    {
+     "date": "2027-05-06",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Palau Sant Jordi"
+    },
+    {
+     "date": "2027-05-09",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-05-10",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    }
+   ]
+  },
+  {
+   "izvodjac": "U2",
+   "naslov": "The Greatest Show on Earth World Tour",
+   "url": "https://en.wikipedia.org/wiki/The_Greatest_Show_on_Earth_World_Tour",
+   "koncerti": [
+    {
+     "date": "2027-02-23",
+     "city": "Mexico City",
+     "country": "MX",
+     "country_name": "Mexico",
+     "venue": "Estadio GNP Seguros"
+    },
+    {
+     "date": "2027-02-26",
+     "city": "Mexico City",
+     "country": "MX",
+     "country_name": "Mexico",
+     "venue": "Estadio GNP Seguros"
+    },
+    {
+     "date": "2027-02-28",
+     "city": "Mexico City",
+     "country": "MX",
+     "country_name": "Mexico",
+     "venue": "Estadio GNP Seguros"
+    },
+    {
+     "date": "2027-03-02",
+     "city": "Mexico City",
+     "country": "MX",
+     "country_name": "Mexico",
+     "venue": "Estadio GNP Seguros"
+    },
+    {
+     "date": "2027-03-10",
+     "city": "São Paulo",
+     "country": "BR",
+     "country_name": "Brazil",
+     "venue": "Estádio MorumBIS"
+    },
+    {
+     "date": "2027-03-12",
+     "city": "São Paulo",
+     "country": "BR",
+     "country_name": "Brazil",
+     "venue": "Estádio MorumBIS"
+    },
+    {
+     "date": "2027-03-14",
+     "city": "São Paulo",
+     "country": "BR",
+     "country_name": "Brazil",
+     "venue": "Estádio MorumBIS"
+    },
+    {
+     "date": "2027-03-16",
+     "city": "São Paulo",
+     "country": "BR",
+     "country_name": "Brazil",
+     "venue": "Estádio MorumBIS"
+    },
+    {
+     "date": "2027-03-23",
+     "city": "Buenos Aires",
+     "country": "AR",
+     "country_name": "Argentina",
+     "venue": "Estadio Monumental"
+    },
+    {
+     "date": "2027-03-25",
+     "city": "Buenos Aires",
+     "country": "AR",
+     "country_name": "Argentina",
+     "venue": "Estadio Monumental"
+    },
+    {
+     "date": "2027-03-27",
+     "city": "Buenos Aires",
+     "country": "AR",
+     "country_name": "Argentina",
+     "venue": "Estadio Monumental"
+    },
+    {
+     "date": "2027-03-29",
+     "city": "Buenos Aires",
+     "country": "AR",
+     "country_name": "Argentina",
+     "venue": "Estadio Monumental"
+    },
+    {
+     "date": "2027-04-26",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Strawberry Arena"
+    },
+    {
+     "date": "2027-04-28",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Strawberry Arena"
+    },
+    {
+     "date": "2027-04-30",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Strawberry Arena"
+    },
+    {
+     "date": "2027-05-05",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Stade de France"
+    },
+    {
+     "date": "2027-05-08",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Stade de France"
+    },
+    {
+     "date": "2027-05-09",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Stade de France"
+    },
+    {
+     "date": "2027-05-13",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadi Olímpic Lluís Companys"
+    },
+    {
+     "date": "2027-05-15",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadi Olímpic Lluís Companys"
+    },
+    {
+     "date": "2027-05-17",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadi Olímpic Lluís Companys"
+    },
+    {
+     "date": "2027-05-22",
+     "city": "Seville",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadio de La Cartuja"
+    },
+    {
+     "date": "2027-05-24",
+     "city": "Seville",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadio de La Cartuja"
+    },
+    {
+     "date": "2027-05-27",
+     "city": "Lisbon",
+     "country": "PT",
+     "country_name": "Portugal",
+     "venue": "Estádio da Luz"
+    },
+    {
+     "date": "2027-05-28",
+     "city": "Lisbon",
+     "country": "PT",
+     "country_name": "Portugal",
+     "venue": "Estádio da Luz"
+    },
+    {
+     "date": "2027-06-05",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Johan Cruyff Arena"
+    },
+    {
+     "date": "2027-06-06",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Johan Cruyff Arena"
+    },
+    {
+     "date": "2027-06-09",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Johan Cruyff Arena"
+    },
+    {
+     "date": "2027-06-11",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Johan Cruyff Arena"
+    },
+    {
+     "date": "2027-06-18",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Tottenham Hotspur Stadium"
+    },
+    {
+     "date": "2027-06-19",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Tottenham Hotspur Stadium"
+    },
+    {
+     "date": "2027-06-22",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Tottenham Hotspur Stadium"
+    },
+    {
+     "date": "2027-06-25",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Tottenham Hotspur Stadium"
+    },
+    {
+     "date": "2027-06-30",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Olympiastadion"
+    },
+    {
+     "date": "2027-07-01",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Olympiastadion"
+    },
+    {
+     "date": "2027-07-05",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Stadio San Siro"
+    },
+    {
+     "date": "2027-07-06",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Stadio San Siro"
+    },
+    {
+     "date": "2027-07-09",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Stadio San Siro"
+    }
+   ]
+  },
+  {
+   "izvodjac": "Karol G",
+   "naslov": "Viajando Por El Mundo Tour",
+   "url": "https://en.wikipedia.org/wiki/Viajando_Por_El_Mundo_Tour",
+   "koncerti": [
+    {
+     "date": "2026-07-24",
+     "city": "Chicago",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Soldier Field"
+    },
+    {
+     "date": "2026-07-25",
+     "city": "Chicago",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Soldier Field"
+    },
+    {
+     "date": "2026-07-29",
+     "city": "Toronto",
+     "country": "CA",
+     "country_name": "Canada",
+     "venue": "Rogers Stadium"
+    },
+    {
+     "date": "2026-08-02",
+     "city": "Landover",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Northwest Stadium"
+    },
+    {
+     "date": "2026-08-07",
+     "city": "Paradise",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Allegiant Stadium"
+    },
+    {
+     "date": "2026-08-14",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "SoFi Stadium"
+    },
+    {
+     "date": "2026-08-15",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "SoFi Stadium"
+    },
+    {
+     "date": "2026-08-16",
+     "city": "Inglewood",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "SoFi Stadium"
+    },
+    {
+     "date": "2026-08-21",
+     "city": "Santa Clara",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Levi's Stadium"
+    },
+    {
+     "date": "2026-08-22",
+     "city": "Santa Clara",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Levi's Stadium"
+    },
+    {
+     "date": "2026-08-26",
+     "city": "Seattle",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Lumen Field"
+    },
+    {
+     "date": "2026-08-29",
+     "city": "Glendale",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "State Farm Stadium"
+    },
+    {
+     "date": "2026-09-02",
+     "city": "San Antonio",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Alamodome"
+    },
+    {
+     "date": "2026-09-05",
+     "city": "El Paso",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Sun Bowl"
+    },
+    {
+     "date": "2026-09-06",
+     "city": "El Paso",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Sun Bowl"
+    },
+    {
+     "date": "2026-09-12",
+     "city": "Foxborough",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Gillette Stadium"
+    },
+    {
+     "date": "2026-09-17",
+     "city": "East Rutherford",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "MetLife Stadium"
+    },
+    {
+     "date": "2026-09-18",
+     "city": "East Rutherford",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "MetLife Stadium"
+    },
+    {
+     "date": "2026-09-24",
+     "city": "Atlanta",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Mercedes-Benz Stadium"
+    },
+    {
+     "date": "2026-09-27",
+     "city": "Houston",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Reliant Stadium"
+    },
+    {
+     "date": "2026-10-02",
+     "city": "Miami Gardens",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Hard Rock Stadium"
+    },
+    {
+     "date": "2026-10-03",
+     "city": "Miami Gardens",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Hard Rock Stadium"
+    },
+    {
+     "date": "2026-10-09",
+     "city": "Tampa",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Raymond James Stadium"
+    },
+    {
+     "date": "2026-10-15",
+     "city": "Arlington",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "AT&T Stadium"
+    },
+    {
+     "date": "2026-11-06",
+     "city": "Guadalupe",
+     "country": "MX",
+     "country_name": "Mexico",
+     "venue": "Estadio BBVA"
+    },
+    {
+     "date": "2026-11-07",
+     "city": "Guadalupe",
+     "country": "MX",
+     "country_name": "Mexico",
+     "venue": "Estadio BBVA"
+    },
+    {
+     "date": "2026-11-08",
+     "city": "Guadalupe",
+     "country": "MX",
+     "country_name": "Mexico",
+     "venue": "Estadio BBVA"
+    },
+    {
+     "date": "2026-11-13",
+     "city": "Mexico City",
+     "country": "MX",
+     "country_name": "Mexico",
+     "venue": "Estadio GNP Seguros"
+    },
+    {
+     "date": "2026-11-14",
+     "city": "Mexico City",
+     "country": "MX",
+     "country_name": "Mexico",
+     "venue": "Estadio GNP Seguros"
+    },
+    {
+     "date": "2026-11-17",
+     "city": "Mexico City",
+     "country": "MX",
+     "country_name": "Mexico",
+     "venue": "Estadio GNP Seguros"
+    },
+    {
+     "date": "2026-11-27",
+     "city": "San José",
+     "country": "CR",
+     "country_name": "Costa Rica",
+     "venue": "Estadio Nacional"
+    },
+    {
+     "date": "2026-11-28",
+     "city": "San José",
+     "country": "CR",
+     "country_name": "Costa Rica",
+     "venue": "Estadio Nacional"
+    },
+    {
+     "date": "2026-12-04",
+     "city": "Bogotá",
+     "country": "CO",
+     "country_name": "Colombia",
+     "venue": "Estadio El Campín"
+    },
+    {
+     "date": "2026-12-05",
+     "city": "Bogotá",
+     "country": "CO",
+     "country_name": "Colombia",
+     "venue": "Estadio El Campín"
+    },
+    {
+     "date": "2026-12-06",
+     "city": "Bogotá",
+     "country": "CO",
+     "country_name": "Colombia",
+     "venue": "Estadio El Campín"
+    },
+    {
+     "date": "2027-01-15",
+     "city": "Quito",
+     "country": "EC",
+     "country_name": "Ecuador",
+     "venue": "Atahualpa Olympic Stadium"
+    },
+    {
+     "date": "2027-01-16",
+     "city": "Quito",
+     "country": "EC",
+     "country_name": "Ecuador",
+     "venue": "Atahualpa Olympic Stadium"
+    },
+    {
+     "date": "2027-01-17",
+     "city": "Quito",
+     "country": "EC",
+     "country_name": "Ecuador",
+     "venue": "Atahualpa Olympic Stadium"
+    },
+    {
+     "date": "2027-01-22",
+     "city": "Lima",
+     "country": "PE",
+     "country_name": "Peru",
+     "venue": "Estadio Universidad San Marcos"
+    },
+    {
+     "date": "2027-01-28",
+     "city": "Santiago",
+     "country": "CL",
+     "country_name": "Chile",
+     "venue": "Julio Martínez Prádanos National Stadium"
+    },
+    {
+     "date": "2027-01-29",
+     "city": "Santiago",
+     "country": "CL",
+     "country_name": "Chile",
+     "venue": "Julio Martínez Prádanos National Stadium"
+    },
+    {
+     "date": "2027-01-30",
+     "city": "Santiago",
+     "country": "CL",
+     "country_name": "Chile",
+     "venue": "Julio Martínez Prádanos National Stadium"
+    },
+    {
+     "date": "2027-01-31",
+     "city": "Santiago",
+     "country": "CL",
+     "country_name": "Chile",
+     "venue": "Julio Martínez Prádanos National Stadium"
+    },
+    {
+     "date": "2027-02-05",
+     "city": "Buenos Aires",
+     "country": "AR",
+     "country_name": "Argentina",
+     "venue": "River Plate Stadium"
+    },
+    {
+     "date": "2027-02-12",
+     "city": "São Paulo",
+     "country": "BR",
+     "country_name": "Brazil",
+     "venue": "Pacaembu Stadium"
+    },
+    {
+     "date": "2027-02-19",
+     "city": "Santo Domingo",
+     "country": "DO",
+     "country_name": "Dominican Republic",
+     "venue": "Estadio Olímpico Félix Sánchez"
+    },
+    {
+     "date": "2027-02-26",
+     "city": "San Juan",
+     "country": "PR",
+     "country_name": "Puerto Rico",
+     "venue": "Hiram Bithorn Stadium"
+    },
+    {
+     "date": "2027-06-03",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadi Olímpic Lluís Companys"
+    },
+    {
+     "date": "2027-06-04",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadi Olímpic Lluís Companys"
+    },
+    {
+     "date": "2027-06-12",
+     "city": "Seville",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadio de La Cartuja"
+    },
+    {
+     "date": "2027-06-13",
+     "city": "Seville",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadio de La Cartuja"
+    },
+    {
+     "date": "2027-06-24",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Riyadh Air Metropolitano Stadium"
+    },
+    {
+     "date": "2027-06-25",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Riyadh Air Metropolitano Stadium"
+    },
+    {
+     "date": "2027-06-26",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Riyadh Air Metropolitano Stadium"
+    },
+    {
+     "date": "2027-06-27",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Riyadh Air Metropolitano Stadium"
+    },
+    {
+     "date": "2027-07-01",
+     "city": "Nanterre",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Plenitude Arena"
+    },
+    {
+     "date": "2027-07-06",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Tottenham Hotspur Stadium"
+    },
+    {
+     "date": "2027-07-10",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Johan Cruyff Arena"
+    },
+    {
+     "date": "2027-07-17",
+     "city": "Düsseldorf",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Merkur Spiel-Arena"
+    },
+    {
+     "date": "2027-07-24",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "San Siro"
+    }
+   ]
+  }
+ ]
+}

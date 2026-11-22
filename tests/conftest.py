@@ -53,9 +53,11 @@ class FakeHttp:
     def __init__(self, routes: dict[str, object]):
         self.routes = routes
         self.calls: list[tuple[str, dict]] = []
+        self.headers: list[dict] = []
 
-    def get_json(self, url, params=None, cache_ttl=None):
+    def get_json(self, url, params=None, cache_ttl=None, headers=None, cache_if=None):
         self.calls.append((url, dict(params or {})))
+        self.headers.append(dict(headers or {}))
         for prefix, payload in self.routes.items():
             if url.startswith(prefix):
                 return payload(params) if callable(payload) else payload

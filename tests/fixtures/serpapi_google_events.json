@@ -1,0 +1,49 @@
+{
+  "_napomena": "Oblik odgovora prema službenoj dokumentaciji SerpApi (engine=google_events); sadržaj je primjer za test, nije stvarni odgovor.",
+  "search_metadata": {"status": "Success"},
+  "search_parameters": {"engine": "google_events", "q": "concerts in Zagreb"},
+  "events_results": [
+    {
+      "title": "Željko Joksimović - Arena Zagreb",
+      "date": {"start_date": "Dec 5", "when": "Sat, Dec 5, 8 – 11 PM"},
+      "address": ["Arena Zagreb, Ulica Vice Vukova 8", "Zagreb, Croatia"],
+      "link": "https://www.google.com/search?q=joksimovic",
+      "description": "Koncert u Areni Zagreb.",
+      "ticket_info": [
+        {"source": "Eventim.hr", "link": "https://www.eventim.hr/primjer", "link_type": "tickets"},
+        {"source": "Arena Zagreb", "link": "https://www.arenazagreb.hr/primjer", "link_type": "more info"}
+      ],
+      "venue": {"name": "Arena Zagreb", "rating": 4.6, "reviews": 12000}
+    },
+    {
+      "title": "Seka Aleksić: Koncert",
+      "date": {"start_date": "Mar 20", "when": "Sat, Mar 20, 2027, 9:00 PM"},
+      "address": ["Arena Zagreb", "Zagreb, Croatia"],
+      "ticket_info": [{"source": "Entrio", "link": "https://www.entrio.hr/primjer", "link_type": "tickets"}],
+      "venue": {"name": "Arena Zagreb"}
+    },
+    {
+      "title": "Indie Night at Tvornica",
+      "date": {"start_date": "Jan 12", "when": "Tue, Jan 12, 20:30"},
+      "address": ["Tvornica kulture, Šubićeva 2", "Zagreb, Croatia"],
+      "ticket_info": []
+    },
+    {
+      "title": "GNK Dinamo vs HNK Hajduk",
+      "date": {"start_date": "Dec 13", "when": "Sun, Dec 13, 4 PM"},
+      "address": ["Stadion Maksimir", "Zagreb, Croatia"],
+      "ticket_info": [{"source": "Ulaznice.hr", "link": "https://www.ulaznice.hr/primjer", "link_type": "tickets"}]
+    },
+    {
+      "title": "Fall Out Boy",
+      "date": {"start_date": "Aug 21", "when": "Sat, Aug 21, 2027, 7 PM"},
+      "address": ["Dodger Stadium, 1000 Vin Scully Ave", "Los Angeles, CA"],
+      "ticket_info": [{"source": "Ticketmaster", "link": "https://www.ticketmaster.com/primjer", "link_type": "tickets"}]
+    },
+    {
+      "title": "Bez datuma",
+      "date": {},
+      "address": ["Negdje", "Zagreb, Croatia"]
+    }
+  ]
+}

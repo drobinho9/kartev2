@@ -14,17 +14,18 @@ from karte import legal, sport
 from karte.knowledge import ModelConfig, market_info
 from karte.models import DemandResult, Event, Opportunity, PlatformOption
 from karte.platforms import Platform, available_platforms, blocked_for_seller
-from karte.util import clamp, days_between, log_scale, utcnow
+from karte.util import clamp, days_between, fmt_eur, log_scale, parse_datetime, utcnow
 
 VERDICT_ORDER = {
     "KUPI": 0,
     "RAZMOTRI": 1,
-    "RASPRODANO": 2,
-    "PRESKOČI": 3,
-    "ZAKONSKI OGRANIČENO": 4,
-    "UVJETI ZABRANJUJU": 5,
-    "NEMA CIJENE": 6,
-    "OTKAZANO": 7,
+    "PROVJERI CIJENU": 2,  # nema nominalne cijene, ali iz preprodajnih cijena znamo do koje se cijene isplati kupiti
+    "RASPRODANO": 3,
+    "PRESKOČI": 4,
+    "ZAKONSKI OGRANIČENO": 5,
+    "UVJETI ZABRANJUJU": 6,
+    "NEMA CIJENE": 7,
+    "OTKAZANO": 8,
 }
 
 CATEGORIES = ("cheap", "mid", "premium")
@@ -97,22 +98,27 @@ class Evaluator:
         d = self.cfg.section("demand")
         notes: list[str] = []
         listeners = event.artist_listeners
+        fans = None if listeners else event.artist_fans
+        audience = listeners or fans  # Last.fm slušatelji ili (zamjena) Deezer fanovi
 
         popularity = log_scale(listeners, d["listeners_low"], d["listeners_high"])
+        if popularity is None and fans:
+            popularity = log_scale(fans, d.get("fans_low", 20_000), d.get("fans_high", 8_000_000))
+            notes.append(f"Popularnost iz Deezera ({fans:,} fanova) – grublja procjena od Last.fm slušatelja.".replace(",", "."))
         if popularity is None:
             popularity = d["default_popularity"]
             if event.segment == "sport":
                 notes.append("Za sport nema podatka o popularnosti – upiši cijene sa sekundarnog tržišta ili oznake (derbi, finale, doigravanje…).")
             else:
-                notes.append("Nema podatka o popularnosti izvođača (Last.fm) – korištena zadana vrijednost.")
+                notes.append("Nema podatka o popularnosti izvođača (Last.fm/Deezer) – korištena zadana vrijednost.")
 
         capacity = event.capacity
         if not capacity:
             capacity = d["default_capacity"]
             notes.append(f"Nepoznat kapacitet dvorane – pretpostavljeno {capacity}.")
         shows = max(1, event.shows_in_region)
-        if listeners:
-            scarcity = log_scale(listeners / (capacity * shows), d["ratio_low"], d["ratio_high"])
+        if audience:
+            scarcity = log_scale(audience / (capacity * shows), d["ratio_low"], d["ratio_high"])
             scarcity = d["default_scarcity"] if scarcity is None else scarcity
         else:
             scarcity = d["default_scarcity"]
@@ -130,6 +136,15 @@ class Evaluator:
         buzz = sum(float(buzz_cfg.get(tag, 0.0)) for tag in event.tags)
         if event.status == "soldout":
             buzz += float(buzz_cfg.get("soldout", 0.0))
+        trend_cfg = self.cfg.section("trend") if "trend" in self.cfg.data else {}
+        if event.artist_trend and trend_cfg:
+            lo, hi = trend_cfg.get("ratio_low", 1.15), trend_cfg.get("ratio_high", 2.5)
+            trend_buzz = clamp((event.artist_trend - lo) / (hi - lo)) * trend_cfg.get("max_buzz", 0.25)
+            if trend_buzz > 0:
+                buzz += trend_buzz
+                notes.append(
+                    f"Wikipedia: pregledi članka o izvođaču zadnja 2 tjedna ×{event.artist_trend:.1f} u odnosu na prije – rastući interes."
+                )
         buzz = clamp(buzz)
 
         weights = {"popularity": d["weight_popularity"], "scarcity": d["weight_scarcity"], "tour": d["weight_tour"]}
@@ -149,7 +164,7 @@ class Evaluator:
             score = (1 - w) * base + w * secondary_signal
 
         confidence = 0.15
-        confidence += 0.35 if listeners else 0.0
+        confidence += 0.35 if listeners else (0.25 if fans else 0.0)
         confidence += 0.15 if (event.capacity and not event.capacity_estimated) else (0.10 if event.capacity else 0.0)
         confidence += 0.15 if face_ref else 0.0
         confidence += 0.20 if raw_secondary else 0.0
@@ -247,7 +262,31 @@ class Evaluator:
             flags.insert(0, f"Sport – {sport_rule.get('name', '')}: {label}.")
             if assumed_personalized:
                 flags.insert(1, "Pretpostavka: ulaznice su na ime uz provjeru osobne (tipično za europski nogomet i UEFA).")
+        stale = self._stale_secondary_days(event)
+        if stale is not None:
+            flags.append(
+                f"Cijena s preprodaje je stara {stale} dana (zabilježena {event.secondary.observed}) – provjeri aktualne oglase prije odluke."
+            )
         verdict, reason = self._verdict(event, phase, face_ref, legal_result, roi, demand.score, risk)
+        max_buy = breakeven = None
+        if face_ref is None and verdict == "NEMA CIJENE" and event.secondary is not None:
+            max_buy, breakeven = self.price_ceiling(event)
+            if breakeven:
+                _, expected_resale = self.secondary_reference(event)
+                multiplier_source = f"sekundarno tržište ({event.secondary.source})"
+                target = cfg.section("verdict")["buy_roi"] * 100
+                verdict = "PROVJERI CIJENU"
+                if max_buy:
+                    reason = (
+                        f"Nominalna cijena nije u izvoru. Prema cijenama na preprodaji kupnja se isplati do ~{fmt_eur(max_buy)} "
+                        f"po ulaznici (cilj ROI ≥ {target:.0f} %); granica isplativosti ~{fmt_eur(breakeven)}. "
+                        "Provjeri službenu cijenu kod prodavača i usporedi."
+                    )
+                else:
+                    reason = (
+                        f"Nominalna cijena nije u izvoru. ROI ≥ {target:.0f} % nije dostižan ni uz vrlo nisku cijenu; "
+                        f"granica isplativosti ~{fmt_eur(breakeven)} po ulaznici."
+                    )
         if phase == "NIJE U PRODAJI" and verdict in ("KUPI", "RAZMOTRI"):
             reason += " Napomena: izvor trenutno ne prodaje ulaznice (možda rasprodano) – provjeri dostupnost."
         qty = self._quantity(verdict, event, buy_cost, demand.score)
@@ -274,7 +313,54 @@ class Evaluator:
             verdict=verdict,
             verdict_reason=reason,
             suggested_qty=qty,
+            max_buy=max_buy,
+            breakeven_buy=breakeven,
         )
+
+    # ------------------------------------------------- bez nominalne cijene
+    def price_ceiling(self, event: Event) -> tuple[float | None, float | None]:
+        """Najviša nominalna cijena (EUR) uz koju se kupnja isplati: (za cilj ROI ≥ verdict.buy_roi, granica ROI ≥ 0).
+
+        Koristi se kad izvor nema nominalnu cijenu, ali postoje cijene s preprodaje: binarno pretraživanje
+        po hipotetskoj nominalnoj cijeni kroz cijeli model (naknade, platforme, zakonski limiti, vjerojatnost prodaje).
+        """
+        _, realistic = self.secondary_reference(event)
+        if not realistic:
+            return None, None
+        target = self.cfg.section("verdict")["buy_roi"]
+
+        def roi_at(face: float) -> float | None:
+            trial = dataclasses.replace(event, face_min=face, face_max=face, currency="EUR")
+            op = self.evaluate(trial)
+            if op.verdict not in ("KUPI", "RAZMOTRI", "PRESKOČI") or op.roi is None:
+                return None
+            return op.roi
+
+        def highest(threshold: float) -> float | None:
+            lo, hi = 1.0, realistic * 1.5
+            r = roi_at(lo)
+            if r is None or r < threshold:
+                return None
+            for _ in range(18):
+                mid = (lo + hi) / 2
+                r = roi_at(mid)
+                if r is not None and r >= threshold:
+                    lo = mid
+                else:
+                    hi = mid
+            return float(math.floor(lo))
+
+        return highest(target), highest(0.0)
+
+    def _stale_secondary_days(self, event: Event) -> int | None:
+        sec = event.secondary
+        if sec is None or not sec.observed:
+            return None
+        seen = parse_datetime(sec.observed)
+        if seen is None:
+            return None
+        age = days_between(seen, self.now)
+        return age if age > self.cfg.get("risk", "stale_secondary_days", 21) else None
 
     def _platform_option(
         self,
@@ -370,7 +456,12 @@ class Evaluator:
         if phase == "OTKAZANO":
             return "OTKAZANO", "Događaj je otkazan."
         if face_ref is None:
-            return "NEMA CIJENE", "Izvor ne daje nominalnu cijenu – unesi je ručno (CSV) za izračun zarade."
+            if phase == "RASPRODANO":
+                return "RASPRODANO", (
+                    "Primarna prodaja je rasprodana (nominalna cijena nije u izvoru) – po nominalnoj cijeni se više ne može kupiti. "
+                    "Ako već imaš ulaznice, prati cijene na preprodaji."
+                )
+            return "NEMA CIJENE", "Izvor ne daje nominalnu cijenu – unesi je ručno (CSV ili Kalkulator) za izračun zarade."
         if legal_result.profit_prohibited:
             return "ZAKONSKI OGRANIČENO", f"{legal_result.country_name}: {legal.RULE_LABELS.get(legal_result.rule, legal_result.rule)} – preprodaja radi zarade nije dopuštena."
         if legal_result.contract_prohibited:
@@ -412,4 +503,4 @@ class Evaluator:
 
 
 def sort_key(op: Opportunity):
-    return (VERDICT_ORDER.get(op.verdict, 9), -op.total_expected_value, -(op.roi or -9), op.event.date)
+    return (VERDICT_ORDER.get(op.verdict, 9), -op.total_expected_value, -(op.roi or -9), -op.demand.score, op.event.date)

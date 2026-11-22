@@ -119,10 +119,10 @@ def test_ticketmaster_parses_sport_classification():
 def test_pipeline_requests_sports_classification(tmp_path, now):
     http = FakeHttp({ticketmaster.BASE_URL: load_fixture("ticketmaster_events.json")})
     s = Settings(ticketmaster_api_key="K", seatgeek_client_id=None, lastfm_api_key=None, countries=["DE"], budget=1000.0, cache_dir=tmp_path)
-    run_scan(ScanOptions(countries=["DE"], now=now, use_lastfm=False, onsale_days=0, segment="sport"), s, http=http)
+    run_scan(ScanOptions(use_deezer=False, use_wikipedia=False, countries=["DE"], now=now, use_lastfm=False, onsale_days=0, segment="sport"), s, http=http)
     assert {c[1]["classificationName"] for c in http.calls} == {"sports"}
     http.calls.clear()
-    run_scan(ScanOptions(countries=["DE"], now=now, use_lastfm=False, onsale_days=0, segment="all"), s, http=http)
+    run_scan(ScanOptions(use_deezer=False, use_wikipedia=False, countries=["DE"], now=now, use_lastfm=False, onsale_days=0, segment="all"), s, http=http)
     assert {c[1]["classificationName"] for c in http.calls} == {"music", "sports"}
 
 

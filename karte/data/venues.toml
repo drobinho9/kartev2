@@ -87,7 +87,7 @@ aliases = ["mvm dome budapest"]
 [venues."budapest arena"]
 capacity = 12500
 city = "Budapest"
-aliases = ["papp laszlo budapest sportarena", "papp laszlo sportarena"]
+aliases = ["papp laszlo budapest sportarena", "papp laszlo sportarena", "laszlo papp budapest sports arena"]
 
 [venues."stark arena"]
 capacity = 20000
@@ -320,3 +320,76 @@ city = "Ciudad de Mexico"
 [venues."arena cdmx"]
 capacity = 22300
 city = "Ciudad de Mexico"
+
+# --- europske dvorane i stadioni s velikih turneja 2027. (snimka stvarnih događaja)
+[venues."tottenham hotspur stadium"]
+capacity = 62000
+city = "London"
+
+[venues."stadio san siro"]
+capacity = 75000
+city = "Milano"
+aliases = ["san siro", "stadio giuseppe meazza"]
+
+[venues."johan cruyff arena"]
+capacity = 55000
+city = "Amsterdam"
+
+[venues."estadi olimpic lluis companys"]
+capacity = 55000
+city = "Barcelona"
+
+[venues."estadio de la cartuja"]
+capacity = 60000
+city = "Sevilla"
+
+[venues."estadio da luz"]
+capacity = 65000
+city = "Lisboa"
+
+[venues."riyadh air metropolitano stadium"]
+capacity = 65000
+city = "Madrid"
+aliases = ["metropolitano", "civitas metropolitano", "wanda metropolitano"]
+
+[venues."merkur spiel arena"]
+capacity = 54000
+city = "Dusseldorf"
+
+[venues."paris la defense arena"]
+capacity = 40000
+city = "Nanterre"
+aliases = ["plenitude arena", "u arena"]
+
+[venues."unipol dome"]
+capacity = 16000
+city = "Milano"
+
+[venues."movistar arena"]
+capacity = 17000
+city = "Madrid"
+
+[venues."ldlc arena"]
+capacity = 16000
+city = "Lyon"
+
+[venues."ing arena"]
+capacity = 15000
+city = "Bruxelles"
+aliases = ["palais 12"]
+
+[venues."sparkassenpark"]
+capacity = 20000
+city = "Monchengladbach"
+
+[venues."ovo hydro"]
+capacity = 14300
+city = "Glasgow"
+
+[venues."co op live"]
+capacity = 23500
+city = "Manchester"
+
+[venues."zitadelle spandau"]
+capacity = 10000
+city = "Berlin"

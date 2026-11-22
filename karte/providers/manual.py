@@ -43,8 +43,12 @@ ALIASES = {
     "secondary_lowest": ["sek_najniza", "sek_najniža", "secondary_lowest"],
     "secondary_median": ["sek_medijan", "secondary_median"],
     "secondary_source": ["sek_izvor", "secondary_source"],
+    "secondary_currency": ["sek_valuta", "secondary_currency"],
+    "secondary_observed": ["sek_datum", "sek_stanje", "secondary_observed"],
     "listing_count": ["sek_broj_oglasa", "broj_oglasa", "listing_count"],
     "listeners": ["slusatelji", "slušatelji", "listeners"],
+    "fans": ["fanovi", "deezer_fanovi", "fans", "deezer_fans"],
+    "trend": ["trend", "wiki_trend"],
     "upcoming": ["broj_koncerata_turneje", "upcoming"],
     "url": ["url", "link"],
     "vendor": ["prodavac", "vendor"],
@@ -101,8 +105,9 @@ def parse_row(row: dict[str, str], source: str = "ručni unos") -> Event | None:
             source=_get(row, "secondary_source") or "ručni unos",
             lowest=lowest,
             median=median,
-            currency=currency,
+            currency=(_get(row, "secondary_currency") or currency).upper(),
             listing_count=parse_int(_get(row, "listing_count")),
+            observed=_get(row, "secondary_observed"),
         )
     presales = []
     if _get(row, "presale_start"):
@@ -134,6 +139,8 @@ def parse_row(row: dict[str, str], source: str = "ručni unos") -> Event | None:
         tags=tags,
         secondary=secondary,
         artist_listeners=parse_int(_get(row, "listeners")),
+        artist_fans=parse_int(_get(row, "fans")),
+        artist_trend=parse_float(_get(row, "trend")),
         artist_upcoming_events=parse_int(_get(row, "upcoming")),
         primary_vendor=(_get(row, "vendor") or "").lower() or None,
         notes=_get(row, "notes"),

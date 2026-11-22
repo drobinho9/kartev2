@@ -71,6 +71,7 @@ def build_event(f: dict, now: datetime | None = None) -> Event:
         tags=[t.lower() for t in tags],
         secondary=secondary,
         artist_listeners=parse_int(f.get("listeners")),
+        artist_fans=parse_int(f.get("fans")),
         artist_upcoming_events=parse_int(f.get("upcoming")),
         primary_vendor=(f.get("vendor") or "").lower() or None,
         url=f.get("url") or None,
@@ -171,6 +172,8 @@ def opportunity_dict(op: Opportunity) -> dict:
 
     d = json.loads(json.dumps(dataclasses.asdict(op), default=str))
     d["location"] = location(op.event)
+    sec = op.event.secondary
+    d["secondary_lowest_eur"] = round(ModelConfig.load().to_eur(sec.lowest, sec.currency), 2) if sec and sec.lowest else None
     d["total_expected_value"] = op.total_expected_value
     d["listings_share"] = op.listings_share
     return d

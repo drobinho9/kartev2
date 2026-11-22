@@ -179,6 +179,33 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
             buy.append(
                 f"Ne plaćaj više od ~{fmt_eur(max_cost)} po ulaznici s naknadama – iznad toga očekivani ROI pada ispod {buy_roi * 100:.0f} %."
             )
+    if op.verdict == "PROVJERI CIJENU":
+        target = cfg.get("verdict", "buy_roi", 0.3) * 100
+        tips = []
+        if op.max_buy:
+            tips.append(
+                f"Kupi samo ako je nominalna cijena (prije naknada) najviše ~{fmt_eur(op.max_buy)} po ulaznici – tada je očekivani ROI ≥ {target:.0f} %."
+            )
+        if op.breakeven_buy:
+            low = f"Između {fmt_eur(op.max_buy)} i {fmt_eur(op.breakeven_buy)}" if op.max_buy else f"Do {fmt_eur(op.breakeven_buy)}"
+            tips.append(f"{low} zarada je mala i rizična; iznad ~{fmt_eur(op.breakeven_buy)} očekuješ gubitak.")
+        tips.append("Nominalnu cijenu pogledaj kod službenog prodavača (poveznica na događaj), pa je upiši u Kalkulator za puni plan prodaje.")
+        buy[:0] = tips
+        sec = e.secondary
+        if sec and sec.lowest:
+            seen = f", zabilježeno {sec.observed}" if sec.observed else ""
+            sell.append(
+                f"Referenca s preprodaje: najniža oglašena cijena {sec.lowest:g} {sec.currency} ({sec.source}{seen}). "
+                f"Oglašene cijene uključuju kupčeve naknade – realna prodajna cijena za tebe je ~{fmt_eur(op.expected_resale)} prije naknade prodavatelja."
+            )
+        sell.append(
+            "Prije kupnje provjeri aktualne oglase iste kategorije – agregatori često prikazuju zastarjelu ili najlošiju (najjeftiniju) ponudu."
+        )
+    elif op.verdict == "NEMA CIJENE":
+        buy.append(
+            "Nominalna cijena nije poznata: provjeri je kod službenog prodavača i najnižu cijenu iste kategorije na viagogu, "
+            "pa oboje upiši u Kalkulator."
+        )
     buy.append(
         "Prije kupnje provjeri uvjete: personalizacija/promjena imena, prijenos kroz aplikaciju, pravila organizatora o preprodaji."
     )

@@ -25,12 +25,15 @@ from karte.markdown import render, title_of
 from karte.net import FileCache, HttpClient, ProviderError
 from karte.pipeline import ScanOptions, run_scan
 from karte.platforms import load_platforms
+from karte.providers.deezer import DeezerProvider
 from karte.providers.lastfm import LastFmProvider
+from karte.providers.wikipedia import WikipediaProvider
 from karte.report import RENDERERS
 from karte.scoring import CATEGORIES
 from karte.sport import SPORT_LABELS
 from karte.service import calculate, categories, market_rows, opportunity_dict
 from karte.settings import Settings
+from karte.snapshot import load_snapshot
 from karte.util import parse_float, parse_int
 
 MAX_BODY = 5 * 1024 * 1024
@@ -91,16 +94,28 @@ class App:
             "sports": SPORT_LABELS,
             "statuses": STATUSES,
             "platforms": sorted({p.name for p in load_platforms().values()}),
+            "snapshot": self._snapshot_info(),
             "settings": {
                 "ticketmaster": bool(self.settings.ticketmaster_api_key),
                 "lastfm": bool(self.settings.lastfm_api_key),
                 "seatgeek": bool(self.settings.seatgeek_client_id),
+                "serpapi": bool(self.settings.serpapi_key),
+                "predicthq": bool(self.settings.predicthq_token),
+                "live_sources": self.settings.live_sources,
                 "seller_country": self.settings.seller_country,
                 "countries": ",".join(self.settings.countries),
                 "budget": self.settings.budget,
                 "journal_path": str(self.journal.path),
             },
         }
+
+    @staticmethod
+    def _snapshot_info() -> dict | None:
+        try:
+            _, info, _ = load_snapshot()
+            return info.as_dict()
+        except Exception:  # noqa: BLE001 – oštećena korisnička snimka ne smije srušiti sučelje
+            return None
 
     # ------------------------------------------------------------ scan
     def _scan_options(self, body: dict) -> ScanOptions:
@@ -114,7 +129,8 @@ class App:
             budget=parse_float(body.get("budget")) or self.settings.budget,
             category=body.get("category") if body.get("category") in CATEGORIES else "cheap",
             strict=bool(body.get("strict")),
-            demo=bool(body.get("demo")),
+            demo=body.get("source") == "demo" or bool(body.get("demo")),
+            snapshot=body.get("source") == "snapshot",
             csv_texts=csv_texts,
             show_all=bool(body.get("show_all")),
             seller_country=(body.get("seller_country") or self.settings.seller_country).upper(),
@@ -128,6 +144,8 @@ class App:
         return {
             "generated_at": result.generated_at.isoformat(),
             "is_demo": result.is_demo,
+            "is_snapshot": result.is_snapshot,
+            "snapshot": result.snapshot,
             "countries": result.options.countries,
             "sources": result.sources,
             "warnings": result.warnings,
@@ -155,6 +173,28 @@ class App:
             return {"listeners": LastFmProvider(self.settings.lastfm_api_key, self._http).listeners(artist)}
         except ProviderError as exc:
             return {"listeners": None, "error": str(exc)}
+
+    def popularity(self, artist: str) -> dict:
+        """Deezer fanovi + Wikipedia trend (bez ključeva)."""
+        artist = (artist or "").strip()
+        if not artist:
+            return {"error": "Upiši izvođača."}
+        out: dict = {"artist": artist}
+        try:
+            found = DeezerProvider(self._http).lookup(artist)
+            out["fans"] = found["fans"] if found else None
+            out["deezer_name"] = found["name"] if found else None
+        except ProviderError as exc:
+            out["fans"], out["error"] = None, str(exc)
+        try:
+            wp = WikipediaProvider(self._http)
+            title = wp.resolve_titles([artist]).get(artist)
+            out["wiki_title"] = title
+            if title:
+                out["pageviews"], out["trend"] = wp.trend(title)
+        except ProviderError as exc:
+            out.setdefault("error", str(exc))
+        return out
 
     def law(self, code: str) -> dict:
         country, _, region = code.upper().partition("-")
@@ -186,7 +226,10 @@ class Handler(BaseHTTPRequestHandler):
         for k, v in (extra or {}).items():
             self.send_header(k, v)
         self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):
+            pass  # preglednik je zatvorio vezu (npr. promjena kartice) – nije greška
 
     def _json(self, obj, status: int = 200):
         self._send(status, json.dumps(obj, ensure_ascii=False, default=str).encode("utf-8"), "application/json; charset=utf-8")
@@ -250,6 +293,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(app.law((q.get("code") or ["HR"])[0]))
             if path == "/api/listeners":
                 return self._json(app.listeners((q.get("artist") or [""])[0]))
+            if path == "/api/popularity":
+                return self._json(app.popularity((q.get("artist") or [""])[0]))
             if path == "/api/guides":
                 return self._json({"guides": guide_list()})
             if path == "/api/journal":

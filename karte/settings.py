@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 # Zadano: regija "otvoreno" (tržišta bez zakonskog limita cijene i dostupna iz HR) – vidi karte/data/markets.toml
@@ -41,6 +41,22 @@ class Settings:
     budget: float
     cache_dir: Path
     seller_country: str = "HR"
+    # Zamjene/dopune za Ticketmaster (vidi docs/IZVORI_PODATAKA.md)
+    serpapi_key: str | None = None  # Google Events preko SerpApi (besplatno 250 pretraga/mjesec)
+    serpapi_cities: str | None = None  # npr. "Zagreb, Split, Beč:AT, Budimpešta:HU"
+    predicthq_token: str | None = None
+    predicthq_locations: list[str] = field(default_factory=list)  # besplatni plan: ID-evi spremljenih lokacija
+
+    @property
+    def live_sources(self) -> list[str]:
+        """Izvori koji traže ključ i dohvaćaju događaje (bez Last.fm-a, koji samo obogaćuje)."""
+        names = {
+            "Ticketmaster": self.ticketmaster_api_key,
+            "SeatGeek": self.seatgeek_client_id,
+            "SerpApi (Google Events)": self.serpapi_key,
+            "PredictHQ": self.predicthq_token,
+        }
+        return [name for name, value in names.items() if value]
 
     @classmethod
     def from_env(cls, dotenv: str | Path | None = ".env") -> "Settings":
@@ -59,4 +75,8 @@ class Settings:
             budget=budget,
             cache_dir=cache_dir,
             seller_country=(os.environ.get("KARTE_SELLER_COUNTRY") or "HR").upper(),
+            serpapi_key=os.environ.get("SERPAPI_KEY") or None,
+            serpapi_cities=os.environ.get("KARTE_SERPAPI_GRADOVI") or None,
+            predicthq_token=os.environ.get("PREDICTHQ_TOKEN") or None,
+            predicthq_locations=[x.strip() for x in (os.environ.get("PREDICTHQ_LOCATIONS") or "").split(",") if x.strip()],
         )
