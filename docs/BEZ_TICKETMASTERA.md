@@ -99,8 +99,9 @@ datum prodaje u prvom odlomku neće ga imati ni u radaru.
 
 Gumb čita podatke koje stranice za ulaznice objavljuju za Google (schema.org `Event` u JSON-LD obliku: `startDate`,
 `location`, `offers` s `price`/`lowPrice`/`highPrice`, `priceCurrency`, `availability`, `validFrom`, `eventStatus`). Google te
-podatke koristi za prikaz događaja u pretrazi, pa ih velike stranice za ulaznice obično imaju. Nemaju ih sve, a sadržaj se
-razlikuje od stranice do stranice.
+podatke koristi za prikaz događaja u pretrazi, pa ih mnoge stranice za ulaznice objavljuju. **Koje točno i s kojim poljima
+nisam mogao provjeriti** (stranice Ticketmastera, Eventima i viagoga iz razvojnog okruženja nisu dostupne). Vidjet ćeš to
+prvim klikom: ako stranica nema te podatke, gumb napravi predložak s nazivom i poveznicom, a datum i cijene dopuniš ručno.
 
 - Na stranici **prodavača** cijene se spremaju kao **nominalne** (`cijena_min`/`cijena_max`, uz `prodavac`).
 - Na stranici **preprodaje** spremaju se kao **„preprodaja od”** (`sek_najniza`, `sek_izvor`, `sek_datum` = danas).

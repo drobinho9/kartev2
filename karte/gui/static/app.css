@@ -94,6 +94,8 @@ button:disabled { opacity: .55; cursor: progress; }
 .import-row + .import-row { border-top: 1px solid var(--border); margin-top: 12px; padding-top: 4px; }
 .import-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 8px; margin: 8px 0; }
 #pasteBox { width: 100%; font: inherit; }
+#tab-news details { margin-top: 12px; }
+#tab-news details > summary { cursor: pointer; }
 #srcUrl { flex: 1 1 320px; min-width: 0; }
 #srcName { flex: 0 1 220px; min-width: 0; }
 .linkgroups .row { margin: 4px 0 0; }

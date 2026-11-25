@@ -263,7 +263,9 @@ def test_refresh_snapshot_writes_user_files(tmp_path, monkeypatch):
             return {"query": {"pages": [{"title": t, "lastrevid": 7} for t in params["titles"].split("|")]}}
         return {"query": {"pages": [{"title": t, "pageprops": {"wikibase-shortdesc": "band"}} for t in params["titles"].split("|")]}}
 
-    http = FakeHttp({wikipedia.API_URL: api, deezer.BASE_URL: {"data": []}, "https://wikimedia.org/": views})
+    # REST ne radi → povratak na action=parse (koji ovdje glumi Wikipediju)
+    http = FakeHttp({wikipedia.REST_HTML_URL: ProviderError("HTTP 429"), wikipedia.API_URL: api,
+                     deezer.BASE_URL: {"data": []}, "https://wikimedia.org/": views})
     summary = refresh_snapshot(http, now=SNAP_NOW, log=lambda *_: None)
     assert ("Twilight of the Punks", 36) in summary["tours"]
     assert any("Unraveled" in err for err in summary["errors"])  # greška → ostaje prethodna verzija

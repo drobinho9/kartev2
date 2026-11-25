@@ -73,6 +73,8 @@ Najlakši način korištenja — sve radi lokalno na tvom računalu (server slu�
 ![Radar – snimka stvarnih događaja](docs/img/gui_radar.png)
 ![Provjeri cijenu – do koje cijene se isplati kupiti](docs/img/gui_provjeri.png)
 ![Plan zarade – raspodjela budžeta i raspon ishoda](docs/img/gui_plan_zarade.png)
+![Najave turneja i početka prodaje (RSS)](docs/img/gui_najave.png)
+![Uvoz sa stranice gumbom „karte: spremi” (primjer s izmišljenim događajem)](docs/img/gui_uvoz.png)
 ![Plan kupnje i prodaje](docs/img/gui_plan.png)
 ![Analiza kategorija](docs/img/gui_kategorije.png)
 ![Sport: nogomet i američke lige](docs/img/gui_sport.png)

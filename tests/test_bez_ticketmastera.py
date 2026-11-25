@@ -15,6 +15,7 @@ from karte import announcements as ann
 from karte import capture
 from karte.cli import main
 from karte.net import ProviderError
+from karte.pipeline import ScanOptions, run_scan
 from karte.providers import deezer, wikipedia
 from karte.settings import Settings
 from karte.snapshot import delete_user_event, list_user_events, load_snapshot, refresh_snapshot, save_user_events
@@ -369,11 +370,16 @@ def test_refresh_remembers_tours_without_regional_dates(tmp_path, monkeypatch):
             return {"query": {"pages": [{"title": t, "lastrevid": 7} for t in params["titles"].split("|")]}}
         return {"query": {"pages": []}}
 
-    http = FakeHttp({wikipedia.API_URL: api, deezer.BASE_URL: {"data": []}, "https://wikimedia.org/": {"items": []}})
+    rest = wikipedia.REST_HTML_URL
+    http = FakeHttp({
+        rest + "Otkrivena_Turneja": INFOBOX + twilight["parse"]["text"],  # REST vraća gotov HTML članka
+        rest + "Samo_Amerika": US_ONLY["parse"]["text"],
+        rest: ProviderError("HTTP 404"),  # ostali → povratak na action=parse
+        wikipedia.API_URL: api, deezer.BASE_URL: {"data": []}, "https://wikimedia.org/": {"items": []}})
     refresh_snapshot(http, now=datetime(2026, 11, 22, 10, 0), log=lambda *_: None, years=[2027])
     tours = json.loads((tmp_path / "otkrivanje" / "snimka" / "turneje.json").read_text(encoding="utf-8"))
     assert tours["preskoceno"] == {"Samo Amerika": 7, "Bez Izvodjaca": 7}
-    assert "Samo Amerika" in parsed and "Otkrivena Turneja" in parsed
+    assert "Bez Izvodjaca" in parsed and "Otkrivena Turneja" not in parsed and "Samo Amerika" not in parsed  # REST
     parsed.clear()
     summary = refresh_snapshot(http, now=datetime(2026, 11, 23, 10, 0), log=lambda *_: None, years=[2027])
     # ista revizija → spremljeni članci (otkriveni, preskočeni i s popisa) se ne dohvaćaju ponovno
@@ -399,3 +405,23 @@ def test_tour_artist_from_infobox():
     tribute = ('<div class="shortdescription">Tribute act show featuring K-pop music</div>'
                '<p><b>K-Pop Forever!</b> is a touring tribute show.</p><p>A tour by <a href="/wiki/X">X</a></p>')
     assert wikipedia.tour_artist(tribute) is None  # "tour by" tek u drugom odlomku → ne računa se
+
+
+def test_snapshot_hides_low_demand_tour_dates_without_price(tmp_path, monkeypatch):
+    data = tmp_path / "radar"
+    (data / "snimka").mkdir(parents=True)
+    tour = {"azurirano": "2026-11-25", "turneje": [{
+        "izvodjac": "Nepoznati Bend", "naslov": "Mala Turneja", "url": "https://en.wikipedia.org/wiki/X", "revid": 1,
+        "izvor": "kategorija", "otkriveno": "", "koncerti": [
+            {"date": "2027-03-01", "city": "Graz", "country": "AT", "country_name": "Austria", "venue": "Orpheum"}]}]}
+    (data / "snimka" / "turneje.json").write_text(json.dumps(tour), encoding="utf-8")
+    monkeypatch.setenv("KARTE_DATA_DIR", str(data))
+    http = FakeHttp({})
+    result = run_scan(ScanOptions(snapshot=True, countries=["AT"], now=NOW), _settings(tmp_path), http=http)
+    assert not any(op.event.artist == "Nepoznati Bend" for op in result.opportunities)
+    assert any("Skriveno 1 datuma turneja" in w for w in result.warnings)
+    shown = run_scan(ScanOptions(snapshot=True, countries=["AT"], now=NOW, show_all=True), _settings(tmp_path), http=http)
+    unknown = [op for op in shown.opportunities if op.event.artist == "Nepoznati Bend"]
+    assert unknown and unknown[0].verdict == "NEMA CIJENE"
+    events, info, _ = load_snapshot(NOW, ["AT"])
+    assert not any(t["new"] for t in info.tours if t["title"] == "Mala Turneja")  # "" = početna snimka, nije "nova"

@@ -18,7 +18,7 @@ from karte.providers.predicthq import PredictHQProvider
 from karte.providers.seatgeek import SeatGeekProvider
 from karte.providers.serpapi import SerpApiProvider, default_cities, parse_cities
 from karte.providers.ticketmaster import TicketmasterProvider
-from karte.providers.wikipedia import WikipediaProvider
+from karte.providers.wikipedia import TOUR_SOURCE, WikipediaProvider
 from karte.scoring import Evaluator, sort_key
 from karte.settings import Settings
 from karte.snapshot import load_snapshot
@@ -108,6 +108,7 @@ def annotate_supply(events: list[Event]) -> None:
 
 
 DISCOVERY_SOURCES = ("CSV", "Google Events", "PredictHQ")
+SNAPSHOT_TOUR_MIN_DEMAND = 60  # datumi turneja bez cijene ispod ove potražnje ne zatrpavaju Radar
 
 TM_CLASSIFICATIONS = {
     "music": [("music", "koncerti")],
@@ -298,6 +299,7 @@ def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = No
     window_end = now + timedelta(days=opts.days)
     opportunities: list[Opportunity] = []
     hidden = 0
+    hidden_tours = 0
     for event in events:
         if event.date < now - timedelta(hours=6):
             continue
@@ -313,12 +315,20 @@ def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = No
         if op.verdict == "NEMA CIJENE" and not (manual or opts.show_all):
             hidden += 1
             continue
+        # snimka: stotine datuma turneja s Wikipedije nemaju cijenu – prikaži samo one s jakom potražnjom
+        if (op.verdict == "NEMA CIJENE" and event.source == TOUR_SOURCE and not opts.show_all
+                and op.demand.score < SNAPSHOT_TOUR_MIN_DEMAND):
+            hidden_tours += 1
+            continue
         op.advice = build_advice(op, config)
         opportunities.append(op)
 
     opportunities.sort(key=sort_key)
     if hidden:
         warnings.append(f"Skriveno {hidden} događaja bez nominalne cijene u izvoru (prikaži s --show-all).")
+    if hidden_tours:
+        warnings.append(f"Skriveno {hidden_tours} datuma turneja bez cijene i sa slabijom potražnjom "
+                        f"(< {SNAPSHOT_TOUR_MIN_DEMAND}/100; prikaži s --show-all ili kvačicom „Prikaži i događaje bez cijene”).")
     return ScanResult(
         opportunities=opportunities,
         warnings=warnings,

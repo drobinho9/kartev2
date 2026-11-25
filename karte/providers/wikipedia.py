@@ -25,10 +25,13 @@ from karte.net import HttpClient, ProviderError
 from karte.util import normalize, utcnow
 
 API_URL = "https://en.wikipedia.org/w/api.php"
+# gotov HTML članka iz Wikimedijine predmemorije – jeftiniji od action=parse i blaže ograničen
+REST_HTML_URL = "https://en.wikipedia.org/api/rest_v1/page/html/"
 PAGEVIEWS_URL = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/{title}/daily/{start}/{end}"
 TITLE_TTL = 30 * 24 * 3600
 PAGEVIEWS_TTL = 24 * 3600
 TOUR_TTL = 24 * 3600
+TOUR_SOURCE = "Wikipedia (turneja)"  # izvor događaja iz tablica turneja
 
 MONTHS = {
     "january": 1, "february": 2, "march": 3, "april": 4, "may": 5, "june": 6, "july": 7, "august": 8,
@@ -456,6 +459,15 @@ class WikipediaProvider:
 
     # --- turneje
     def tour_html(self, title: str) -> str:
+        """HTML članka: najprije REST (predmemorija), a ako ne uspije, action=parse."""
+        get_text = getattr(self.http, "get_text", None)
+        if get_text is not None:
+            try:
+                html = get_text(REST_HTML_URL + urllib.parse.quote(title.replace(" ", "_"), safe=""), cache_ttl=TOUR_TTL)
+                if html and "<" in html:
+                    return html
+            except ProviderError:
+                pass
         data = self.http.get_json(
             API_URL,
             {"action": "parse", "page": title, "prop": "text", "format": "json", "formatversion": 2, "redirects": 1},
@@ -505,7 +517,7 @@ def events_from_shows(
                 city=s["city"],
                 country=s["country"],
                 date=datetime(d.year, d.month, d.day, 20, 0),
-                source="Wikipedia (turneja)",
+                source=TOUR_SOURCE,
                 url=wiki_url(title),
                 tags=list(tags or []),
                 artist_upcoming_events=len(future),
