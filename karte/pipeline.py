@@ -108,7 +108,7 @@ def annotate_supply(events: list[Event]) -> None:
 
 
 DISCOVERY_SOURCES = ("CSV", "Google Events", "PredictHQ")
-SNAPSHOT_TOUR_MIN_DEMAND = 60  # datumi turneja bez cijene ispod ove potražnje ne zatrpavaju Radar
+SNAPSHOT_TOUR_MIN_DEMAND = 65  # (0–100) datumi turneja bez cijene ispod ove potražnje ne zatrpavaju Radar
 
 TM_CLASSIFICATIONS = {
     "music": [("music", "koncerti")],
@@ -317,7 +317,7 @@ def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = No
             continue
         # snimka: stotine datuma turneja s Wikipedije nemaju cijenu – prikaži samo one s jakom potražnjom
         if (op.verdict == "NEMA CIJENE" and event.source == TOUR_SOURCE and not opts.show_all
-                and op.demand.score < SNAPSHOT_TOUR_MIN_DEMAND):
+                and op.demand.score * 100 < SNAPSHOT_TOUR_MIN_DEMAND):
             hidden_tours += 1
             continue
         op.advice = build_advice(op, config)

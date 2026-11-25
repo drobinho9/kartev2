@@ -35,6 +35,16 @@ karte scan                   # procjena svega zajedno (snimka + moji događaji)
   ne provjerava svaki put.
 - Turneju otkrivenu u zadnjih 14 dana označi s **NOVA turneja**.
 
+Stanje ugrađene snimke (25. 11. 2026.): **193 turneje** u kategorijama, od toga **44 s budućim europskim datumima
+(770 koncerata)**, npr. Oasis Live '27 (36), Take That (34), James Blunt (37, uključujući Beč i Budimpeštu),
+Till Lindemann (Beč, Beograd, Budimpešta), Harry Styles, Foo Fighters, Mariah Carey, Don Omar, Sam Fender i Tame Impala.
+Preskočene su 153 turneje: bez europskih datuma ili bez pravog izvođača, npr. tribute showovi i Disneyjev koncertni show.
+
+Datumi turneja nemaju cijene. Da ne zatrpaju Radar, ondje se prikazuju samo za izvođače s potražnjom **≥ 65/100**
+(npr. Foo Fighters, Mariah Carey, Don Omar, Oasis, Harry Styles). Ostali su skriveni, uz poruku koliko ih je.
+Vidiš ih s `--show-all` ili kvačicom *Prikaži i događaje bez cijene*. Za zanimljiv datum klikni **karte: spremi** na
+stranici prodavača ili preprodaje i dobit ćeš pravu procjenu.
+
 Uz aplikaciju već dolazi gotova snimka, pa osvježavanje nije nužno odmah. Prvo osvježavanje na novom računalu traje dulje:
 Wikipedia ograničava broj zahtjeva u minuti, a aplikacija to poštuje i čeka. Iduća osvježavanja dohvaćaju samo promijenjene članke.
 

@@ -1,11 +1,12 @@
 {
- "azurirano": "2026-11-22",
+ "azurirano": "2026-11-25",
  "izvor": "en.wikipedia.org (tablice 'Tour dates', CC BY-SA 4.0)",
  "turneje": [
   {
    "izvodjac": "Fall Out Boy",
    "naslov": "Twilight of the Punks",
    "url": "https://en.wikipedia.org/wiki/Twilight_of_the_Punks",
+   "revid": 1384790430,
    "koncerti": [
     {
      "date": "2027-05-17",
@@ -259,12 +260,15 @@
      "country_name": "United States",
      "venue": "Providence Park"
     }
-   ]
+   ],
+   "otkriveno": "",
+   "izvor": "popis"
   },
   {
    "izvodjac": "Olivia Rodrigo",
    "naslov": "The Unraveled Tour",
    "url": "https://en.wikipedia.org/wiki/The_Unraveled_Tour",
+   "revid": 1387690058,
    "koncerti": [
     {
      "date": "2026-09-25",
@@ -868,12 +872,15 @@
      "country_name": "England",
      "venue": "The O2 Arena"
     }
-   ]
+   ],
+   "otkriveno": "",
+   "izvor": "popis"
   },
   {
    "izvodjac": "U2",
    "naslov": "The Greatest Show on Earth World Tour",
    "url": "https://en.wikipedia.org/wiki/The_Greatest_Show_on_Earth_World_Tour",
+   "revid": 1387554022,
    "koncerti": [
     {
      "date": "2027-02-23",
@@ -1140,13 +1147,121 @@
      "country": "IT",
      "country_name": "Italy",
      "venue": "Stadio San Siro"
+    },
+    {
+     "date": "2027-08-13",
+     "city": "Miami",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Hard Rock Stadium"
+    },
+    {
+     "date": "2027-08-17",
+     "city": "Atlanta",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Mercedes-Benz Stadium"
+    },
+    {
+     "date": "2027-08-20",
+     "city": "Baltimore",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "M&T Bank Stadium"
+    },
+    {
+     "date": "2027-08-26",
+     "city": "East Rutherford",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "MetLife Stadium"
+    },
+    {
+     "date": "2027-08-28",
+     "city": "East Rutherford",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "MetLife Stadium"
+    },
+    {
+     "date": "2027-09-03",
+     "city": "Chicago",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Soldier Field"
+    },
+    {
+     "date": "2027-09-07",
+     "city": "Toronto",
+     "country": "CA",
+     "country_name": "Canada",
+     "venue": "Rogers Stadium"
+    },
+    {
+     "date": "2027-09-09",
+     "city": "Toronto",
+     "country": "CA",
+     "country_name": "Canada",
+     "venue": "Rogers Stadium"
+    },
+    {
+     "date": "2027-09-14",
+     "city": "Foxborough",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Gillette Stadium"
+    },
+    {
+     "date": "2027-09-27",
+     "city": "Arlington",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "AT&T Stadium"
+    },
+    {
+     "date": "2027-10-01",
+     "city": "Los Angeles",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "SoFi Stadium"
+    },
+    {
+     "date": "2027-10-02",
+     "city": "Los Angeles",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "SoFi Stadium"
+    },
+    {
+     "date": "2027-10-09",
+     "city": "Las Vegas",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Allegiant Stadium"
+    },
+    {
+     "date": "2027-10-15",
+     "city": "Santa Clara",
+     "country": "US",
+     "country_name": "United States",
+     "venue": "Levi's Stadium"
+    },
+    {
+     "date": "2027-10-18",
+     "city": "Vancouver",
+     "country": "CA",
+     "country_name": "Canada",
+     "venue": "BC Place"
     }
-   ]
+   ],
+   "otkriveno": "",
+   "izvor": "popis"
   },
   {
    "izvodjac": "Karol G",
    "naslov": "Viajando Por El Mundo Tour",
    "url": "https://en.wikipedia.org/wiki/Viajando_Por_El_Mundo_Tour",
+   "revid": 1387406850,
    "koncerti": [
     {
      "date": "2026-07-24",
@@ -1464,18 +1579,18 @@
      "venue": "Pacaembu Stadium"
     },
     {
-     "date": "2027-02-19",
-     "city": "Santo Domingo",
-     "country": "DO",
-     "country_name": "Dominican Republic",
-     "venue": "Estadio Olímpico Félix Sánchez"
-    },
-    {
-     "date": "2027-02-26",
+     "date": "2027-04-02",
      "city": "San Juan",
      "country": "PR",
      "country_name": "Puerto Rico",
      "venue": "Hiram Bithorn Stadium"
+    },
+    {
+     "date": "2027-04-09",
+     "city": "Santo Domingo",
+     "country": "DO",
+     "country_name": "Dominican Republic",
+     "venue": "Estadio Olímpico Félix Sánchez"
     },
     {
      "date": "2027-06-03",
@@ -1568,7 +1683,4309 @@
      "country_name": "Italy",
      "venue": "San Siro"
     }
-   ]
+   ],
+   "otkriveno": "",
+   "izvor": "popis"
+  },
+  {
+   "izvodjac": "Westlife",
+   "naslov": "The 25th Anniversary World Tour",
+   "url": "https://en.wikipedia.org/wiki/The_25th_Anniversary_World_Tour",
+   "revid": 1386775220,
+   "koncerti": [
+    {
+     "date": "2026-11-25",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Lanxess Arena"
+    },
+    {
+     "date": "2026-11-26",
+     "city": "Zürich",
+     "country": "CH",
+     "country_name": "Switzerland",
+     "venue": "Hallenstadion"
+    },
+    {
+     "date": "2027-06-14",
+     "city": "Helsinki",
+     "country": "FI",
+     "country_name": "Finland",
+     "venue": "Veikkaus Arena"
+    },
+    {
+     "date": "2027-06-16",
+     "city": "Gothenburg",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Scandinavium"
+    },
+    {
+     "date": "2027-06-20",
+     "city": "Trondheim",
+     "country": "NO",
+     "country_name": "Norway",
+     "venue": "Trøndelag Folk Museum"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Role Model",
+   "naslov": "Chuck On Tour",
+   "url": "https://en.wikipedia.org/wiki/Chuck_On_Tour",
+   "revid": 1385191260,
+   "koncerti": [
+    {
+     "date": "2027-02-11",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Tempodrom"
+    },
+    {
+     "date": "2027-02-13",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "AFAS Live"
+    },
+    {
+     "date": "2027-02-14",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "AFAS Live"
+    },
+    {
+     "date": "2027-02-15",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Forest National"
+    },
+    {
+     "date": "2027-02-17",
+     "city": "Düsseldorf",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Mitsubishi Electric Halle"
+    },
+    {
+     "date": "2027-02-19",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Zénith Paris"
+    },
+    {
+     "date": "2027-02-22",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "3Arena"
+    },
+    {
+     "date": "2027-02-24",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "OVO Arena Wembley"
+    },
+    {
+     "date": "2027-02-28",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "AO Arena"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Aitana",
+   "naslov": "Cuarto Azul World Tour",
+   "url": "https://en.wikipedia.org/wiki/Cuarto_Azul_World_Tour",
+   "revid": 1387623521,
+   "koncerti": [
+    {
+     "date": "2027-02-06",
+     "city": "Lisbon",
+     "country": "PT",
+     "country_name": "Portugal",
+     "venue": "Sagres Campo Pequeno"
+    },
+    {
+     "date": "2027-02-12",
+     "city": "London",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "London Palladium"
+    },
+    {
+     "date": "2027-02-13",
+     "city": "London",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "London Palladium"
+    },
+    {
+     "date": "2027-02-20",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Salle Pleyel"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Tame Impala",
+   "naslov": "Deadbeat Tour",
+   "url": "https://en.wikipedia.org/wiki/Deadbeat_Tour",
+   "revid": 1386663438,
+   "koncerti": [
+    {
+     "date": "2027-05-28",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Co-op Live"
+    },
+    {
+     "date": "2027-05-29",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Co-op Live"
+    },
+    {
+     "date": "2027-06-01",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-06-02",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-06-03",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-06-07",
+     "city": "Rotterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Rotterdam Ahoy"
+    },
+    {
+     "date": "2027-06-08",
+     "city": "Rotterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Rotterdam Ahoy"
+    },
+    {
+     "date": "2027-06-09",
+     "city": "Rotterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Rotterdam Ahoy"
+    },
+    {
+     "date": "2027-06-12",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Accor Arena"
+    },
+    {
+     "date": "2027-06-13",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Accor Arena"
+    },
+    {
+     "date": "2027-06-17",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Lanxess Arena"
+    },
+    {
+     "date": "2027-06-18",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Lanxess Arena"
+    },
+    {
+     "date": "2027-06-19",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Lanxess Arena"
+    },
+    {
+     "date": "2027-06-30",
+     "city": "Gdynia",
+     "country": "PL",
+     "country_name": "Poland",
+     "venue": "Gdynia-Kosakowo Airport"
+    },
+    {
+     "date": "2027-07-02",
+     "city": "Roskilde",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Roskilde Dyreskuplads"
+    },
+    {
+     "date": "2027-07-04",
+     "city": "Werchter",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Werchter Festivalpark"
+    },
+    {
+     "date": "2027-07-10",
+     "city": "Algés",
+     "country": "PT",
+     "country_name": "Portugal",
+     "venue": "Passeio Marítimo de Algés"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Julia Wolf",
+   "naslov": "Deep End World Tour",
+   "url": "https://en.wikipedia.org/wiki/Deep_End_World_Tour",
+   "revid": 1387316565,
+   "koncerti": [
+    {
+     "date": "2026-11-25",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Koko"
+    },
+    {
+     "date": "2026-11-28",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Bürgerhaus Stollwerck"
+    },
+    {
+     "date": "2026-11-30",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "La Maroquinerie"
+    },
+    {
+     "date": "2026-12-01",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Tolhuistuin"
+    },
+    {
+     "date": "2026-12-02",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Le Botanique"
+    },
+    {
+     "date": "2026-12-04",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Hole⁴⁴"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Malcolm Todd",
+   "naslov": "Do That Again World Tour",
+   "url": "https://en.wikipedia.org/wiki/Do_That_Again_World_Tour",
+   "revid": 1387499937,
+   "koncerti": [
+    {
+     "date": "2027-02-12",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Fryshuset Arenan"
+    },
+    {
+     "date": "2027-02-14",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "K.B. Hallen"
+    },
+    {
+     "date": "2027-02-15",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Palladium"
+    },
+    {
+     "date": "2027-02-18",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Forest National"
+    },
+    {
+     "date": "2027-02-19",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Columbiahalle"
+    },
+    {
+     "date": "2027-02-21",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "AFAS Live"
+    },
+    {
+     "date": "2027-02-22",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Zénith Paris"
+    },
+    {
+     "date": "2027-02-24",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "3Arena"
+    },
+    {
+     "date": "2027-02-25",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "Barrowland Ballroom"
+    },
+    {
+     "date": "2027-02-27",
+     "city": "Birmingham",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "O2 Academy Birmingham"
+    },
+    {
+     "date": "2027-02-28",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "O2 Apollo Manchester"
+    },
+    {
+     "date": "2027-03-03",
+     "city": "London",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "O2 Academy Brixton"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Rush",
+   "naslov": "Fifty Something tour",
+   "url": "https://en.wikipedia.org/wiki/Fifty_Something_tour",
+   "revid": 1386658728,
+   "koncerti": [
+    {
+     "date": "2027-02-19",
+     "city": "Nanterre",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "La Défense Arena"
+    },
+    {
+     "date": "2027-02-21",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Uber Arena"
+    },
+    {
+     "date": "2027-02-23",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-02-25",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Olympiahalle"
+    },
+    {
+     "date": "2027-02-28",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Lanxess Arena"
+    },
+    {
+     "date": "2027-03-02",
+     "city": "Hamburg",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Barclays Arena"
+    },
+    {
+     "date": "2027-03-04",
+     "city": "Stuttgart",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Hanns-Martin-Schleyer-Halle"
+    },
+    {
+     "date": "2027-03-08",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "OVO Hydro"
+    },
+    {
+     "date": "2027-03-10",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "OVO Hydro"
+    },
+    {
+     "date": "2027-03-12",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Co-op Live"
+    },
+    {
+     "date": "2027-03-14",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Co-op Live"
+    },
+    {
+     "date": "2027-03-16",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-03-18",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-03-21",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-03-27",
+     "city": "Kraków",
+     "country": "PL",
+     "country_name": "Poland",
+     "venue": "Tauron Arena Kraków"
+    },
+    {
+     "date": "2027-03-30",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Unipol Dome"
+    },
+    {
+     "date": "2027-04-01",
+     "city": "Basel",
+     "country": "CH",
+     "country_name": "Switzerland",
+     "venue": "St. Jakobshalle Basel"
+    },
+    {
+     "date": "2027-04-04",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Royal Arena"
+    },
+    {
+     "date": "2027-04-06",
+     "city": "Fornebu",
+     "country": "NO",
+     "country_name": "Norway",
+     "venue": "Unity Arena"
+    },
+    {
+     "date": "2027-04-08",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Avicii Arena"
+    },
+    {
+     "date": "2027-04-10",
+     "city": "Helsinki",
+     "country": "FI",
+     "country_name": "Finland",
+     "venue": "Veikkaus Arena"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Tini",
+   "naslov": "Futttura World Tour",
+   "url": "https://en.wikipedia.org/wiki/Futttura_World_Tour",
+   "revid": 1386049392,
+   "koncerti": [
+    {
+     "date": "2027-01-19",
+     "city": "Valencia",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Roig Arena"
+    },
+    {
+     "date": "2027-01-20",
+     "city": "Valencia",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Roig Arena"
+    },
+    {
+     "date": "2027-01-22",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Palau Sant Jordi"
+    },
+    {
+     "date": "2027-01-23",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Palau Sant Jordi"
+    },
+    {
+     "date": "2027-01-24",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Palau Sant Jordi"
+    },
+    {
+     "date": "2027-01-26",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Movistar Arena"
+    },
+    {
+     "date": "2027-01-27",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Movistar Arena"
+    },
+    {
+     "date": "2027-01-28",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Movistar Arena"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Noah Kahan",
+   "naslov": "The Great Divide Tour",
+   "url": "https://en.wikipedia.org/wiki/The_Great_Divide_Tour",
+   "revid": 1384992120,
+   "koncerti": [
+    {
+     "date": "2026-11-25",
+     "city": "Zürich",
+     "country": "CH",
+     "country_name": "Switzerland",
+     "venue": "Hallenstadion"
+    },
+    {
+     "date": "2026-11-26",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Lanxess Arena"
+    },
+    {
+     "date": "2026-11-28",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Royal Arena"
+    },
+    {
+     "date": "2026-11-29",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Avicii Arena"
+    },
+    {
+     "date": "2026-12-01",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2026-12-02",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2026-12-04",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Olympiahalle"
+    },
+    {
+     "date": "2026-12-07",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Accor Arena"
+    },
+    {
+     "date": "2027-07-01",
+     "city": "Groningen",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Stadspark"
+    },
+    {
+     "date": "2027-07-02",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Waldbühne"
+    },
+    {
+     "date": "2027-07-04",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Ippodromo San Siro Milano"
+    },
+    {
+     "date": "2027-07-07",
+     "city": "Seville",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Plaza de España"
+    },
+    {
+     "date": "2027-07-10",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Longchamp Racecourse"
+    },
+    {
+     "date": "2027-07-13",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Hampden Park"
+    },
+    {
+     "date": "2027-07-17",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Aviva Stadium"
+    },
+    {
+     "date": "2027-07-18",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Aviva Stadium"
+    },
+    {
+     "date": "2027-07-23",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Stadium"
+    },
+    {
+     "date": "2027-07-24",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Stadium"
+    },
+    {
+     "date": "2027-07-25",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Stadium"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Hayley Williams",
+   "naslov": "\"The Hayley Williams Show\"",
+   "url": "https://en.wikipedia.org/wiki/%22The_Hayley_Williams_Show%22",
+   "revid": 1386350520,
+   "koncerti": [
+    {
+     "date": "2027-06-07",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Carraponte"
+    },
+    {
+     "date": "2027-06-08",
+     "city": "Rome",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Cavea Auditorium Parco della Musica"
+    },
+    {
+     "date": "2027-06-14",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Forest National"
+    },
+    {
+     "date": "2027-06-16",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Zénith Paris - La Villette"
+    },
+    {
+     "date": "2027-06-17",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "AFAS Live"
+    },
+    {
+     "date": "2027-06-23",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "OVO Hydro"
+    },
+    {
+     "date": "2027-06-26",
+     "city": "Slane",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Slane Castle"
+    },
+    {
+     "date": "2027-06-27",
+     "city": "Slane",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Slane Castle"
+    },
+    {
+     "date": "2027-06-30",
+     "city": "Cardiff",
+     "country": "GB",
+     "country_name": "Wales",
+     "venue": "Utilita Arena"
+    },
+    {
+     "date": "2027-07-02",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Alexandra Palace"
+    },
+    {
+     "date": "2027-07-03",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Alexandra Palace"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Kehlani",
+   "naslov": "Kehlani World Tour",
+   "url": "https://en.wikipedia.org/wiki/Kehlani_World_Tour",
+   "revid": 1386248836,
+   "koncerti": [
+    {
+     "date": "2026-11-29",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Velodrom"
+    },
+    {
+     "date": "2026-12-01",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Forest National"
+    },
+    {
+     "date": "2026-12-03",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Adidas Arena"
+    },
+    {
+     "date": "2026-12-05",
+     "city": "Düsseldorf",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "PSD Bank Dome"
+    },
+    {
+     "date": "2026-12-06",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2026-12-08",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2026-12-10",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Co-op Live"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Don Omar",
+   "naslov": "The Last King World Tour",
+   "url": "https://en.wikipedia.org/wiki/The_Last_King_World_Tour",
+   "revid": 1386725189,
+   "koncerti": [
+    {
+     "date": "2027-06-24",
+     "city": "Zurich",
+     "country": "CH",
+     "country_name": "Switzerland",
+     "venue": "Hallenstadion"
+    },
+    {
+     "date": "2027-06-25",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Accor Arena"
+    },
+    {
+     "date": "2027-06-27",
+     "city": "Dusseldorf",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "PSD Bank Dome"
+    },
+    {
+     "date": "2027-06-28",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Uber Arena"
+    },
+    {
+     "date": "2027-06-30",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-07-02",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Fiera Milano Live"
+    },
+    {
+     "date": "2027-07-04",
+     "city": "Naples",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Ex Base Nato"
+    },
+    {
+     "date": "2027-07-05",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-07-08",
+     "city": "Bilbao",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Bizkaia Arena"
+    },
+    {
+     "date": "2027-07-10",
+     "city": "Valencia",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadi Ciutat de València"
+    },
+    {
+     "date": "2027-07-11",
+     "city": "Murcia",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Espacio Norte"
+    },
+    {
+     "date": "2027-07-15",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Riyadh Air Metropolitano"
+    },
+    {
+     "date": "2027-07-16",
+     "city": "Malaga",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Marenostrum Fuengirola"
+    },
+    {
+     "date": "2027-07-18",
+     "city": "Galacia",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Puerto de A Coruña"
+    },
+    {
+     "date": "2027-07-22",
+     "city": "Lisboa",
+     "country": "PT",
+     "country_name": "Portugal",
+     "venue": "MEO Arena"
+    },
+    {
+     "date": "2027-07-24",
+     "city": "Gran Canaria",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Anexo Estadio de Gran Canaria"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Gracie Abrams",
+   "naslov": "The Look at My Life Tour",
+   "url": "https://en.wikipedia.org/wiki/The_Look_at_My_Life_Tour",
+   "revid": 1385936041,
+   "koncerti": [
+    {
+     "date": "2027-04-08",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Accor Arena"
+    },
+    {
+     "date": "2027-04-09",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Accor Arena"
+    },
+    {
+     "date": "2027-04-12",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Accor Arena"
+    },
+    {
+     "date": "2027-04-15",
+     "city": "Antwerp",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "AFAS Dome"
+    },
+    {
+     "date": "2027-04-16",
+     "city": "Antwerp",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "AFAS Dome"
+    },
+    {
+     "date": "2027-04-19",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "3Arena"
+    },
+    {
+     "date": "2027-04-20",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "3Arena"
+    },
+    {
+     "date": "2027-04-22",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Co-op Live"
+    },
+    {
+     "date": "2027-04-24",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Co-op Live"
+    },
+    {
+     "date": "2027-04-25",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Co-op Live"
+    },
+    {
+     "date": "2027-04-27",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "OVO Hydro"
+    },
+    {
+     "date": "2027-04-28",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "OVO Hydro"
+    },
+    {
+     "date": "2027-04-30",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-05-01",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-05-03",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-05-04",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-05-07",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-05-08",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-05-10",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-05-12",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Uber Arena"
+    },
+    {
+     "date": "2027-05-13",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Uber Arena"
+    },
+    {
+     "date": "2027-05-18",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Avicii Arena"
+    },
+    {
+     "date": "2027-05-19",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Avicii Arena"
+    },
+    {
+     "date": "2027-05-23",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Unipol Dome"
+    },
+    {
+     "date": "2027-05-24",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Unipol Dome"
+    },
+    {
+     "date": "2027-05-27",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Palau Sant Jordi"
+    },
+    {
+     "date": "2027-05-28",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Palau Sant Jordi"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Phoebe Bridgers",
+   "naslov": "The Lost Tour",
+   "url": "https://en.wikipedia.org/wiki/The_Lost_Tour",
+   "revid": 1387675951,
+   "koncerti": [
+    {
+     "date": "2026-11-26",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "Co-op Live"
+    },
+    {
+     "date": "2026-11-27",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "OVO Hydro"
+    },
+    {
+     "date": "2026-11-28",
+     "city": "Birmingham",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "Bp pulse LIVE"
+    },
+    {
+     "date": "2026-12-01",
+     "city": "London",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2026-12-02",
+     "city": "London",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2026-12-04",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Adidas Arena"
+    },
+    {
+     "date": "2026-12-06",
+     "city": "Antwerp",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "AFAS Dome"
+    },
+    {
+     "date": "2026-12-07",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2026-12-08",
+     "city": "Düsseldorf",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "PSD Bank Dome"
+    },
+    {
+     "date": "2026-12-10",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Uber Arena"
+    },
+    {
+     "date": "2026-12-11",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Royal Arena"
+    },
+    {
+     "date": "2026-12-12",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Avicii Arena"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Hilary Duff",
+   "naslov": "The Lucky Me Tour",
+   "url": "https://en.wikipedia.org/wiki/The_Lucky_Me_Tour",
+   "revid": 1385613855,
+   "koncerti": [
+    {
+     "date": "2027-05-07",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Movistar Arena"
+    },
+    {
+     "date": "2027-05-10",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Unipol Dome"
+    },
+    {
+     "date": "2027-05-12",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Velodrome"
+    },
+    {
+     "date": "2027-05-14",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Zenith Paris"
+    },
+    {
+     "date": "2027-05-16",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Forest National"
+    },
+    {
+     "date": "2027-05-17",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-05-18",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Lanxess Arena"
+    },
+    {
+     "date": "2027-05-20",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Royal Arena"
+    },
+    {
+     "date": "2027-05-22",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Avicii Arena"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Kacey Musgraves",
+   "naslov": "Middle of Nowhere Tour",
+   "url": "https://en.wikipedia.org/wiki/Middle_of_Nowhere_Tour",
+   "revid": 1379544382,
+   "koncerti": [
+    {
+     "date": "2027-02-22",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "OVO Hydro"
+    },
+    {
+     "date": "2027-02-24",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "AO Arena"
+    },
+    {
+     "date": "2027-02-26",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "OVO Arena Wembley"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Charli XCX",
+   "naslov": "Music, Fashion, Film Tour",
+   "url": "https://en.wikipedia.org/wiki/Music%2C_Fashion%2C_Film_Tour",
+   "revid": 1387632023,
+   "koncerti": [
+    {
+     "date": "2027-02-13",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "3Arena"
+    },
+    {
+     "date": "2027-02-15",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "OVO Hydro"
+    },
+    {
+     "date": "2027-02-17",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Co-op Live"
+    },
+    {
+     "date": "2027-02-19",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-02-20",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-02-22",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-02-24",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Accor Arena"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Sienna Spiro",
+   "naslov": "My House Tour",
+   "url": "https://en.wikipedia.org/wiki/My_House_Tour",
+   "revid": 1384117863,
+   "koncerti": [
+    {
+     "date": "2027-02-22",
+     "city": "Edinburgh",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Corn Exchange"
+    },
+    {
+     "date": "2027-02-23",
+     "city": "Edinburgh",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Corn Exchange"
+    },
+    {
+     "date": "2027-03-01",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Apollo Manchester"
+    },
+    {
+     "date": "2027-03-02",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Apollo Manchester"
+    },
+    {
+     "date": "2027-03-04",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Eventim Apollo"
+    },
+    {
+     "date": "2027-03-05",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Eventim Apollo"
+    },
+    {
+     "date": "2027-03-06",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Eventim Apollo"
+    },
+    {
+     "date": "2027-03-08",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Eventim Apollo"
+    },
+    {
+     "date": "2027-03-14",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Gashouder"
+    },
+    {
+     "date": "2027-03-15",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Gashouder"
+    },
+    {
+     "date": "2027-03-16",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Forest National"
+    },
+    {
+     "date": "2027-03-18",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Palladium"
+    },
+    {
+     "date": "2027-03-21",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Salle Pleyel"
+    },
+    {
+     "date": "2027-03-22",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Salle Pleyel"
+    },
+    {
+     "date": "2027-03-24",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Tempodrom"
+    },
+    {
+     "date": "2027-03-27",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Fabrique"
+    },
+    {
+     "date": "2027-03-29",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Paral·lel 62"
+    },
+    {
+     "date": "2027-03-30",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "La Riviera"
+    },
+    {
+     "date": "2027-06-15",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Fairview Park"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Don Toliver",
+   "naslov": "Octane World Tour",
+   "url": "https://en.wikipedia.org/wiki/Octane_World_Tour",
+   "revid": 1387561180,
+   "koncerti": [
+    {
+     "date": "2026-12-14",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Arena"
+    },
+    {
+     "date": "2026-12-15",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "the Pussycat Dolls",
+   "naslov": "PCD Forever Tour",
+   "url": "https://en.wikipedia.org/wiki/PCD_Forever_Tour",
+   "revid": 1387363371,
+   "koncerti": [
+    {
+     "date": "2027-06-06",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Brockwell Park"
+    },
+    {
+     "date": "2027-07-17",
+     "city": "Brive-la-Gaillarde",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "—N/a"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Adéla",
+   "naslov": "The Red Bottoms Tour",
+   "url": "https://en.wikipedia.org/wiki/The_Red_Bottoms_Tour",
+   "revid": 1387684445,
+   "koncerti": [
+    {
+     "date": "2027-01-11",
+     "city": "Prague",
+     "country": "CZ",
+     "country_name": "Czech Republic",
+     "venue": "Forum Karlín"
+    },
+    {
+     "date": "2027-01-13",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "3Olympia Theatre"
+    },
+    {
+     "date": "2027-01-14",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "3Olympia Theatre"
+    },
+    {
+     "date": "2027-01-16",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Victoria Warehouse"
+    },
+    {
+     "date": "2027-01-17",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "O2 Academy Glasgow"
+    },
+    {
+     "date": "2027-01-19",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Academy Brixton"
+    },
+    {
+     "date": "2027-01-20",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Academy Brixton"
+    },
+    {
+     "date": "2027-01-22",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Bataclan"
+    },
+    {
+     "date": "2027-01-23",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Carlswerk Victoria"
+    },
+    {
+     "date": "2027-01-25",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "La Madeleine"
+    },
+    {
+     "date": "2027-01-26",
+     "city": "Utrecht",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "TivoliVredenburg"
+    },
+    {
+     "date": "2027-01-28",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Amager Bio"
+    },
+    {
+     "date": "2027-01-29",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Fryshuset"
+    },
+    {
+     "date": "2027-01-31",
+     "city": "Oslo",
+     "country": "NO",
+     "country_name": "Norway",
+     "venue": "Sentrum Scene"
+    },
+    {
+     "date": "2027-02-02",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Huxley's Neue Welt"
+    },
+    {
+     "date": "2027-02-03",
+     "city": "Warsaw",
+     "country": "PL",
+     "country_name": "Poland",
+     "venue": "Klub Stodoła"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Stray Kids",
+   "naslov": "Run It World Tour",
+   "url": "https://en.wikipedia.org/wiki/Run_It_World_Tour",
+   "revid": 1387695285,
+   "koncerti": [
+    {
+     "date": "2027-07-09",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Plenitude Arena"
+    },
+    {
+     "date": "2027-07-10",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Plenitude Arena"
+    },
+    {
+     "date": "2027-07-13",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Tottenham Hotspur Stadium"
+    },
+    {
+     "date": "2027-07-14",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Tottenham Hotspur Stadium"
+    },
+    {
+     "date": "2027-07-17",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Allianz Arena"
+    },
+    {
+     "date": "2027-07-18",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Allianz Arena"
+    },
+    {
+     "date": "2027-07-21",
+     "city": "Vienna",
+     "country": "AT",
+     "country_name": "Austria",
+     "venue": "Ernst-Happel-Stadion"
+    },
+    {
+     "date": "2027-07-24",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadi Olímpic Lluís Companys"
+    },
+    {
+     "date": "2027-07-27",
+     "city": "Arnhem",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "GelreDome"
+    },
+    {
+     "date": "2027-07-28",
+     "city": "Arnhem",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "GelreDome"
+    },
+    {
+     "date": "2027-07-31",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "San Siro"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Hilary Duff",
+   "naslov": "Small Rooms, Big Nerves Tour",
+   "url": "https://en.wikipedia.org/wiki/Small_Rooms%2C_Big_Nerves_Tour",
+   "revid": 1385613855,
+   "koncerti": [
+    {
+     "date": "2027-05-07",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Movistar Arena"
+    },
+    {
+     "date": "2027-05-10",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Unipol Dome"
+    },
+    {
+     "date": "2027-05-12",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Velodrome"
+    },
+    {
+     "date": "2027-05-14",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Zenith Paris"
+    },
+    {
+     "date": "2027-05-16",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Forest National"
+    },
+    {
+     "date": "2027-05-17",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-05-18",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Lanxess Arena"
+    },
+    {
+     "date": "2027-05-20",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Royal Arena"
+    },
+    {
+     "date": "2027-05-22",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Avicii Arena"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Freya Skye",
+   "naslov": "Stars Align Tour",
+   "url": "https://en.wikipedia.org/wiki/Stars_Align_Tour",
+   "revid": 1386676809,
+   "koncerti": [
+    {
+     "date": "2026-11-25",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Fabrique"
+    },
+    {
+     "date": "2026-11-27",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Las Ventas"
+    },
+    {
+     "date": "2026-11-28",
+     "city": "Lisbon",
+     "country": "PT",
+     "country_name": "Portugal",
+     "venue": "Sala Tejo"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Aespa",
+   "naslov": "Synk: Complaexity",
+   "url": "https://en.wikipedia.org/wiki/Synk%3A_Complaexity",
+   "revid": 1387044332,
+   "koncerti": [
+    {
+     "date": "2027-01-14",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "AO Arena"
+    },
+    {
+     "date": "2027-01-16",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-01-19",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-01-22",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Avicii Arena"
+    },
+    {
+     "date": "2027-01-24",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Royal Arena"
+    },
+    {
+     "date": "2027-01-26",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Uber Arena"
+    },
+    {
+     "date": "2027-01-29",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Unipol Dome"
+    },
+    {
+     "date": "2027-01-31",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Palau Sant Jordi"
+    },
+    {
+     "date": "2027-02-02",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Accor Arena"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Foo Fighters",
+   "naslov": "Take Cover Tour",
+   "url": "https://en.wikipedia.org/wiki/Take_Cover_Tour",
+   "revid": 1387089034,
+   "koncerti": [
+    {
+     "date": "2027-06-12",
+     "city": "Helsinki",
+     "country": "FI",
+     "country_name": "Finland",
+     "venue": "Olympic Stadium"
+    },
+    {
+     "date": "2027-06-15",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Valbyparken"
+    },
+    {
+     "date": "2027-06-17",
+     "city": "Düsseldorf",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Merkur Spiel-Arena"
+    },
+    {
+     "date": "2027-06-30",
+     "city": "Sofia",
+     "country": "BG",
+     "country_name": "Bulgaria",
+     "venue": "Vasil Levski Stadium"
+    },
+    {
+     "date": "2027-07-02",
+     "city": "Athens",
+     "country": "GR",
+     "country_name": "Greece",
+     "venue": "Ejekt Festival"
+    },
+    {
+     "date": "2027-09-09",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Stadium"
+    },
+    {
+     "date": "2027-09-11",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Stadium"
+    },
+    {
+     "date": "2027-09-14",
+     "city": "Darlington",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Darlington Arena"
+    },
+    {
+     "date": "2027-09-16",
+     "city": "Edinburgh",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Murrayfield Stadium"
+    },
+    {
+     "date": "2027-09-18",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Croke Park"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Harry Styles",
+   "naslov": "Together, Together",
+   "url": "https://en.wikipedia.org/wiki/Together%2C_Together",
+   "revid": 1383068927,
+   "koncerti": [
+    {
+     "date": "2027-07-02",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Flughafen Tempelhof"
+    },
+    {
+     "date": "2027-07-03",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Flughafen Tempelhof"
+    },
+    {
+     "date": "2027-07-09",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Flughafen Tempelhof"
+    },
+    {
+     "date": "2027-07-10",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Flughafen Tempelhof"
+    },
+    {
+     "date": "2027-07-16",
+     "city": "Nanterre",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Plenitude Arena"
+    },
+    {
+     "date": "2027-07-17",
+     "city": "Nanterre",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Plenitude Arena"
+    },
+    {
+     "date": "2027-07-23",
+     "city": "Nanterre",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Plenitude Arena"
+    },
+    {
+     "date": "2027-07-24",
+     "city": "Nanterre",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Plenitude Arena"
+    },
+    {
+     "date": "2027-07-30",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Riyadh Air Metropolitano"
+    },
+    {
+     "date": "2027-07-31",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Riyadh Air Metropolitano"
+    },
+    {
+     "date": "2027-08-02",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Riyadh Air Metropolitano"
+    },
+    {
+     "date": "2027-08-07",
+     "city": "Rome",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Circo Massimo"
+    },
+    {
+     "date": "2027-08-08",
+     "city": "Rome",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Circo Massimo"
+    },
+    {
+     "date": "2027-08-18",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Croke Park"
+    },
+    {
+     "date": "2027-08-20",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Croke Park"
+    },
+    {
+     "date": "2027-08-21",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Croke Park"
+    },
+    {
+     "date": "2027-08-25",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Stadium"
+    },
+    {
+     "date": "2027-08-27",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Stadium"
+    },
+    {
+     "date": "2027-08-28",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Stadium"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Toby Fox",
+   "naslov": "Undertale: The Determination Symphony",
+   "url": "https://en.wikipedia.org/wiki/Undertale%3A_The_Determination_Symphony",
+   "revid": 1387003316,
+   "koncerti": [
+    {
+     "date": "2027-02-16",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Paral·lel 62"
+    },
+    {
+     "date": "2027-02-17",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "The Music Station"
+    },
+    {
+     "date": "2027-02-18",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "The Music Station"
+    },
+    {
+     "date": "2027-02-21",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Bord Gáis Energy Theatre"
+    },
+    {
+     "date": "2027-02-28",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "United Kingdom",
+     "venue": "Glasgow Royal Concert Hall"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Sombr",
+   "naslov": "You Are the Reason Tour",
+   "url": "https://en.wikipedia.org/wiki/You_Are_the_Reason_Tour",
+   "revid": 1387845889,
+   "koncerti": [
+    {
+     "date": "2027-05-05",
+     "city": "Oslo",
+     "country": "NO",
+     "country_name": "Norway",
+     "venue": "Unity Arena"
+    },
+    {
+     "date": "2027-05-09",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Avicii Arena"
+    },
+    {
+     "date": "2027-05-13",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Royal Arena"
+    },
+    {
+     "date": "2027-05-14",
+     "city": "Hamburg",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Barclays Arena"
+    },
+    {
+     "date": "2027-05-16",
+     "city": "Antwerp",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "AFAS Dome"
+    },
+    {
+     "date": "2027-05-18",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Uber Arena"
+    },
+    {
+     "date": "2027-05-19",
+     "city": "Prague",
+     "country": "CZ",
+     "country_name": "Czechia",
+     "venue": "O2 Arena"
+    },
+    {
+     "date": "2027-05-22",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Accor Arena"
+    },
+    {
+     "date": "2027-05-23",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Lanxess Arena"
+    },
+    {
+     "date": "2027-05-24",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Lanxess Arena"
+    },
+    {
+     "date": "2027-05-27",
+     "city": "Zürich",
+     "country": "CH",
+     "country_name": "Switzerland",
+     "venue": "Hallenstadion"
+    },
+    {
+     "date": "2027-05-28",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Olympiahalle"
+    },
+    {
+     "date": "2027-05-29",
+     "city": "Vienna",
+     "country": "AT",
+     "country_name": "Austria",
+     "venue": "Wiener Stadthalle"
+    },
+    {
+     "date": "2027-05-31",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-06-01",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-06-15",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Malahide Castle"
+    },
+    {
+     "date": "2027-06-17",
+     "city": "Belfast",
+     "country": "GB",
+     "country_name": "Northern Ireland",
+     "venue": "Ormeau Park"
+    },
+    {
+     "date": "2027-06-19",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Bellahouston Park"
+    },
+    {
+     "date": "2027-06-21",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-06-22",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-06-24",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-06-25",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-06-29",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-07-14",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Ippodromo Snai La Maura"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "James Blunt",
+   "naslov": "Airplane Mode Tour",
+   "url": "https://en.wikipedia.org/wiki/Airplane_Mode_Tour",
+   "revid": 1385256591,
+   "koncerti": [
+    {
+     "date": "2027-02-17",
+     "city": "Esch-sur-Alzette",
+     "country": "LU",
+     "country_name": "Luxembourg",
+     "venue": "Rockhal"
+    },
+    {
+     "date": "2027-02-19",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Forest National"
+    },
+    {
+     "date": "2027-02-20",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Ziggo Dome"
+    },
+    {
+     "date": "2027-02-21",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Adidas Arena"
+    },
+    {
+     "date": "2027-02-23",
+     "city": "Nuremberg",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "PSD Bank Arena"
+    },
+    {
+     "date": "2027-02-24",
+     "city": "Hanover",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "ZAG Arena"
+    },
+    {
+     "date": "2027-02-26",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Olympiahalle"
+    },
+    {
+     "date": "2027-02-27",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Unipol Forum"
+    },
+    {
+     "date": "2027-02-28",
+     "city": "Florence",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Mandela Forum"
+    },
+    {
+     "date": "2027-03-02",
+     "city": "Geneva",
+     "country": "CH",
+     "country_name": "Switzerland",
+     "venue": "Arena Gnéve"
+    },
+    {
+     "date": "2027-03-03",
+     "city": "Zürich",
+     "country": "CH",
+     "country_name": "Switzerland",
+     "venue": "Hallenstadion"
+    },
+    {
+     "date": "2027-03-05",
+     "city": "Prague",
+     "country": "CZ",
+     "country_name": "Czech Republic",
+     "venue": "O2 Universum"
+    },
+    {
+     "date": "2027-03-06",
+     "city": "Innsbruck",
+     "country": "AT",
+     "country_name": "Austria",
+     "venue": "Olympiahalle"
+    },
+    {
+     "date": "2027-03-07",
+     "city": "Vienna",
+     "country": "AT",
+     "country_name": "Austria",
+     "venue": "Wiener Stadthalle"
+    },
+    {
+     "date": "2027-03-09",
+     "city": "Budapest",
+     "country": "HU",
+     "country_name": "Hungary",
+     "venue": "MVM Dome"
+    },
+    {
+     "date": "2027-03-10",
+     "city": "Wrocław",
+     "country": "PL",
+     "country_name": "Poland",
+     "venue": "Hala Stulecia"
+    },
+    {
+     "date": "2027-03-12",
+     "city": "Leipzig",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "QUARTERBACK Immobilien Arena"
+    },
+    {
+     "date": "2027-03-13",
+     "city": "Düsseldorf",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "PSD Bank Dome"
+    },
+    {
+     "date": "2027-03-14",
+     "city": "Hamburg",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Barclays Arena"
+    },
+    {
+     "date": "2027-03-16",
+     "city": "Oslo",
+     "country": "NO",
+     "country_name": "Norway",
+     "venue": "Oslo Spektrum"
+    },
+    {
+     "date": "2027-03-17",
+     "city": "Göteborg",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Scandinavium"
+    },
+    {
+     "date": "2027-03-19",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Royal Arena"
+    },
+    {
+     "date": "2027-03-20",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Uber Arena"
+    },
+    {
+     "date": "2027-03-21",
+     "city": "Stuttgart",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Hans-Martin-Schleyer-Halle"
+    },
+    {
+     "date": "2027-03-23",
+     "city": "Freiburg",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "SICK-Arena"
+    },
+    {
+     "date": "2027-03-24",
+     "city": "Mannheim",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "SAP Arena"
+    },
+    {
+     "date": "2027-03-26",
+     "city": "Leeds",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "First Direct Bank Arena"
+    },
+    {
+     "date": "2027-03-27",
+     "city": "Birmingham",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "bp pulse LIVE"
+    },
+    {
+     "date": "2027-03-28",
+     "city": "Newcastle",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Utilita Arena"
+    },
+    {
+     "date": "2027-03-30",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "3Arena"
+    },
+    {
+     "date": "2027-03-31",
+     "city": "Belfast",
+     "country": "GB",
+     "country_name": "Northern Ireland",
+     "venue": "The O2 Belfast"
+    },
+    {
+     "date": "2027-04-02",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "OVO Hydro"
+    },
+    {
+     "date": "2027-04-03",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Co-op Live"
+    },
+    {
+     "date": "2027-04-04",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "The O2 Arena"
+    },
+    {
+     "date": "2027-04-06",
+     "city": "Cardiff",
+     "country": "GB",
+     "country_name": "Wales",
+     "venue": "Utilita Arena Cardiff"
+    },
+    {
+     "date": "2027-04-07",
+     "city": "Bournemouth",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Bournemouth International Centre"
+    },
+    {
+     "date": "2027-04-08",
+     "city": "Brighton",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Brighton Centre"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Take That",
+   "naslov": "Dreamers Tour",
+   "url": "https://en.wikipedia.org/wiki/Dreamers_Tour",
+   "revid": 1387588486,
+   "koncerti": [
+    {
+     "date": "2027-06-03",
+     "city": "Zurich",
+     "country": "CH",
+     "country_name": "Switzerland",
+     "venue": "National Museum Zurich"
+    },
+    {
+     "date": "2027-06-04",
+     "city": "Hannover",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Expo Plaza"
+    },
+    {
+     "date": "2027-06-05",
+     "city": "Sankt Goarshausen",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Freilichtbühne Loreley"
+    },
+    {
+     "date": "2027-06-06",
+     "city": "Mönchengladbach",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "SparkassenPark"
+    },
+    {
+     "date": "2027-06-10",
+     "city": "Waghäusel",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Eremitage Waghäusel"
+    },
+    {
+     "date": "2027-06-11",
+     "city": "Idstein",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Hessentag Arena"
+    },
+    {
+     "date": "2027-06-12",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Waldbühne"
+    },
+    {
+     "date": "2027-06-13",
+     "city": "Warsaw",
+     "country": "PL",
+     "country_name": "Poland",
+     "venue": "Progresja Summer Stage"
+    },
+    {
+     "date": "2027-06-18",
+     "city": "Oslo",
+     "country": "NO",
+     "country_name": "Norway",
+     "venue": "St Hans Tjuvholmen"
+    },
+    {
+     "date": "2027-06-19",
+     "city": "Bergen",
+     "country": "NO",
+     "country_name": "Norway",
+     "venue": "Bergen Calling"
+    },
+    {
+     "date": "2027-06-21",
+     "city": "Göteborg",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Liseberg"
+    },
+    {
+     "date": "2027-06-22",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Gröna Lund"
+    },
+    {
+     "date": "2027-06-23",
+     "city": "Malmö",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Malmö Arena"
+    },
+    {
+     "date": "2027-06-25",
+     "city": "Odense",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Tinderbox Festival"
+    },
+    {
+     "date": "2027-06-26",
+     "city": "Bremen",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Galopprennbahn"
+    },
+    {
+     "date": "2027-06-27",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "AFAS Live"
+    },
+    {
+     "date": "2027-06-30",
+     "city": "Belfast",
+     "country": "GB",
+     "country_name": "Northern Ireland",
+     "venue": "Ormeau Park"
+    },
+    {
+     "date": "2027-07-02",
+     "city": "Limerick",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Thomond Park"
+    },
+    {
+     "date": "2027-07-04",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Cirque Royal"
+    },
+    {
+     "date": "2027-07-05",
+     "city": "Brussels",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Cirque Royal"
+    },
+    {
+     "date": "2027-07-06",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Zenith Paris - La Villette"
+    },
+    {
+     "date": "2027-07-07",
+     "city": "Luxembourg",
+     "country": "LU",
+     "country_name": "Luxembourg",
+     "venue": "Luxexpo Open-Air"
+    },
+    {
+     "date": "2027-07-09",
+     "city": "Catalonia",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "TBA"
+    },
+    {
+     "date": "2027-07-10",
+     "city": "Valencia",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "TBA"
+    },
+    {
+     "date": "2027-07-11",
+     "city": "Fuengirola",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Marenostrum Fuengirola"
+    },
+    {
+     "date": "2027-07-13",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "TBA"
+    },
+    {
+     "date": "2027-07-14",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "TBA"
+    },
+    {
+     "date": "2027-07-15",
+     "city": "A Coruña",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Coliseum da Coruña"
+    },
+    {
+     "date": "2027-07-17",
+     "city": "Locarno",
+     "country": "CH",
+     "country_name": "Switzerland",
+     "venue": "Piazza Grande"
+    },
+    {
+     "date": "2027-07-18",
+     "city": "Este",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Castello Carrarese"
+    },
+    {
+     "date": "2027-07-19",
+     "city": "Rome",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Auditorium Cavea"
+    },
+    {
+     "date": "2027-07-20",
+     "city": "Lucca",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Mura Storiche"
+    },
+    {
+     "date": "2027-07-22",
+     "city": "Vienna",
+     "country": "AT",
+     "country_name": "Austria",
+     "venue": "METAstadt"
+    },
+    {
+     "date": "2027-07-23",
+     "city": "Tüßling",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Schlosspark"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Mariah Carey",
+   "naslov": "Firefly Tour",
+   "url": "https://en.wikipedia.org/wiki/Firefly_Tour",
+   "revid": 1384672016,
+   "koncerti": [
+    {
+     "date": "2027-06-24",
+     "city": "Sønderborg",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": ""
+    },
+    {
+     "date": "2027-06-27",
+     "city": "Exeter",
+     "country": "GB",
+     "country_name": "England",
+     "venue": ""
+    },
+    {
+     "date": "2027-06-29",
+     "city": "Cardiff",
+     "country": "GB",
+     "country_name": "Wales",
+     "venue": ""
+    },
+    {
+     "date": "2027-07-01",
+     "city": "Woodstock",
+     "country": "GB",
+     "country_name": "England",
+     "venue": ""
+    },
+    {
+     "date": "2027-07-03",
+     "city": "Scarborough",
+     "country": "GB",
+     "country_name": "England",
+     "venue": ""
+    },
+    {
+     "date": "2027-07-08",
+     "city": "Stuttgart",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": ""
+    },
+    {
+     "date": "2027-07-11",
+     "city": "Lucca",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": ""
+    },
+    {
+     "date": "2027-07-14",
+     "city": "Spa",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": ""
+    },
+    {
+     "date": "2027-07-20",
+     "city": "Locarno",
+     "country": "CH",
+     "country_name": "Switzerland",
+     "venue": ""
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Oasis",
+   "naslov": "Oasis Live '27 Tour",
+   "url": "https://en.wikipedia.org/wiki/Oasis_Live_%2727_Tour",
+   "revid": 1381750678,
+   "koncerti": [
+    {
+     "date": "2027-05-21",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Celtic Park"
+    },
+    {
+     "date": "2027-05-23",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Celtic Park"
+    },
+    {
+     "date": "2027-05-25",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Celtic Park"
+    },
+    {
+     "date": "2027-05-28",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Celtic Park"
+    },
+    {
+     "date": "2027-05-29",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Celtic Park"
+    },
+    {
+     "date": "2027-06-04",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-06-06",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-06-08",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-06-11",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-06-12",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-06-15",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-06-18",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-06-19",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-06-22",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-06-25",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-06-26",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-07-02",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Allianz Arena"
+    },
+    {
+     "date": "2027-07-03",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Allianz Arena"
+    },
+    {
+     "date": "2027-07-06",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Allianz Arena"
+    },
+    {
+     "date": "2027-07-10",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadi Olímpic Lluís Companys"
+    },
+    {
+     "date": "2027-07-11",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Estadi Olímpic Lluís Companys"
+    },
+    {
+     "date": "2027-07-16",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Johan Cruijff Arena"
+    },
+    {
+     "date": "2027-07-17",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Johan Cruijff Arena"
+    },
+    {
+     "date": "2027-07-20",
+     "city": "Saint-Denis",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Stade de France"
+    },
+    {
+     "date": "2027-07-23",
+     "city": "Saint-Denis",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Stade de France"
+    },
+    {
+     "date": "2027-07-26",
+     "city": "Rome",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Stadio Olimpico"
+    },
+    {
+     "date": "2027-07-29",
+     "city": "Rome",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Stadio Olimpico"
+    },
+    {
+     "date": "2027-07-30",
+     "city": "Rome",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Stadio Olimpico"
+    },
+    {
+     "date": "2027-09-04",
+     "city": "Slane",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Slane Castle"
+    },
+    {
+     "date": "2027-09-05",
+     "city": "Slane",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Slane Castle"
+    },
+    {
+     "date": "2027-09-11",
+     "city": "Stevenage",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Knebworth Park"
+    },
+    {
+     "date": "2027-09-12",
+     "city": "Stevenage",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Knebworth Park"
+    },
+    {
+     "date": "2027-09-18",
+     "city": "Stevenage",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Knebworth Park"
+    },
+    {
+     "date": "2027-09-19",
+     "city": "Stevenage",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Knebworth Park"
+    },
+    {
+     "date": "2027-09-25",
+     "city": "Stevenage",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Knebworth Park"
+    },
+    {
+     "date": "2027-09-26",
+     "city": "Stevenage",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Knebworth Park"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Lizzy McAlpine",
+   "naslov": "The Over Country Tour",
+   "url": "https://en.wikipedia.org/wiki/The_Over_Country_Tour",
+   "revid": 1379962709,
+   "koncerti": [
+    {
+     "date": "2027-03-06",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Sala Apolo"
+    },
+    {
+     "date": "2027-03-08",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "L'Olympia"
+    },
+    {
+     "date": "2027-03-11",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "TonHalle"
+    },
+    {
+     "date": "2027-03-12",
+     "city": "Vienna",
+     "country": "AT",
+     "country_name": "Austria",
+     "venue": "Gasometer"
+    },
+    {
+     "date": "2027-03-14",
+     "city": "Prague",
+     "country": "CZ",
+     "country_name": "Czech Republic",
+     "venue": "SaSaZu"
+    },
+    {
+     "date": "2027-03-15",
+     "city": "Warsaw",
+     "country": "PL",
+     "country_name": "Poland",
+     "venue": "Stodoła"
+    },
+    {
+     "date": "2027-03-17",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Columbiahalle"
+    },
+    {
+     "date": "2027-03-19",
+     "city": "Oslo",
+     "country": "NO",
+     "country_name": "Norway",
+     "venue": "Sentrum Scene"
+    },
+    {
+     "date": "2027-03-22",
+     "city": "Stockholm",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Cirkus"
+    },
+    {
+     "date": "2027-03-23",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "Poolen"
+    },
+    {
+     "date": "2027-03-25",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Palladium"
+    },
+    {
+     "date": "2027-03-26",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "AFAS Live"
+    },
+    {
+     "date": "2027-03-31",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Academy Brixton"
+    },
+    {
+     "date": "2027-04-01",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Academy Brixton"
+    },
+    {
+     "date": "2027-04-02",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Academy Brixton"
+    },
+    {
+     "date": "2027-04-04",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Aviva Studios"
+    },
+    {
+     "date": "2027-04-05",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Aviva Studios"
+    },
+    {
+     "date": "2027-04-07",
+     "city": "Birmingham",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Academy Birmingham"
+    },
+    {
+     "date": "2027-04-09",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "O2 Academy Glasgow"
+    },
+    {
+     "date": "2027-04-10",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "O2 Academy Glasgow"
+    },
+    {
+     "date": "2027-04-12",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "3Arena"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Sam Fender",
+   "naslov": "Proper Massive Stadium Tour",
+   "url": "https://en.wikipedia.org/wiki/Proper_Massive_Stadium_Tour",
+   "revid": 1385504536,
+   "koncerti": [
+    {
+     "date": "2027-06-03",
+     "city": "Newcastle",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "St James' Park"
+    },
+    {
+     "date": "2027-06-05",
+     "city": "Newcastle",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "St James' Park"
+    },
+    {
+     "date": "2027-06-10",
+     "city": "Cardiff",
+     "country": "GB",
+     "country_name": "Wales",
+     "venue": "Principality Stadium"
+    },
+    {
+     "date": "2027-06-12",
+     "city": "Cardiff",
+     "country": "GB",
+     "country_name": "Wales",
+     "venue": "Principality Stadium"
+    },
+    {
+     "date": "2027-06-18",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Stadium"
+    },
+    {
+     "date": "2027-06-20",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Stadium"
+    },
+    {
+     "date": "2027-07-01",
+     "city": "Dublin",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Marlay Park"
+    },
+    {
+     "date": "2027-07-08",
+     "city": "Edinburgh",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Murrayfield Stadium"
+    },
+    {
+     "date": "2027-07-10",
+     "city": "Edinburgh",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "Murrayfield Stadium"
+    },
+    {
+     "date": "2027-07-15",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-07-17",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Etihad Stadium"
+    },
+    {
+     "date": "2027-09-02",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Wembley Stadium"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Sugababes",
+   "naslov": "Sugababes 2027 UK Tour",
+   "url": "https://en.wikipedia.org/wiki/Sugababes_2027_UK_Tour",
+   "revid": 1381212726,
+   "koncerti": [
+    {
+     "date": "2027-03-16",
+     "city": "Birmingham",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Institute Birmingham"
+    },
+    {
+     "date": "2027-03-17",
+     "city": "Birmingham",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Institute Birmingham"
+    },
+    {
+     "date": "2027-03-19",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "O2 Academy Glasgow"
+    },
+    {
+     "date": "2027-03-20",
+     "city": "Glasgow",
+     "country": "GB",
+     "country_name": "Scotland",
+     "venue": "O2 Academy Glasgow"
+    },
+    {
+     "date": "2027-03-23",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Shepherd's Bush Empire"
+    },
+    {
+     "date": "2027-03-24",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Shepherd's Bush Empire"
+    },
+    {
+     "date": "2027-03-26",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Manchester Academy"
+    },
+    {
+     "date": "2027-03-27",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Manchester Academy"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Garth Brooks",
+   "naslov": "The Garth Brooks Irish Tour",
+   "url": "https://en.wikipedia.org/wiki/The_Garth_Brooks_Irish_Tour",
+   "revid": 1387440007,
+   "koncerti": [
+    {
+     "date": "2027-05-21",
+     "city": "Belfast",
+     "country": "GB",
+     "country_name": "Northern Ireland",
+     "venue": "Boucher Road Playing Fields"
+    },
+    {
+     "date": "2027-05-22",
+     "city": "Belfast",
+     "country": "GB",
+     "country_name": "Northern Ireland",
+     "venue": "Boucher Road Playing Fields"
+    },
+    {
+     "date": "2027-05-23",
+     "city": "Belfast",
+     "country": "GB",
+     "country_name": "Northern Ireland",
+     "venue": "Boucher Road Playing Fields"
+    },
+    {
+     "date": "2027-05-29",
+     "city": "Galway",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Pearse Stadium"
+    },
+    {
+     "date": "2027-05-30",
+     "city": "Galway",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "Pearse Stadium"
+    },
+    {
+     "date": "2027-06-04",
+     "city": "Kilkenny",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "UPMC Nowlan Park"
+    },
+    {
+     "date": "2027-06-05",
+     "city": "Kilkenny",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "UPMC Nowlan Park"
+    },
+    {
+     "date": "2027-06-11",
+     "city": "Limerick",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "TUS Gaelic Grounds"
+    },
+    {
+     "date": "2027-06-12",
+     "city": "Limerick",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "TUS Gaelic Grounds"
+    },
+    {
+     "date": "2027-06-18",
+     "city": "Cork",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "SuperValu Páirc Uí Chaoimh"
+    },
+    {
+     "date": "2027-06-19",
+     "city": "Cork",
+     "country": "IE",
+     "country_name": "Ireland",
+     "venue": "SuperValu Páirc Uí Chaoimh"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Flo",
+   "naslov": "Therapy at the Club Tour",
+   "url": "https://en.wikipedia.org/wiki/Therapy_at_the_Club_Tour",
+   "revid": 1381016641,
+   "koncerti": [
+    {
+     "date": "2027-03-05",
+     "city": "Cologne",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Palladium"
+    },
+    {
+     "date": "2027-03-07",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "AFAS Live"
+    },
+    {
+     "date": "2027-03-08",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Zénith Paris"
+    },
+    {
+     "date": "2027-03-10",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Apollo Manchester"
+    },
+    {
+     "date": "2027-03-12",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "OVO Arena Wembley"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "Till Lindemann",
+   "naslov": "World Tour 2027 (Till Lindemann)",
+   "url": "https://en.wikipedia.org/wiki/World_Tour_2027_%28Till_Lindemann%29",
+   "revid": 1387389836,
+   "koncerti": [
+    {
+     "date": "2027-10-04",
+     "city": "Helsinki",
+     "country": "FI",
+     "country_name": "Finland",
+     "venue": "Helsinki Ice Hall"
+    },
+    {
+     "date": "2027-10-06",
+     "city": "Oslo",
+     "country": "NO",
+     "country_name": "Norway",
+     "venue": "Oslo Spektrum"
+    },
+    {
+     "date": "2027-10-08",
+     "city": "Gothenburg",
+     "country": "SE",
+     "country_name": "Sweden",
+     "venue": "Partille Arena"
+    },
+    {
+     "date": "2027-10-10",
+     "city": "Copenhagen",
+     "country": "DK",
+     "country_name": "Denmark",
+     "venue": "K.B. Hallen"
+    },
+    {
+     "date": "2027-10-12",
+     "city": "Rostock",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Stadthalle"
+    },
+    {
+     "date": "2027-10-13",
+     "city": "Rostock",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Stadthalle"
+    },
+    {
+     "date": "2027-10-15",
+     "city": "Münster",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "MCC Halle Münsterland"
+    },
+    {
+     "date": "2027-10-17",
+     "city": "Amsterdam",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "AFAS Live"
+    },
+    {
+     "date": "2027-10-19",
+     "city": "Manchester",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "O2 Apollo"
+    },
+    {
+     "date": "2027-10-21",
+     "city": "London",
+     "country": "GB",
+     "country_name": "England",
+     "venue": "Hammersmith Apollo"
+    },
+    {
+     "date": "2027-10-23",
+     "city": "Antwerp",
+     "country": "BE",
+     "country_name": "Belgium",
+     "venue": "Lotto Arena"
+    },
+    {
+     "date": "2027-10-26",
+     "city": "Mannheim",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "SAP Arena"
+    },
+    {
+     "date": "2027-10-28",
+     "city": "Oberhausen",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Rudolf Weber-Arena"
+    },
+    {
+     "date": "2027-10-30",
+     "city": "Kassel",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Probonio Arena"
+    },
+    {
+     "date": "2027-11-01",
+     "city": "Zurich",
+     "country": "CH",
+     "country_name": "Switzerland",
+     "venue": "Hallenstadion"
+    },
+    {
+     "date": "2027-11-02",
+     "city": "Milan",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Alcatraz"
+    },
+    {
+     "date": "2027-11-05",
+     "city": "Madrid",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "La Riviera"
+    },
+    {
+     "date": "2027-11-07",
+     "city": "Lisbon",
+     "country": "PT",
+     "country_name": "Portugal",
+     "venue": "Sagres Campo Pequeno"
+    },
+    {
+     "date": "2027-11-09",
+     "city": "Barcelona",
+     "country": "ES",
+     "country_name": "Spain",
+     "venue": "Razzmatazz"
+    },
+    {
+     "date": "2027-11-11",
+     "city": "Paris",
+     "country": "FR",
+     "country_name": "France",
+     "venue": "Zénith"
+    },
+    {
+     "date": "2027-11-13",
+     "city": "Nuremberg",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "PSD Bank Nürnberg Arena"
+    },
+    {
+     "date": "2027-11-15",
+     "city": "Munich",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Olympiahalle"
+    },
+    {
+     "date": "2027-11-17",
+     "city": "Vienna",
+     "country": "AT",
+     "country_name": "Austria",
+     "venue": "Wiener Stadthalle"
+    },
+    {
+     "date": "2027-11-19",
+     "city": "Belgrade",
+     "country": "RS",
+     "country_name": "Serbia",
+     "venue": "Belgrade Arena"
+    },
+    {
+     "date": "2027-11-23",
+     "city": "Istanbul",
+     "country": "TR",
+     "country_name": "Turkey",
+     "venue": "Ülker Sports and Event Hall"
+    },
+    {
+     "date": "2027-11-28",
+     "city": "Cluj-Napoca",
+     "country": "RO",
+     "country_name": "Romania",
+     "venue": "BTarena"
+    },
+    {
+     "date": "2027-12-02",
+     "city": "Budapest",
+     "country": "HU",
+     "country_name": "Hungary",
+     "venue": "MVM Dome"
+    },
+    {
+     "date": "2027-12-04",
+     "city": "Dresden",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "MESSE"
+    },
+    {
+     "date": "2027-12-06",
+     "city": "Hamburg",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Barclays Arena"
+    },
+    {
+     "date": "2027-12-07",
+     "city": "Magdeburg",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "GETEC Arena"
+    },
+    {
+     "date": "2027-12-09",
+     "city": "Kraków",
+     "country": "PL",
+     "country_name": "Poland",
+     "venue": "Tauron Arena Kraków"
+    },
+    {
+     "date": "2027-12-12",
+     "city": "Prague",
+     "country": "CZ",
+     "country_name": "Czech Republic",
+     "venue": "O2 Arena"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
+  },
+  {
+   "izvodjac": "The Neighbourhood",
+   "naslov": "Wourld Tour II",
+   "url": "https://en.wikipedia.org/wiki/Wourld_Tour_II",
+   "revid": 1385005652,
+   "koncerti": [
+    {
+     "date": "2027-06-20",
+     "city": "Landgraaf",
+     "country": "NL",
+     "country_name": "Netherlands",
+     "venue": "Megaland"
+    },
+    {
+     "date": "2027-06-23",
+     "city": "Sofia",
+     "country": "BG",
+     "country_name": "Bulgaria",
+     "venue": "Sofia Live Park"
+    },
+    {
+     "date": "2027-06-25",
+     "city": "Athens",
+     "country": "GR",
+     "country_name": "Greece",
+     "venue": "Markopoulo Complex"
+    },
+    {
+     "date": "2027-07-02",
+     "city": "Gdynia",
+     "country": "PL",
+     "country_name": "Poland",
+     "venue": "Gdynia-Kosakowo Airport"
+    },
+    {
+     "date": "2027-07-08",
+     "city": "Lisbon",
+     "country": "PT",
+     "country_name": "Portugal",
+     "venue": "Passeio Marítimo de Algés"
+    },
+    {
+     "date": "2027-07-13",
+     "city": "Florence",
+     "country": "IT",
+     "country_name": "Italy",
+     "venue": "Parco delle Cascine"
+    },
+    {
+     "date": "2027-07-15",
+     "city": "Vienna",
+     "country": "AT",
+     "country_name": "Austria",
+     "venue": "Dr.-Otto-Neurath-Gasse"
+    },
+    {
+     "date": "2027-07-17",
+     "city": "Berlin",
+     "country": "DE",
+     "country_name": "Germany",
+     "venue": "Olympiapark Berlin"
+    }
+   ],
+   "otkriveno": "",
+   "izvor": "kategorija"
   }
- ]
+ ],
+ "preskoceno": {
+  "4ward World Tour": 1386714689,
+  "5ive Alive Tour": 1383912494,
+  "5525 Back to That Day Tour": 1382521853,
+  "After Hours til Dawn Tour": 1384154376,
+  "American Heart World Tour": 1383713101,
+  "An Evening With... PinkPantheress": 1382657267,
+  "Arirang World Tour": 1387724801,
+  "The Art of Loving Live": 1386867368,
+  "Back to Badlands Tour": 1374993659,
+  "Bite Me Tour (Reneé Rapp)": 1364991747,
+  "The Blame It All On My Roots Tour": 1387710568,
+  "Body High Tour": 1383194547,
+  "The Boy Who Played the Harp Tour": 1382657349,
+  "Britpop Tour": 1384038009,
+  "Can't Rush Greatness World Tour": 1377958366,
+  "Carnival II World Tour": 1380617961,
+  "Carnival of Chaos Tour": 1380966350,
+  "Choom World Tour": 1381182248,
+  "Chris Stapleton's All-American Road Show Tour": 1376438834,
+  "The Circus Live – Summer 2026": 1386741863,
+  "The Cloud 9 Tour": 1387337081,
+  "Deadline World Tour": 1387005833,
+  "Debí Tirar Más Fotos World Tour": 1381658516,
+  "Different Night Same Rodeo Tour": 1382282748,
+  "Dinner Party: Live on Tour": 1386425836,
+  "Don't Be Dumb Tour": 1383724400,
+  "The Dream Show 4: Dream the Future": 1355968645,
+  "Dreamworld: The Greatest Hits Live": 1377117513,
+  "The Eternal Sunshine Tour": 1387844492,
+  "Everybody Scream Tour": 1378394760,
+  "Everyone's a Star! World Tour": 1375440870,
+  "Everyone's Talking! The World Tour": 1377879390,
+  "Exo Planet 6 – Exhorizon": 1380556703,
+  "The Fall-Off World Tour": 1382974996,
+  "The Final Frontier Tour (Journey)": 1384306769,
+  "Finding Family on the Road": 1384456127,
+  "Freaks on Parade Tour": 1375022039,
+  "Free Palestine Tour": 1385529759,
+  "The Freedom Tour (Kesha)": 1387213422,
+  "Frequency of Love Tour": 1387397015,
+  "From Zero World Tour": 1382075025,
+  "The Gathering (tour)": 1378765981,
+  "Getting Killed World Tour": 1387643342,
+  "GOAT Tour Jala Brat & Buba Corelli": 1382113877,
+  "Grasa Tour": 1348099204,
+  "Guns N' Roses 2026 Tour": 1386923419,
+  "Hayley Williams at a Bachelorette Party": 1380386492,
+  "Hearts Sold Separately Tour": 1383629530,
+  "Here Comes More Tour": 1372604405,
+  "House Party Tour (The All-American Rejects)": 1371631293,
+  "How Did We Get Here? World Tour": 1385499969,
+  "It's Me Tour": 1385847597,
+  "I-Will": 1364140273,
+  "Imam pesmu da vam pevam Tour": 1387792207,
+  "In Real Life Worldwide Tour": 1358508406,
+  "It's Not That Deep Tour": 1383845693,
+  "Janet Jackson Japan 2026": 1375419006,
+  "Jay-Z 30 Tour": 1386624136,
+  "Jonas20: Greetings from Your Hometown Tour": 1371515676,
+  "Joy Splash": 1358548071,
+  "K-Pop Forever!": 1381174699,
+  "K3 Originals": 1387168630,
+  "The King of Beasts Tour": 1385404458,
+  "The Konnakol Tour": 1381082358,
+  "Land of Hope and Dreams American Tour": 1386725981,
+  "The Late Nights & Young Romance Tour": 1373165533,
+  "Latin America Tour 2026": 1378454009,
+  "Ledisi for Dinah Tour": 1380351544,
+  "Lily Allen Performs West End Girl": 1382381940,
+  "Little Miss Drama Tour": 1361565535,
+  "The Locket Tour": 1377702979,
+  "Long Hot Summer Tour '26": 1387406160,
+  "Long Live The Black Parade": 1387397269,
+  "Loom World Tour": 1384803775,
+  "Loop Tour": 1387435312,
+  "Lost Americana Tour": 1363371958,
+  "Lux Tour": 1382243086,
+  "M72 World Tour": 1379139099,
+  "Más Cara World Tour": 1384670022,
+  "A Matter of Time Tour": 1379876888,
+  "The Art of Personal Chaos": 1387241276,
+  "Meine Welt Tour": 1386987620,
+  "Mejor Tarde Que Nunca": 1387806443,
+  "Midnight Sun Tour": 1383226700,
+  "The Mountain Tour": 1387572029,
+  "Las Mujeres Ya No Lloran World Tour": 1387403240,
+  "My Kinda Saturday Night Tour": 1369456735,
+  "Neo City – The Redline": 1381600382,
+  "Never Ending Stories Tour": 1384621511,
+  "Never Enough Tour": 1385971066,
+  "New World Tour": 1386285610,
+  "A Night with Nick": 1359468769,
+  "Nothing's About to Happen to Me Live 2026": 1383870675,
+  "One Assassination Under God Tour": 1371712873,
+  "Onew the Live: Percent (%)": 1380747554,
+  "Peel It Back Tour": 1387059088,
+  "Perimenopop Tour": 1357093091,
+  "Persona Live 2026: Awakenings": 1369058349,
+  "Pleasure World Tour": 1386976915,
+  "Power Up Tour": 1387336911,
+  "Pureflow Tour": 1382345506,
+  "Ride or Die Tour": 1381367254,
+  "Riizing Loud": 1363405749,
+  "The Romantic Tour": 1382454738,
+  "Rough and Rowdy Ways World Wide Tour": 1378899431,
+  "Run for Your Lives World Tour": 1386069692,
+  "The Sexistential Tour": 1381557192,
+  "Signals World Tour 2026": 1387240395,
+  "The Sincerely, Tour": 1366634144,
+  "Sing Love Again Tour": 1370167548,
+  "Skeletour": 1382393524,
+  "Solaris Tour": 1387570918,
+  "Son of Spergy Tour": 1368465048,
+  "Soy Luna Tour - El Ultimo Show": 1387080157,
+  "Stadi 26 Tour": 1378044735,
+  "Stardew Valley: Festival of Seasons": 1385231803,
+  "Stardew Valley: Symphony of Seasons": 1385545158,
+  "Sugar High World Tour": 1360273019,
+  "Super Planet Tour": 1386025715,
+  "Super Show 10": 1387771175,
+  "Syncopation World Tour": 1383800199,
+  "Synk: Aexis Line": 1387313293,
+  "Tha Carter VI Tour": 1363336561,
+  "That's Showbiz Baby: the Tour": 1377804062,
+  "The Burning Up Tour All Over Again": 1386988732,
+  "The Powerlines Tour": 1387659615,
+  "The R&B Tour": 1387096266,
+  "The Way It Is 20th Anniversary Tour": 1383747220,
+  "This Is For World Tour": 1385667832,
+  "This Tour May Contain New Music": 1382997200,
+  "Thrasher Tour": 1386100017,
+  "The Tits Out Tour": 1387213812,
+  "To Be Free (tour)": 1387006175,
+  "Tour Ma Vie World Tour": 1384674878,
+  "TwentyFive Live 2026": 1378644173,
+  "Ultrasound World Tour": 1387519673,
+  "Visions of Damsels & Other Dangerous Things Tour": 1354056250,
+  "The Visitor Tour": 1384118188,
+  "Wanted Man Tour": 1386612980,
+  "Whatever's Clever! World Tour": 1380333938,
+  "The Wildworld Tour": 1387589138,
+  "The Willoughby Tucker Forever Tour": 1387000576,
+  "With Heaven on Tour": 1380742415,
+  "World's First World Tour": 1381247989,
+  "Worst Girl in the World Tour": 1386650126,
+  "Wourld Tour": 1382447134,
+  "XX: Cosmos World Tour": 1387436197,
+  "Ye Live Concert Tour": 1387406074,
+  "Day and Night Tour": 1380375332,
+  "Luis Miguel Tour 2027": 1382099881,
+  "Retrospect Tour": 1387658915,
+  "The Sickness 25th Anniversary Tour": 1384687300,
+  "Worlds Collide Concert Tour": 1387468916
+ }
 }

@@ -266,7 +266,8 @@ def test_refresh_snapshot_writes_user_files(tmp_path, monkeypatch):
     # REST ne radi → povratak na action=parse (koji ovdje glumi Wikipediju)
     http = FakeHttp({wikipedia.REST_HTML_URL: ProviderError("HTTP 429"), wikipedia.API_URL: api,
                      deezer.BASE_URL: {"data": []}, "https://wikimedia.org/": views})
-    summary = refresh_snapshot(http, now=SNAP_NOW, log=lambda *_: None)
+    # osvježavanje mora biti novije od ugrađene snimke (inače se koristi ugrađena – "novija pobjeđuje")
+    summary = refresh_snapshot(http, now=datetime(2026, 11, 26, 10, 0), log=lambda *_: None)
     assert ("Twilight of the Punks", 36) in summary["tours"]
     assert any("Unraveled" in err for err in summary["errors"])  # greška → ostaje prethodna verzija
     folder = tmp_path / "osvjezeno" / "snimka"
@@ -281,7 +282,7 @@ def test_refresh_snapshot_writes_user_files(tmp_path, monkeypatch):
     assert found["izvor"] == "kategorija" and found["revid"] == 7
     assert found["koncerti"] and all(r["country"] != "US" for r in found["koncerti"])  # samo regija otkrivanja (Europa)
     events, info, _ = load_snapshot(SNAP_NOW)
-    assert info.tours_date == "2026-11-22" and any(e.artist == "Fall Out Boy" for e in events)
+    assert info.tours_date == "2026-11-26" and any(e.artist == "Fall Out Boy" for e in events)
     discovered = [t for t in info.tours if t["title"] == "Otkrivena Turneja"]
     assert discovered and discovered[0]["discovered"] and discovered[0]["new"]
 

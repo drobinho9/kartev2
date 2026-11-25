@@ -359,13 +359,16 @@ def test_refresh_remembers_tours_without_regional_dates(tmp_path, monkeypatch):
                 return US_ONLY
             if params["page"] == "Bez Izvodjaca":  # europski datumi, ali bez izvođača u infookviru (npr. tribute show)
                 return twilight
+            if params["page"] == "Ista Turneja":  # "Tour by Ista Turneja" – show bez izvođača (npr. Disneyjeva franšiza)
+                return {"parse": {"text": INFOBOX.replace("Otkriveni Izvođač", "Ista Turneja") + twilight["parse"]["text"]}}
             if params["page"] == "Otkrivena Turneja":
                 return {"parse": {"text": INFOBOX + twilight["parse"]["text"]}}
             if params["page"] == "Twilight of the Punks":
                 return twilight
             return {"error": {"code": "missingtitle", "info": "nema"}}
         if params.get("list") == "categorymembers":
-            return {"query": {"categorymembers": [{"title": "Samo Amerika"}, {"title": "Otkrivena Turneja"}, {"title": "Bez Izvodjaca"}]}}
+            return {"query": {"categorymembers": [{"title": "Samo Amerika"}, {"title": "Otkrivena Turneja"}, {"title": "Bez Izvodjaca"},
+                                                  {"title": "Ista Turneja"}]}}
         if params.get("prop") == "info":
             return {"query": {"pages": [{"title": t, "lastrevid": 7} for t in params["titles"].split("|")]}}
         return {"query": {"pages": []}}
@@ -376,17 +379,17 @@ def test_refresh_remembers_tours_without_regional_dates(tmp_path, monkeypatch):
         rest + "Samo_Amerika": US_ONLY["parse"]["text"],
         rest: ProviderError("HTTP 404"),  # ostali → povratak na action=parse
         wikipedia.API_URL: api, deezer.BASE_URL: {"data": []}, "https://wikimedia.org/": {"items": []}})
-    refresh_snapshot(http, now=datetime(2026, 11, 22, 10, 0), log=lambda *_: None, years=[2027])
+    refresh_snapshot(http, now=datetime(2026, 11, 26, 10, 0), log=lambda *_: None, years=[2027])  # novije od ugrađene snimke
     tours = json.loads((tmp_path / "otkrivanje" / "snimka" / "turneje.json").read_text(encoding="utf-8"))
-    assert tours["preskoceno"] == {"Samo Amerika": 7, "Bez Izvodjaca": 7}
+    assert tours["preskoceno"] == {"Samo Amerika": 7, "Bez Izvodjaca": 7, "Ista Turneja": 7}
     assert "Bez Izvodjaca" in parsed and "Otkrivena Turneja" not in parsed and "Samo Amerika" not in parsed  # REST
     parsed.clear()
-    summary = refresh_snapshot(http, now=datetime(2026, 11, 23, 10, 0), log=lambda *_: None, years=[2027])
+    summary = refresh_snapshot(http, now=datetime(2026, 11, 27, 10, 0), log=lambda *_: None, years=[2027])
     # ista revizija → spremljeni članci (otkriveni, preskočeni i s popisa) se ne dohvaćaju ponovno
-    assert not {"Samo Amerika", "Otkrivena Turneja", "Bez Izvodjaca", "Twilight of the Punks"} & set(parsed)
+    assert not {"Samo Amerika", "Otkrivena Turneja", "Bez Izvodjaca", "Ista Turneja", "Twilight of the Punks"} & set(parsed)
     assert summary["new"] == [] or "Otkrivena Turneja" not in summary["new"]
     again = json.loads((tmp_path / "otkrivanje" / "snimka" / "turneje.json").read_text(encoding="utf-8"))
-    assert again["preskoceno"] == {"Samo Amerika": 7, "Bez Izvodjaca": 7}
+    assert again["preskoceno"] == {"Samo Amerika": 7, "Bez Izvodjaca": 7, "Ista Turneja": 7}
     found = next(t for t in again["turneje"] if t["naslov"] == "Otkrivena Turneja")
     assert found["izvodjac"] == "Otkriveni Izvođač" and found["koncerti"]
 
@@ -410,15 +413,22 @@ def test_tour_artist_from_infobox():
 def test_snapshot_hides_low_demand_tour_dates_without_price(tmp_path, monkeypatch):
     data = tmp_path / "radar"
     (data / "snimka").mkdir(parents=True)
-    tour = {"azurirano": "2026-11-25", "turneje": [{
+    tour = {"azurirano": "2099-01-01", "turneje": [{
         "izvodjac": "Nepoznati Bend", "naslov": "Mala Turneja", "url": "https://en.wikipedia.org/wiki/X", "revid": 1,
         "izvor": "kategorija", "otkriveno": "", "koncerti": [
-            {"date": "2027-03-01", "city": "Graz", "country": "AT", "country_name": "Austria", "venue": "Orpheum"}]}]}
+            {"date": "2027-03-01", "city": "Graz", "country": "AT", "country_name": "Austria", "venue": "Orpheum"}]}, {
+        "izvodjac": "Slavni Bend", "naslov": "Velika Turneja", "url": "https://en.wikipedia.org/wiki/Y", "revid": 2,
+        "izvor": "kategorija", "otkriveno": "", "koncerti": [
+            {"date": "2027-04-01", "city": "Vienna", "country": "AT", "country_name": "Austria", "venue": "Stadthalle"}]}]}
     (data / "snimka" / "turneje.json").write_text(json.dumps(tour), encoding="utf-8")
+    pop = {"azurirano": "2099-01-01", "izvodjaci": {"Slavni Bend": {"deezer_fanovi": 9_000_000, "trend": 2.5}}}
+    (data / "snimka" / "popularnost.json").write_text(json.dumps(pop), encoding="utf-8")
     monkeypatch.setenv("KARTE_DATA_DIR", str(data))
     http = FakeHttp({})
     result = run_scan(ScanOptions(snapshot=True, countries=["AT"], now=NOW), _settings(tmp_path), http=http)
     assert not any(op.event.artist == "Nepoznati Bend" for op in result.opportunities)
+    famous = [op for op in result.opportunities if op.event.artist == "Slavni Bend"]
+    assert famous and famous[0].verdict == "NEMA CIJENE" and famous[0].demand.score >= 0.65  # jaka potražnja ostaje vidljiva
     assert any("Skriveno 1 datuma turneja" in w for w in result.warnings)
     shown = run_scan(ScanOptions(snapshot=True, countries=["AT"], now=NOW, show_all=True), _settings(tmp_path), http=http)
     unknown = [op for op in shown.opportunities if op.event.artist == "Nepoznati Bend"]

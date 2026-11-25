@@ -1,118 +1,385 @@
 {
- "azurirano": "2026-11-22",
+ "azurirano": "2026-11-25",
  "izvor": "api.deezer.com (nb_fan) + wikimedia.org (pregledi, zadnjih 14 / prethodnih 60 dana)",
  "izvodjaci": {
   "Željko Joksimović": {
    "deezer_fanovi": 106111,
    "deezer_id": 124087,
    "wikipedia": "Željko Joksimović",
-   "pregledi_dnevno": 57,
-   "trend": 0.807
+   "pregledi_dnevno": 55,
+   "trend": 0.77
   },
   "Seka Aleksić": {
    "deezer_fanovi": 162230,
    "deezer_id": 1095291,
    "wikipedia": "Seka Aleksić",
-   "pregledi_dnevno": 139,
-   "trend": 1.351
+   "pregledi_dnevno": 91,
+   "trend": 0.802
   },
   "Fontaines D.C.": {
    "deezer_fanovi": 146888,
    "deezer_id": 14175163,
    "wikipedia": "Fontaines D.C.",
-   "pregledi_dnevno": 6867,
-   "trend": 0.996
+   "pregledi_dnevno": 6960,
+   "trend": 0.993
   },
   "Rod Stewart": {
    "deezer_fanovi": 1467168,
    "deezer_id": 1440,
    "wikipedia": "Rod Stewart",
-   "pregledi_dnevno": 4347,
-   "trend": 0.971
+   "pregledi_dnevno": 4301,
+   "trend": 0.957
   },
   "Simply Red": {
    "deezer_fanovi": 936146,
    "deezer_id": 1516,
    "wikipedia": "Simply Red",
-   "pregledi_dnevno": 969,
-   "trend": 0.853
+   "pregledi_dnevno": 901,
+   "trend": 0.787
   },
   "Laura Pausini": {
    "deezer_fanovi": 1065138,
    "deezer_id": 1456,
    "wikipedia": "Laura Pausini",
-   "pregledi_dnevno": 309,
-   "trend": 0.824
+   "pregledi_dnevno": 312,
+   "trend": 0.848
   },
   "Fall Out Boy": {
    "deezer_fanovi": 2622802,
    "deezer_id": 404,
    "wikipedia": "Fall Out Boy",
-   "pregledi_dnevno": 5362,
-   "trend": 2.959
+   "pregledi_dnevno": 4289,
+   "trend": 2.041
   },
   "Nickelback": {
    "deezer_fanovi": 3191965,
    "deezer_id": 338,
    "wikipedia": "Nickelback",
-   "pregledi_dnevno": 2060,
-   "trend": 0.852
+   "pregledi_dnevno": 1921,
+   "trend": 0.789
   },
   "Sabaton": {
    "deezer_fanovi": 415342,
    "deezer_id": 12022,
    "wikipedia": "Sabaton (band)",
-   "pregledi_dnevno": 1123,
-   "trend": 1.065
+   "pregledi_dnevno": 1070,
+   "trend": 1.014
   },
   "U2": {
    "deezer_fanovi": 7382215,
    "deezer_id": 163,
    "wikipedia": "U2",
-   "pregledi_dnevno": 9302,
-   "trend": 1.982
+   "pregledi_dnevno": 9419,
+   "trend": 1.964
   },
   "Olivia Rodrigo": {
    "deezer_fanovi": 1863845,
    "deezer_id": 11152580,
    "wikipedia": "Olivia Rodrigo",
-   "pregledi_dnevno": 12258,
-   "trend": 0.989
+   "pregledi_dnevno": 11730,
+   "trend": 0.95
   },
   "Karol G": {
    "deezer_fanovi": 3429307,
    "deezer_id": 5297021,
    "wikipedia": "Karol G",
-   "pregledi_dnevno": 2198,
-   "trend": 0.771
+   "pregledi_dnevno": 2153,
+   "trend": 0.769
   },
   "Bryan Adams": {
    "deezer_fanovi": 1763031,
    "deezer_id": 170,
    "wikipedia": "Bryan Adams",
-   "pregledi_dnevno": 3062,
-   "trend": 1.097
+   "pregledi_dnevno": 2728,
+   "trend": 0.96
   },
   "Severina": {
    "deezer_fanovi": 167459,
    "deezer_id": 5681,
    "wikipedia": "Severina (singer)",
-   "pregledi_dnevno": 168,
-   "trend": 1.101
+   "pregledi_dnevno": 169,
+   "trend": 1.098
   },
   "Scorpions": {
    "deezer_fanovi": 3694766,
    "deezer_id": 863,
    "wikipedia": "Scorpions (band)",
-   "pregledi_dnevno": 2102,
-   "trend": 0.995
+   "pregledi_dnevno": 2069,
+   "trend": 0.973
   },
   "Eric Clapton": {
    "deezer_fanovi": 2819354,
    "deezer_id": 192,
    "wikipedia": "Eric Clapton",
-   "pregledi_dnevno": 5434,
-   "trend": 0.969
+   "pregledi_dnevno": 5612,
+   "trend": 1.014
+  },
+  "Westlife": {
+   "deezer_fanovi": 498182,
+   "deezer_id": 274,
+   "wikipedia": "Westlife",
+   "pregledi_dnevno": 2456,
+   "trend": 1.106
+  },
+  "Role Model": {
+   "deezer_fanovi": 26677,
+   "deezer_id": 328088,
+   "wikipedia": "Role Model (singer)",
+   "pregledi_dnevno": 1971,
+   "trend": 0.316
+  },
+  "Aitana": {
+   "deezer_fanovi": 349825,
+   "deezer_id": 11928391,
+   "wikipedia": "Aitana (singer)",
+   "pregledi_dnevno": 953,
+   "trend": 1.457
+  },
+  "Tame Impala": {
+   "deezer_fanovi": 1180161,
+   "deezer_id": 134790,
+   "wikipedia": "Tame Impala",
+   "pregledi_dnevno": 6306,
+   "trend": 1.451
+  },
+  "Julia Wolf": {
+   "deezer_fanovi": 4959,
+   "deezer_id": 86960732,
+   "wikipedia": "Julia Wolf (musician)",
+   "pregledi_dnevno": 414,
+   "trend": 0.67
+  },
+  "Malcolm Todd": {
+   "deezer_fanovi": 38360,
+   "deezer_id": 193142737,
+   "wikipedia": "Malcolm Todd",
+   "pregledi_dnevno": 1325,
+   "trend": 0.559
+  },
+  "Rush": {
+   "deezer_fanovi": 530496,
+   "deezer_id": 8686,
+   "wikipedia": "Rush (band)",
+   "pregledi_dnevno": 3214,
+   "trend": 0.869
+  },
+  "Tini": {
+   "deezer_fanovi": 913941,
+   "deezer_id": 2252591,
+   "wikipedia": "Tini (singer)",
+   "pregledi_dnevno": 275,
+   "trend": 0.676
+  },
+  "Noah Kahan": {
+   "deezer_fanovi": 208510,
+   "deezer_id": 11819131,
+   "wikipedia": "Noah Kahan",
+   "pregledi_dnevno": 10420,
+   "trend": 1.682
+  },
+  "Hayley Williams": {
+   "deezer_fanovi": 510973,
+   "deezer_id": 281737,
+   "wikipedia": "Hayley Williams",
+   "pregledi_dnevno": 4872,
+   "trend": 0.526
+  },
+  "Kehlani": {
+   "deezer_fanovi": 721531,
+   "deezer_id": 5603027,
+   "wikipedia": "Kehlani",
+   "pregledi_dnevno": 1668,
+   "trend": 0.811
+  },
+  "Don Omar": {
+   "deezer_fanovi": 4044115,
+   "deezer_id": 725,
+   "wikipedia": "Don Omar",
+   "pregledi_dnevno": 543,
+   "trend": 0.866
+  },
+  "Gracie Abrams": {
+   "deezer_fanovi": 414723,
+   "deezer_id": 64874492,
+   "wikipedia": "Gracie Abrams",
+   "pregledi_dnevno": 4745,
+   "trend": 0.827
+  },
+  "Phoebe Bridgers": {
+   "deezer_fanovi": 211791,
+   "deezer_id": 1058631,
+   "wikipedia": "Phoebe Bridgers",
+   "pregledi_dnevno": 18460,
+   "trend": 2.109
+  },
+  "Hilary Duff": {
+   "deezer_fanovi": 603587,
+   "deezer_id": 525
+  },
+  "Kacey Musgraves": {
+   "deezer_fanovi": 81765,
+   "deezer_id": 399990,
+   "wikipedia": "Kacey Musgraves",
+   "pregledi_dnevno": 5599,
+   "trend": 1.082
+  },
+  "Charli XCX": {
+   "deezer_fanovi": 1903571,
+   "deezer_id": 1462230,
+   "wikipedia": "Charli XCX",
+   "pregledi_dnevno": 4272,
+   "trend": 0.587
+  },
+  "Sienna Spiro": {
+   "deezer_fanovi": 69566,
+   "deezer_id": 265272032,
+   "wikipedia": "Sienna Spiro",
+   "pregledi_dnevno": 4542,
+   "trend": 0.802
+  },
+  "Don Toliver": {
+   "deezer_fanovi": 519494,
+   "deezer_id": 13631667,
+   "wikipedia": "Don Toliver",
+   "pregledi_dnevno": 5794,
+   "trend": 3.775
+  },
+  "the Pussycat Dolls": {
+   "deezer_fanovi": 1129191,
+   "deezer_id": 83,
+   "wikipedia": "The Pussycat Dolls",
+   "pregledi_dnevno": 1309,
+   "trend": 0.661
+  },
+  "Adéla": {
+   "deezer_fanovi": 32523,
+   "deezer_id": 306607671,
+   "wikipedia": "Adéla",
+   "pregledi_dnevno": 5674,
+   "trend": 6.851
+  },
+  "Stray Kids": {
+   "deezer_fanovi": 1286906,
+   "deezer_id": 13923487,
+   "wikipedia": "Stray Kids",
+   "pregledi_dnevno": 2202,
+   "trend": 1.102
+  },
+  "Freya Skye": {
+   "deezer_fanovi": 11398,
+   "deezer_id": 114370922,
+   "wikipedia": "Freya Skye",
+   "pregledi_dnevno": 1316,
+   "trend": 0.888
+  },
+  "Aespa": {
+   "deezer_fanovi": 473694,
+   "deezer_id": 113547672,
+   "wikipedia": "Aespa",
+   "pregledi_dnevno": 1254,
+   "trend": 0.853
+  },
+  "Foo Fighters": {
+   "deezer_fanovi": 4608462,
+   "deezer_id": 566,
+   "wikipedia": "Foo Fighters",
+   "pregledi_dnevno": 4308,
+   "trend": 1.172
+  },
+  "Harry Styles": {
+   "deezer_fanovi": 2225133,
+   "deezer_id": 5313805,
+   "wikipedia": "Harry Styles",
+   "pregledi_dnevno": 7846,
+   "trend": 0.805
+  },
+  "Toby Fox": {
+   "deezer_fanovi": 128205,
+   "deezer_id": 10468691
+  },
+  "Sombr": {
+   "deezer_fanovi": 181784,
+   "deezer_id": 145468192,
+   "wikipedia": "Sombr",
+   "pregledi_dnevno": 6724,
+   "trend": 0.777
+  },
+  "James Blunt": {
+   "deezer_fanovi": 1562133,
+   "deezer_id": 287,
+   "wikipedia": "James Blunt",
+   "pregledi_dnevno": 13402,
+   "trend": 0.616
+  },
+  "Take That": {
+   "deezer_fanovi": 407314,
+   "deezer_id": 9153,
+   "wikipedia": "Take That",
+   "pregledi_dnevno": 3005,
+   "trend": 2.258
+  },
+  "Mariah Carey": {
+   "deezer_fanovi": 3472928,
+   "deezer_id": 65,
+   "wikipedia": "Mariah Carey",
+   "pregledi_dnevno": 11642,
+   "trend": 1.805
+  },
+  "Oasis": {
+   "deezer_fanovi": 4726490,
+   "deezer_id": 927,
+   "wikipedia": "Oasis (band)",
+   "pregledi_dnevno": 3201,
+   "trend": 0.469
+  },
+  "Lizzy McAlpine": {
+   "deezer_fanovi": 132920,
+   "deezer_id": 14157839,
+   "wikipedia": "Lizzy McAlpine",
+   "pregledi_dnevno": 685,
+   "trend": 0.607
+  },
+  "Sam Fender": {
+   "deezer_fanovi": 89621,
+   "deezer_id": 12096672,
+   "wikipedia": "Sam Fender",
+   "pregledi_dnevno": 2839,
+   "trend": 1.489
+  },
+  "Sugababes": {
+   "deezer_fanovi": 57664,
+   "deezer_id": 544,
+   "wikipedia": "Sugababes",
+   "pregledi_dnevno": 1538,
+   "trend": 0.583
+  },
+  "Garth Brooks": {
+   "deezer_fanovi": 63558,
+   "deezer_id": 8815,
+   "wikipedia": "Garth Brooks",
+   "pregledi_dnevno": 2546,
+   "trend": 1.173
+  },
+  "Flo": {
+   "deezer_fanovi": 28032,
+   "deezer_id": 168790157,
+   "wikipedia": "Flo (group)",
+   "pregledi_dnevno": 502,
+   "trend": 0.903
+  },
+  "Till Lindemann": {
+   "deezer_fanovi": 65828,
+   "deezer_id": 4403788,
+   "wikipedia": "Till Lindemann",
+   "pregledi_dnevno": 2298,
+   "trend": 1.259
+  },
+  "The Neighbourhood": {
+   "deezer_fanovi": 1690716,
+   "deezer_id": 296861,
+   "wikipedia": "The Neighbourhood",
+   "pregledi_dnevno": 1507,
+   "trend": 1.405
   }
  }
 }

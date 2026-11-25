@@ -373,6 +373,8 @@ def refresh_snapshot(http: HttpClient, now: datetime | None = None, log=print, d
                 skipped[title] = rev
             continue
         artist = configured.get(title, {}).get("izvodjac") or (old or {}).get("izvodjac") or tour_artist(html)
+        if artist and not is_configured and normalize(artist) == normalize(title):
+            artist = None  # "Tour by Worlds Collide Concert Tour" – show bez izvođača (franšiza, tribute)
         if not artist and not is_configured:
             if rev:
                 skipped[title] = rev
