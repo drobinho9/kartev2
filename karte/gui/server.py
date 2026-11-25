@@ -217,6 +217,59 @@ class App:
             out.setdefault("error", str(exc))
         return out
 
+    def announcements(self, days: int, region: str) -> dict:
+        from karte.announcements import fetch_announcements
+        from karte.snapshot import data_dir
+
+        items, warnings = fetch_announcements(self._http, days=days, data_dir=data_dir())
+        minimum = {"hr": 3, "regija": 2, "europa": 1, "sve": 0}.get(region, 1)
+        shown = [a.as_dict() for a in items if a.region_score >= minimum]
+        return {"items": shown, "warnings": warnings, "total": len(items)}
+
+    @staticmethod
+    def announcements_seen(body: dict) -> dict:
+        from karte.announcements import mark_seen
+        from karte.snapshot import data_dir
+
+        links = [str(x) for x in body.get("links") or []][:2000]
+        mark_seen(data_dir(), links)
+        return {"marked": len(links)}
+
+    @staticmethod
+    def announcements_source(body: dict) -> dict:
+        from karte.announcements import add_source, load_sources
+        from karte.snapshot import data_dir
+
+        added, source = add_source(data_dir(), str(body.get("url") or ""), str(body.get("naziv") or ""),
+                                   "turneje" if body.get("samo_koncerti") else "opcenito")
+        return {"added": added, "source": source, "count": len(load_sources(data_dir() / "najave.toml"))}
+
+    @staticmethod
+    def capture_parse(body: dict) -> dict:
+        from karte.capture import decode_payload, event_rows
+
+        payload = body.get("payload")
+        if isinstance(payload, str):
+            payload = decode_payload(payload)
+        if not isinstance(payload, dict):
+            raise ValueError("neispravni podaci za uvoz")
+        return {"rows": event_rows(payload), "url": payload.get("url", "")}
+
+    @staticmethod
+    def my_events(port: int) -> dict:
+        from karte.capture import bookmarklet
+        from karte.snapshot import _row_key, list_user_events, user_dir
+
+        rows = [{**r, "key": _row_key(r)} for r in list_user_events()]
+        return {"rows": rows, "bookmarklet": bookmarklet(port), "path": str(user_dir() / "dogadaji.csv")}
+
+    def my_events_save(self, body: dict, port: int) -> dict:
+        from karte.snapshot import save_user_events
+
+        rows = [r for r in body.get("rows") or [] if isinstance(r, dict)]
+        added, updated = save_user_events(rows)
+        return {"added": added, "updated": updated, **self.my_events(port)}
+
     def law(self, code: str) -> dict:
         country, _, region = code.upper().partition("-")
         info = legal.country_info(country, region or None)
@@ -316,6 +369,10 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(app.listeners((q.get("artist") or [""])[0]))
             if path == "/api/popularity":
                 return self._json(app.popularity((q.get("artist") or [""])[0]))
+            if path == "/api/najave":
+                return self._json(app.announcements(parse_int((q.get("dana") or ["21"])[0]) or 21, (q.get("regija") or ["europa"])[0]))
+            if path == "/api/moji":
+                return self._json(app.my_events(self.server.server_port))
             if path == "/api/guides":
                 return self._json({"guides": guide_list()})
             if path == "/api/journal":
@@ -346,6 +403,14 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(app.calc(body))
             if path == "/api/plan":
                 return self._json(app.plan(body))
+            if path == "/api/najave/procitano":
+                return self._json(app.announcements_seen(body))
+            if path == "/api/najave/izvor":
+                return self._json(app.announcements_source(body))
+            if path == "/api/uvoz/parse":
+                return self._json(app.capture_parse(body))
+            if path == "/api/moji":
+                return self._json(app.my_events_save(body, self.server.server_port))
             if path == "/api/categories":
                 return self._json(app.cats(body))
             if path == "/api/journal":
@@ -361,7 +426,14 @@ class Handler(BaseHTTPRequestHandler):
     def do_DELETE(self):
         if not self._origin_ok():
             return self._error(403, "Zahtjev s druge stranice nije dopušten.")
-        path = urllib.parse.urlparse(self.path).path
+        url = urllib.parse.urlparse(self.path)
+        path = url.path
+        if path == "/api/moji":
+            from karte.snapshot import delete_user_event
+
+            key = (urllib.parse.parse_qs(url.query).get("kljuc") or [""])[0]
+            ok = delete_user_event(key)
+            return self._json({"deleted": ok, **self.app.my_events(self.server.server_port)}, 200 if ok else 404)
         if path.startswith("/api/journal/"):
             ok = self.app.journal.delete(path.rsplit("/", 1)[-1])
             return self._json({"deleted": ok, **self.app.journal_data()}, 200 if ok else 404)

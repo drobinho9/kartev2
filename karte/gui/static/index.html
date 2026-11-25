@@ -19,6 +19,7 @@
 <nav class="tabs" role="tablist" id="tabs">
   <button role="tab" data-tab="radar" class="active">Radar</button>
   <button role="tab" data-tab="plan">Plan zarade</button>
+  <button role="tab" data-tab="news">Najave i uvoz</button>
   <button role="tab" data-tab="calc">Kalkulator</button>
   <button role="tab" data-tab="cats">Kategorije</button>
   <button role="tab" data-tab="journal">Moje prodaje</button>
@@ -113,6 +114,54 @@
       <button type="button" class="ghost" id="planIcs" hidden>📅 Kalendar plana (.ics)</button></div>
   </div>
   <div id="planOut"></div>
+</section>
+
+<!-- ====================================================== NAJAVE I UVOZ -->
+<section id="tab-news" class="tab">
+  <div id="importOut"></div>
+  <div class="card">
+    <h2>Najave turneja i početak prodaje</h2>
+    <p class="muted">Bez Ticketmastera: RSS izvori (muzika.hr, TicketNews, Pollstar, Ticketmaster UK, Croatia Week, tportal…) –
+      nove turneje, dodatni datumi i datumi presalea/prodaje, prije nego što događaj stigne u bilo koji API.
+      Stavke koje još nisi vidio označene su s <b>NOVO</b>.</p>
+    <div class="row wrapgap">
+      <label>Regija <select id="newsRegion">
+        <option value="hr">Hrvatska</option><option value="regija">Hrvatska i susjedi</option>
+        <option value="europa" selected>Europa</option><option value="sve">Sve</option></select></label>
+      <label>Zadnjih (dana) <input type="number" id="newsDays" value="21" min="1" max="90"></label>
+      <button type="button" class="primary" id="newsBtn">Osvježi</button>
+      <button type="button" class="ghost" id="newsSeen">Označi sve kao pročitano</button>
+    </div>
+    <details class="small"><summary>Dodaj svoj izvor (RSS) – npr. Google Alerts za „Arena Zagreb” ulaznice</summary>
+      <p class="muted">Google Alerts (google.com/alerts): upiši upit, npr. <code>"Arena Zagreb" ulaznice</code> ili <code>presale Beč koncert</code> →
+        <i>Prikaži opcije</i> → <i>Isporuči na: RSS feed</i> → <i>Izradi upozorenje</i> → desni klik na ikonu RSS → kopiraj adresu i zalijepi je ovdje.
+        Radi i s RSS-om bilo kojeg portala ili dvorane.</p>
+      <div class="row wrapgap">
+        <input type="url" id="srcUrl" placeholder="https://www.google.com/alerts/feeds/…" aria-label="Adresa RSS izvora">
+        <input type="text" id="srcName" placeholder="Naziv (neobavezno)" aria-label="Naziv izvora">
+        <button type="button" class="ghost" id="srcAdd">Dodaj izvor</button>
+      </div>
+    </details>
+  </div>
+  <div id="newsOut"></div>
+
+  <div class="card" id="myCard">
+    <h2>Moji događaji – uvoz s bilo koje stranice</h2>
+    <ol class="small">
+      <li>Povuci ovaj gumb u traku oznaka preglednika: <a id="bookmarklet" class="btn ghost small" href="#">karte: spremi</a></li>
+      <li>Otvori stranicu događaja (Ticketmaster, Eventim, Entrio, See Tickets, viagogo, StubHub…) i klikni oznaku.
+        Aplikacija se otvori s pročitanim podacima (naziv, datum, dvorana, grad, cijena). Na stranici prodavača to je
+        <b>nominalna</b> cijena, na viagogu/StubHubu cijena s <b>preprodaje</b>.</li>
+      <li>Provjeri, spremi – događaj ulazi u snimku (Radar → Snimka stvarnih događaja) i u Plan zarade.</li>
+    </ol>
+    <details><summary class="small">Ako preglednik blokira skočni prozor ili si stranicu spremio (Ctrl+S)</summary>
+      <p class="small muted">Zalijepi tekst koji je gumb kopirao, ili u terminalu: <code>karte uvoz stranica.html</code></p>
+      <textarea id="pasteBox" rows="3" placeholder="Zalijepi kopirani tekst"></textarea>
+      <div class="row"><button type="button" class="ghost" id="pasteBtn">Uvezi</button></div>
+    </details>
+    <h3>Spremljeni događaji <span class="muted small" id="myPath"></span></h3>
+    <div id="myList"><p class="muted">—</p></div>
+  </div>
 </section>
 
 <!-- ====================================================== KALKULATOR -->

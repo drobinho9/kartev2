@@ -6,10 +6,12 @@ Aplikacija koja **traži koncerte i sportske događaje bilo gdje u svijetu** u i
 i kako spuštati cijenu prema datumu događaja. Uz to provjerava **zakonska ograničenja** po državama i saveznim
 državama/pokrajinama (SAD, Kanada, Australija…) te **može li prodavatelj iz Hrvatske uopće kupiti i prodati** na tom tržištu.
 
-> 🆕 **Radi i bez ijednog API ključa** — uz aplikaciju dolazi **snimka stvarnih događaja** (Hrvatska, regija i europski
-> datumi velikih turneja 2027., s izvorima i cijenama s preprodaje), popularnost s **Deezera** i trend s **Wikipedije**.
-> Ticketmaster ti ne odobrava ključ? Vidi [docs/IZVORI_PODATAKA.md](docs/IZVORI_PODATAKA.md) — uzroci i zamjene
-> (najbolja za HR/Europu: Google Events preko SerpApi, besplatno 250 pretraga mjesečno).
+> 🆕 **Radar bez Ticketmastera** ([docs/BEZ_TICKETMASTERA.md](docs/BEZ_TICKETMASTERA.md)) — sve bez ijednog ključa:
+> **otkrivanje svih turneja** iz kategorija Wikipedije (europski datumi), **radar najava** iz RSS izvora (nove turneje,
+> dodatni datumi, **presale i početak prodaje**; `karte najave`) i gumb **„karte: spremi”** za preglednik koji sa stranice
+> događaja (Ticketmaster, Eventim, Entrio, viagogo, StubHub…) pročita nominalnu cijenu ili cijenu s preprodaje i spremi
+> događaj u tvoju snimku. Uz to: **snimka stvarnih događaja**, popularnost s **Deezera** i trend s **Wikipedije**.
+> Uzroci problema s ključem i usporedba svih izvora: [docs/IZVORI_PODATAKA.md](docs/IZVORI_PODATAKA.md).
 
 > 💶 **Kako zaraditi?** Vodič [Kako zaraditi](karte/data/guides/8_kako_zaraditi.md) (brojke s tržišta, pravilo palca
 > „preprodaja ≥ ~2,5× nominalne”, pet strategija, plan za prvih 30 dana) i alat **Plan zarade** (`karte plan` ili kartica u sučelju):
@@ -27,7 +29,7 @@ državama/pokrajinama (SAD, Kanada, Australija…) te **može li prodavatelj iz 
 
 | Korak | Opis |
 |---|---|
-| 1. Pretraga | **Bez ključa:** snimka stvarnih događaja + datumi turneja s Wikipedije. **S ključem:** Google Events preko SerpApi (i Hrvatska), Ticketmaster Discovery API (SAD, Kanada, Meksiko, Australija, NZ, UK, IE i većina Europe – ili cijeli svijet odjednom), PredictHQ, SeatGeek (cijene sa sekundarnog tržišta). Uvijek: vlastiti CSV (Entrio, Eventim.hr, Ulaznice.hr nemaju javni API) |
+| 1. Pretraga | **Bez ključa:** snimka stvarnih događaja, sve turneje iz kategorija Wikipedije (europski datumi), radar najava iz RSS izvora (presale i početak prodaje) i gumb „karte: spremi” za stranice prodavača i preprodaje. **S ključem:** Google Events preko SerpApi (i Hrvatska), Ticketmaster Discovery API (SAD, Kanada, Meksiko, Australija, NZ, UK, IE i većina Europe – ili cijeli svijet odjednom), PredictHQ, SeatGeek (cijene sa sekundarnog tržišta). Uvijek: vlastiti CSV (Entrio, Eventim.hr, Ulaznice.hr nemaju javni API) |
 | 2. Obogaćivanje | Popularnost izvođača (Last.fm ili **Deezer bez ključa**), **trend interesa s Wikipedije**, kapacitet dvorane (ugrađena baza), broj koncerata istog izvođača u državi (ponuda), veličina turneje |
 | 3. Procjena | Potražnja (0–100), očekivana prodajna cijena, trošak kupnje s naknadama, neto isplata po platformi, vjerojatnost prodaje, očekivana vrijednost, ROI, rizik |
 | 4. Pravna provjera | ~40 država + savezne države/pokrajine (US-VT, US-NC, CA-ON, CA-QC…): zabrane iznad nominalne (IE, BE, IT, PT, PL, NO, JP, KR, BR…), limit +10 % (AU, VT…), najavljeni limiti (DE, UK, DC) uz `--strict` |
@@ -61,6 +63,7 @@ Najlakši način korištenja — sve radi lokalno na tvom računalu (server slu�
 |---|---|
 | **Radar** | Odabereš izvor (snimka stvarnih događaja / živi API-ji / demo), regiju (ili cijeli svijet), dane i budžet → tablica preporuka (KUPI / RAZMOTRI / PROVJERI CIJENU / …), graf koncerata s najvećim očekivanim skokom cijene ili do koje se cijene isplati kupiti, filtri i sortiranje. Klik na koncert otvara **plan po datumima**: presale, javna prodaja, kada oglasiti i po kojoj cijeni, kada spuštati cijenu. Gumb **📅 Kalendar (.ics)** sve to doda u tvoj kalendar s podsjetnikom 30 min prije prodaje. |
 | **Plan zarade** | Raspodjela budžeta na najbolje prilike (najviše 25 % po događaju, parovi), uvjetne kupnje za događaje bez javne cijene („ako je nominalna ≤ X €”), raspon ishoda iz 4.000 simulacija, vjerojatnost gubitka, kalendar radnji (.ics). |
+| **Najave i uvoz** | Najave turneja i početka prodaje iz RSS izvora (oznaka **NOVO**, presale/prodaja, 📅 podsjetnik), gumb **karte: spremi** za traku oznaka (sa stranice događaja pročita nominalnu cijenu ili cijenu s preprodaje), lijepljenje podataka i popis **mojih događaja**. |
 | **Kalkulator** | Za jedan koncert (npr. s Entrija/Eventima) upišeš nominalnu cijenu i najnižu cijenu na viagogu → isplativost, platforme, cjenik. Gumb *Dohvati* uz **Deezer fanove** popuni popularnost i pokaže trend s Wikipedije (bez ključa). |
 | **Kategorije** | **Koje ulaznice se najviše isplati preprodati** za isti koncert: parter, tribine, VIP, zaklonjena mjesta… rangirano po očekivanom ROI-ju i zaradi. |
 | **Moje prodaje** | Dnevnik kupnji i prodaja (npr. tvoja **A$AP Rocky prodaja na viagogu** – gumb *Primjer*): dobit, ROI, koliko dana prije koncerta prodaješ, po platformi. Iz stvarnih prodaja **kalibrira model** i predlaže podešavanje. Uvoz/izvoz CSV. |
@@ -80,7 +83,9 @@ Najlakši način korištenja — sve radi lokalno na tvom računalu (server slu�
 # 1) Bez ikakvih ključeva: snimka stvarnih događaja (HR, regija, europske turneje 2027.)
 karte scan
 karte snimka --list            # što je u snimci (izvori, cijene s preprodaje)
-karte snimka --osvjezi         # svježi datumi turneja (Wikipedia) i popularnost (Deezer) – bez ključeva
+karte snimka --osvjezi         # nove turneje iz kategorija Wikipedije, svježi datumi i popularnost (Deezer) – bez ključeva
+karte najave                   # najave: nove turneje, dodatni datumi, presale i početak prodaje (RSS) – bez ključeva
+karte uvoz stranica.html       # događaj sa spremljene stranice prodavača/preprodaje (schema.org podaci)
 
 # 2) HTML izvještaj
 karte scan --snimka --format html --out izvjestaj.html
@@ -129,7 +134,7 @@ Države s limitom cijene i dalje se prikazuju, ali kao **ZAKONSKI OGRANIČENO**,
 | `PREDICTHQ_TOKEN` | [control.predicthq.com](https://control.predicthq.com) — 14 dana probno | Događaji + predviđena posjećenost (beta) |
 | `LASTFM_API_KEY` | [last.fm/api/account/create](https://www.last.fm/api/account/create) — odmah, besplatno | Preciznija popularnost izvođača (inače Deezer) |
 | `SEATGEEK_CLIENT_ID` | [seatgeek.com/account/develop](https://seatgeek.com/account/develop) — opcionalno | Cijene na sekundarnom tržištu (uglavnom SAD/UK) |
-| `KARTE_USER_AGENT` | npr. `karte/0.6 (ime@primjer.hr)` | Wikimedia traži kontakt u User-Agentu |
+| `KARTE_USER_AGENT` | npr. `karte/0.7 (ime@primjer.hr)` | Wikimedia traži kontakt u User-Agentu |
 
 ### Hrvatska i regija: ručni CSV
 
@@ -163,7 +168,10 @@ Stupci (hrvatski ili engleski nazivi, razdjelnik `,` ili `;`):
 ```bash
 karte scan [opcije]        # glavna pretraga i rangiranje (bez ključeva: snimka stvarnih događaja)
 karte gui                  # grafičko sučelje u pregledniku
-karte snimka [--osvjezi] [--list]   # snimka stvarnih događaja: pregled i osvježavanje (bez ključeva)
+karte snimka [--osvjezi] [--list] [--bez-otkrivanja]   # snimka stvarnih događaja: pregled i osvježavanje (bez ključeva)
+karte najave [--regija hr|regija|europa|sve] [--dana 21]   # radar najava: turneje, presale, početak prodaje (RSS)
+karte najave --dodaj-izvor URL [--naziv NAZIV]            # svoj RSS izvor, npr. Google Alerts za "Arena Zagreb" ulaznice
+karte uvoz stranica.html [--url ADRESA] [--dry-run]       # uvoz događaja sa spremljene stranice (JSON-LD) u moje događaje
 karte plan [--budget 1000]  # plan zarade: koliko u koji događaj, raspon ishoda, kalendar radnji
 karte calc --face 59 --resale 140 --country HR --listeners 1500000 --capacity 16000   # brzi kalkulator za jedan događaj
 karte kategorije --cat "Parter:59:parter" --cat "Tribina:79" --cat "VIP:189:vip" --venue "Arena Zagreb" --listeners 2000000
@@ -201,7 +209,7 @@ Najvažnije opcije za `scan`:
 
 Workflow [`.github/workflows/scan.yml`](.github/workflows/scan.yml) pokreće skeniranje svakog **ponedjeljka i četvrtka**
 (i ručno: *Actions → Tjedni radar ulaznica → Run workflow*). Izvještaji (HTML/MD/CSV/JSON) se spremaju kao *artifact*,
-a sažetak preporuka KUPI/RAZMOTRI vidi se izravno na stranici izvođenja.
+a sažetak preporuka KUPI/RAZMOTRI i **najave za Hrvatsku i susjede** (presale, početak prodaje) vide se izravno na stranici izvođenja.
 
 1. *Settings → Secrets and variables → Actions → New repository secret* (sve opcionalno): `SERPAPI_KEY`, `TICKETMASTER_API_KEY`, `PREDICTHQ_TOKEN`, `LASTFM_API_KEY`, `SEATGEEK_CLIENT_ID`. Bez njih se koristi snimka stvarnih događaja.
 2. Za svoje HR događaje dodaj `primjeri/moji_dogadaji.csv` — workflow ga automatski uključuje.
@@ -222,6 +230,7 @@ ROI           = oček. vrij. / trošak
 ## Dokumentacija
 
 - 📊 [docs/ISTRAZIVANJE.md](docs/ISTRAZIVANJE.md) — tržište, platforme i naknade, zakoni po državama, porezi u HR, slični projekti i alati, izvori podataka
+- 🛰️ [docs/BEZ_TICKETMASTERA.md](docs/BEZ_TICKETMASTERA.md) — **radar bez Ticketmastera**: otkrivanje turneja s Wikipedije, radar najava (RSS), gumb „karte: spremi”, tjedni ritam
 - 🔌 [docs/IZVORI_PODATAKA.md](docs/IZVORI_PODATAKA.md) — **zamjene za Ticketmaster**, zašto ključ nije odobren, usporedba svih izvora, snimka stvarnih događaja, strani prodavači
 - 💶 [Kako zaraditi](karte/data/guides/8_kako_zaraditi.md) — plan zarade: brojke s tržišta, pravilo palca, strategije, kapital, karta tržišta, prvih 30 dana
 - 🧭 [docs/STRATEGIJA.md](docs/STRATEGIJA.md) — praktični priručnik: odabir događaja, kupnja, prodaja, cijene, rizik, porezi
@@ -234,7 +243,9 @@ ROI           = oček. vrij. / trošak
 karte/
   cli.py            naredbe
   pipeline.py       dohvat → spajanje → obogaćivanje → procjena
-  snapshot.py       snimka stvarnih događaja (učitavanje, osvježavanje bez ključeva)
+  snapshot.py       snimka stvarnih događaja (učitavanje, osvježavanje i otkrivanje turneja bez ključeva, moji događaji)
+  announcements.py  radar najava: RSS/Atom, prepoznavanje izvođača, mjesta i datuma presalea/prodaje
+  capture.py        uvoz sa stranice događaja (schema.org JSON-LD) i gumb "karte: spremi"
   portfolio.py      plan zarade: raspodjela budžeta, simulacija ishoda, kalendar radnji
   links.py          poveznice "Provjeri cijene" (službeni prodavači, preprodaja, usporedbe, oglasnici)
   geo.py            nazivi država → ISO kodovi
@@ -249,7 +260,7 @@ karte/
   platforms.py      platforme za preprodaju i naknade
   report.py         terminal / HTML / Markdown / CSV / JSON
   providers/        ticketmaster, serpapi (Google Events), predicthq, seatgeek, lastfm, deezer, wikipedia (turneje, trend), manual (CSV), demo
-  data/             laws.toml, markets.toml (regije, pristup), platforms.toml, vendors.toml (strani prodavači), venues.toml, model.toml, snimka/ (stvarni događaji), demo_events.json, guides/
+  data/             laws.toml, markets.toml (regije, pristup), platforms.toml, vendors.toml (strani prodavači), venues.toml, model.toml, najave.toml (RSS izvori), snimka/ (stvarni događaji), demo_events.json, guides/
 primjeri/           primjeri CSV-a (uklj. stvarnu HR watchlistu)
 docs/               istraživanje, strategija, model
 tests/              pytest (bez mreže; fixturei sa stvarnim odgovorima Deezera i Wikipedije)

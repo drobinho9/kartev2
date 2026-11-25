@@ -8,6 +8,8 @@ dohvaća svježe turneje i popularnost (bez ključeva) i sprema ih u korisničku
 
 from __future__ import annotations
 
+import csv
+import io
 import json
 import os
 import tomllib
@@ -20,8 +22,8 @@ from karte.knowledge import expand_countries
 from karte.models import Event
 from karte.net import HttpClient, ProviderError
 from karte.providers.deezer import DeezerProvider
-from karte.providers.manual import load_csv_text
-from karte.providers.wikipedia import WikipediaProvider, events_from_shows, parse_tour_html, wiki_url
+from karte.providers.manual import load_csv_text, parse_row
+from karte.providers.wikipedia import WikipediaProvider, events_from_shows, parse_tour_html, tour_artist, wiki_url
 from karte.util import days_between, normalize, parse_datetime, utcnow
 
 FILES = ("snimka.toml", "dogadaji.csv", "turneje.json", "popularnost.json")
@@ -88,24 +90,95 @@ def _key(e: Event) -> str:
     return f"{normalize(e.artist)}|{e.date.date().isoformat()}|{normalize(e.city)}"
 
 
+def _rows(text: str | None) -> list[dict]:
+    if not text:
+        return []
+    reader = csv.DictReader(io.StringIO(text.lstrip("\ufeff")))
+    return [{(k or "").strip().lower(): (v or "").strip() for k, v in row.items()} for row in reader]
+
+
+def _row_key(row: dict) -> str:
+    return f"{normalize(row.get('izvodjac') or row.get('naziv'))}|{(row.get('datum') or '').strip()}|{normalize(row.get('grad'))}"
+
+
 def load_curated() -> tuple[list[Event], str]:
-    """Ugrađeni provjereni događaji + korisnikovi (~/.karte/snimka/dogadaji.csv); korisnički redak zamjenjuje isti događaj."""
-    merged: dict[str, Event] = {}
-    pkg_text = _read_package("dogadaji.csv")
-    for e in load_csv_text(pkg_text, "snimka") if pkg_text else []:
-        e.source = CURATED_SOURCE
-        e.id = e.id.replace("csv:", "snimka:", 1)
-        merged[_key(e)] = e
+    """Ugrađeni provjereni događaji + moji događaji (~/.karte/snimka/dogadaji.csv).
+
+    Moj redak za isti događaj (izvođač + datum + grad) DOPUNJUJE ugrađeni: popunjena polja zamjenjuju ugrađena,
+    a prazna zadržavaju ugrađene podatke (oznake, izvore, bilješke).
+    """
+    merged: dict[str, tuple[dict, str]] = {}
+    for row in _rows(_read_package("dogadaji.csv")):
+        merged[_row_key(row)] = (row, CURATED_SOURCE)
+    user_rows = _rows(_read_user("dogadaji.csv"))
+    for row in user_rows:
+        key = _row_key(row)
+        if key in merged:
+            base, _ = merged[key]
+            merged[key] = ({**base, **{k: v for k, v in row.items() if v}}, USER_SOURCE)
+        else:
+            merged[key] = (row, USER_SOURCE)
+    events: list[Event] = []
+    for row, source in merged.values():
+        e = parse_row(row, source=source)
+        if e is None:
+            continue
+        e.id = e.id.replace("csv:", "moji:" if source == USER_SOURCE else "snimka:", 1)
+        events.append(e)
     origin = "ugrađena"
-    user_text = _read_user("dogadaji.csv")
-    user_events = load_csv_text(user_text, "moji") if user_text else []
-    for e in user_events:
-        e.source = USER_SOURCE
-        e.id = e.id.replace("csv:", "moji:", 1)
-        merged[_key(e)] = e
-    if user_events:
-        origin = f"ugrađena + {user_dir() / 'dogadaji.csv'} ({len(user_events)})"
-    return list(merged.values()), origin
+    if user_rows:
+        origin = f"ugrađena + {user_dir() / 'dogadaji.csv'} ({len(user_rows)})"
+    return events, origin
+
+
+def list_user_events() -> list[dict]:
+    return _rows(_read_user("dogadaji.csv"))
+
+
+def _write_user_rows(rows: list[dict]) -> Path:
+    target = user_dir() / "dogadaji.csv"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    header = [h.strip() for h in CSV_HEADER.strip().split(",")]
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=header, extrasaction="ignore", lineterminator="\n")
+    writer.writeheader()
+    for row in rows:
+        writer.writerow({k: row.get(k, "") for k in header})
+    target.write_text(buf.getvalue(), encoding="utf-8")
+    return target
+
+
+def save_user_events(rows: list[dict]) -> tuple[int, int]:
+    """Dodaj ili dopuni moje događaje. Vraća (dodano, dopunjeno)."""
+    existing = list_user_events()
+    index = {_row_key(r): i for i, r in enumerate(existing)}
+    added = updated = 0
+    for row in rows:
+        clean = {k: str(v).strip() for k, v in row.items() if v not in (None, "") and str(v).strip()}
+        when = parse_datetime(clean.get("datum"))
+        if not (clean.get("izvodjac") or clean.get("naziv")) or when is None:
+            continue
+        clean["datum"] = when.date().isoformat()  # "12.12.2026." → "2026-12-12" (isti ključ kao ugrađeni redak)
+        key = _row_key(clean)
+        if key in index:
+            existing[index[key]] = {**existing[index[key]], **clean}
+            updated += 1
+        else:
+            index[key] = len(existing)
+            existing.append(clean)
+            added += 1
+    if added or updated:
+        _write_user_rows(existing)
+    return added, updated
+
+
+def delete_user_event(key: str) -> bool:
+    rows = list_user_events()
+    kept = [r for r in rows if _row_key(r) != key]
+    if len(kept) == len(rows):
+        return False
+    _write_user_rows(kept)
+    return True
 
 
 @dataclass
@@ -175,22 +248,32 @@ def load_snapshot(now: datetime | None = None, countries: list[str] | None = Non
     tours_data, _ = _json("turneje.json")
     info.tours_date = tours_data.get("azurirano")
     cached = {t.get("naslov"): t for t in tours_data.get("turneje", [])}
+    configured = {t.get("naslov"): t for t in meta.get("turneja", [])}
+    default_region = expand_countries([meta.get("regija_otkrivanja", "europa")])
     tour_events: list[Event] = []
-    for tour in meta.get("turneja", []):
-        title, artist = tour.get("naslov", ""), tour.get("izvodjac", "")
-        rows = cached.get(title, {}).get("koncerti")
-        if rows is None:
+    for title in list(configured) + [t for t in cached if t not in configured]:
+        conf = configured.get(title, {})
+        entry = cached.get(title)
+        if entry is None:
             warnings.append(f"Snimka: nema spremljenih datuma za turneju '{title}' – pokreni: karte snimka --osvjezi")
             continue
+        artist = conf.get("izvodjac") or entry.get("izvodjac") or title
         shows = []
-        for r in rows:
+        for r in entry.get("koncerti") or []:
             when = parse_datetime(r.get("date"))
-            if when:
+            if when and r.get("country"):
                 shows.append({**r, "date": when.date()})
-        region = expand_countries([tour["regija"]]) if tour.get("regija") else None
-        found = events_from_shows(shows, title, artist, tour.get("oznake"), region, now)
+        region = expand_countries([conf["regija"]]) if conf.get("regija") else default_region
+        found = events_from_shows(shows, title, artist, conf.get("oznake"), region, now)
+        found_on = entry.get("otkriveno")
+        is_new = bool(found_on and parse_datetime(found_on) and days_between(parse_datetime(found_on), now) <= 14)
+        for e in found:
+            if is_new:
+                e.notes = f"NOVA turneja (otkrivena {found_on}). " + (e.notes or "")
         tour_events.extend(found)
-        info.tours.append({"artist": artist, "title": title, "url": wiki_url(title), "events": len(found)})
+        if found:
+            info.tours.append({"artist": artist, "title": title, "url": wiki_url(title), "events": len(found),
+                               "new": is_new, "discovered": title not in configured})
 
     events = curated + tour_events
     popularity, _ = _json("popularnost.json")
@@ -206,8 +289,29 @@ def load_snapshot(now: datetime | None = None, countries: list[str] | None = Non
     return events, info, warnings
 
 
-def refresh_snapshot(http: HttpClient, now: datetime | None = None, log=print) -> dict:
-    """Osvježi turneje (Wikipedia) i popularnost (Deezer + Wikipedia pregledi) u korisničkoj mapi."""
+def _tour_rows(shows: list[dict], keep_countries: set[str] | None, now: datetime) -> list[dict]:
+    rows = []
+    for s in shows:
+        if not s["country"]:
+            continue
+        if keep_countries is not None and (s["country"] not in keep_countries or s["date"] < now.date()):
+            continue
+        rows.append({"date": s["date"].isoformat(), "city": s["city"], "country": s["country"],
+                     "country_name": s["country_name"], "venue": s["venue"]})
+    return rows
+
+
+UPCOMING_CATEGORY = "Category:Upcoming concert tours"
+
+
+def refresh_snapshot(http: HttpClient, now: datetime | None = None, log=print, discover: bool = True,
+                     years: list[int] | None = None) -> dict:
+    """Osvježi turneje (Wikipedia) i popularnost (Deezer + Wikipedia pregledi) u korisničkoj mapi.
+
+    discover=True: uz turneje iz snimka.toml pronađe SVE članke u kategorijama "<godina> concert tours"
+    (tekuća i iduća godina) i zadrži one s budućim datumima u regiji `regija_otkrivanja` (zadano Europa).
+    Nepromijenjeni članci (ista revizija) se ne dohvaćaju ponovno.
+    """
     now = now or utcnow()
     target = user_dir()
     target.mkdir(parents=True, exist_ok=True)
@@ -216,34 +320,83 @@ def refresh_snapshot(http: HttpClient, now: datetime | None = None, log=print) -
     stamp = now.date().isoformat()
     summary = {"tours": [], "artists": 0, "errors": [], "dir": str(target)}
 
-    # 1) turneje
+    # 1) turneje: iz snimka.toml + (opcionalno) otkrivene iz kategorija Wikipedije
     old_tours, _ = _json("turneje.json")
     old_by_title = {t.get("naslov"): t for t in old_tours.get("turneje", [])}
+    # otkrivene turneje bez datuma u regiji ili bez izvođača (tribute showovi, festivali): pamti se samo revizija,
+    # da se ne dohvaćaju svaki put
+    old_skipped = dict(old_tours.get("preskoceno") or {})
+    skipped: dict[str, int] = {}
+    configured = {t.get("naslov", ""): t for t in meta.get("turneja", [])}
+    keep = set(expand_countries([meta.get("regija_otkrivanja", "europa")]))
+    discovered: list[str] = []
+    if discover:
+        categories = [f"Category:{year} concert tours" for year in years or [now.year, now.year + 1]]
+        categories.append(UPCOMING_CATEGORY)  # najavljene turneje koje još nemaju kategoriju za godinu (npr. Oasis Live '27)
+        for category in categories:
+            try:
+                discovered += wp.category_members(category)
+            except ProviderError as exc:
+                summary["errors"].append(f"{category}: {exc}")
+        discovered = [t for t in dict.fromkeys(discovered) if t not in configured]
+        log(f"  Otkriveno {len(discovered)} turneja u kategorijama Wikipedije ({', '.join(c.removeprefix('Category:') for c in categories)}).")
+    try:
+        revisions = wp.revisions(list(configured) + discovered)
+    except ProviderError as exc:
+        revisions = {}
+        summary["errors"].append(f"Revizije: {exc}")
     tours_out = []
-    for tour in meta.get("turneja", []):
-        title = tour.get("naslov", "")
+    summary["new"] = []
+    for title in list(configured) + discovered:
+        is_configured = title in configured
+        old = old_by_title.get(title)
+        rev = revisions.get(title)
+        source = "popis" if is_configured else "kategorija"
+        if old and rev and old.get("revid") == rev and old.get("izvor", "popis") == source:
+            if old.get("koncerti"):  # članak se nije promijenio od zadnjeg dohvata
+                tours_out.append(old)
+            continue
+        if not is_configured and not old and rev and old_skipped.get(title) == rev:
+            skipped[title] = rev
+            continue
         try:
-            shows = parse_tour_html(wp.tour_html(title))
-            rows = [{"date": s["date"].isoformat(), "city": s["city"], "country": s["country"], "country_name": s["country_name"],
-                     "venue": s["venue"]} for s in shows if s["country"]]
-            tours_out.append({"izvodjac": tour.get("izvodjac"), "naslov": title, "url": wiki_url(title), "koncerti": rows})
-            summary["tours"].append((title, len(rows)))
-            log(f"  ✓ {title}: {len(rows)} koncerata")
+            html = wp.tour_html(title)
         except ProviderError as exc:
             summary["errors"].append(f"{title}: {exc}")
-            log(f"  ✗ {title}: {exc} (ostaje prethodna verzija)")
-            if title in old_by_title:
-                tours_out.append(old_by_title[title])
+            if old:
+                tours_out.append(old)
+            continue
+        shows = parse_tour_html(html)
+        rows = _tour_rows(shows, None if is_configured else keep, now)
+        if not rows:
+            if not is_configured and rev:
+                skipped[title] = rev
+            continue
+        artist = configured.get(title, {}).get("izvodjac") or (old or {}).get("izvodjac") or tour_artist(html)
+        if not artist and not is_configured:
+            if rev:
+                skipped[title] = rev
+            log(f"  · {title}: u infookviru nema izvođača (tribute show, festival…) – preskačem")
+            continue
+        artist = artist or title
+        entry = {"izvodjac": artist, "naslov": title, "url": wiki_url(title), "revid": rev, "koncerti": rows,
+                 # "" = turneja iz početne (ugrađene) snimke – nije "nova"; inače datum prvog otkrivanja
+                 "otkriveno": old.get("otkriveno", "") if old else stamp, "izvor": source}
+        if not old:
+            summary["new"].append(title)
+        tours_out.append(entry)
+        summary["tours"].append((title, len(rows)))
+        log(f"  ✓ {title} ({artist}): {len(rows)} koncerata{'' if is_configured else ' u regiji'}{' – NOVO' if not old else ''}")
     (target / "turneje.json").write_text(
-        json.dumps({"azurirano": stamp, "izvor": "en.wikipedia.org (tablice 'Tour dates', CC BY-SA 4.0)", "turneje": tours_out},
-                   ensure_ascii=False, indent=1),
+        json.dumps({"azurirano": stamp, "izvor": "en.wikipedia.org (tablice 'Tour dates', CC BY-SA 4.0)", "turneje": tours_out,
+                    "preskoceno": skipped}, ensure_ascii=False, indent=1),
         encoding="utf-8",
     )
 
     # 2) popularnost za sve izvođače iz snimke
     curated, _ = load_curated()
     artists = list(dict.fromkeys(
-        [e.artist for e in curated] + [t.get("izvodjac") for t in meta.get("turneja", []) if t.get("izvodjac")]
+        [e.artist for e in curated] + [t.get("izvodjac") for t in tours_out if t.get("izvodjac")]
     ))
     deezer = DeezerProvider(http)
     old_pop, _ = _json("popularnost.json")

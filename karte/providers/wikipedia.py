@@ -7,7 +7,7 @@
    (nova pjesma, najava turneje, viralni trenutak) je rani signal potražnje.
 
 Wikimedia traži opisni User-Agent s kontaktom – postavi KARTE_USER_AGENT u .env
-(npr. "karte/0.6 (ime@primjer.hr)"). Zahtjeve šaljemo polako i cacheiramo (429 → čekanje).
+(npr. "karte/0.7 (ime@primjer.hr)"). Zahtjeve šaljemo polako i cacheiramo (429 → čekanje).
 """
 
 from __future__ import annotations
@@ -15,6 +15,7 @@ from __future__ import annotations
 import hashlib
 import re
 import urllib.parse
+from html import unescape
 from datetime import date, datetime, timedelta
 from html.parser import HTMLParser
 
@@ -291,6 +292,35 @@ def trend_from_views(views: list[int], recent_days: int = 14) -> tuple[int | Non
     return round(avg_recent), round(avg_recent / avg_prior, 3)
 
 
+def _clean(fragment: str) -> str:
+    return re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", "", fragment))).strip()
+
+
+def tour_artist(html: str) -> str | None:
+    """Izvođač turneje: infookvir ("Tour by <izvođač>"), zatim kratki opis ("Concert tour by Don Omar"),
+    zatim prva poveznica iza "tour by" u uvodu. Tribute showovi i festivali obično nemaju nijedno → None."""
+    html = html or ""
+    m = re.search(r'class="infobox-subheader"[^>]*>(.*?)</td>', html, re.S)
+    block = m.group(1) if m else ""
+    att = re.search(r'class="attendee"[^>]*>(.*?)</span>\s*(?:</td>|$)', block, re.S) or re.search(r'class="attendee"[^>]*>(.*)', block, re.S)
+    if att:
+        link = re.search(r"<a [^>]*>(.*?)</a>", att.group(1), re.S)
+        text = _clean(link.group(1) if link else att.group(1))
+        if text:
+            return text
+    short = re.search(r'class="shortdescription[^"]*"[^>]*>([^<]*)<', html)
+    if short:
+        by = re.search(r"\b(?:tour|concert|residency|shows?)\s+by\s+(.+)$", unescape(short.group(1)).strip(), re.I)
+        if by and by.group(1).strip():
+            return by.group(1).strip()
+    # uvodni odlomak = prvi <p> s tekstom (preskače prazne "mw-empty-elt")
+    first = next((m.group(1) for m in re.finditer(r"<p[^>]*>(.*?)</p>", html[:40000], re.S) if len(_clean(m.group(1))) > 20), "")
+    lead = re.search(r"\btour\s+by\b(.{0,240}?)<a [^>]*>(.*?)</a>", first, re.S | re.I)
+    if lead:
+        return _clean(lead.group(2)) or None
+    return None
+
+
 def wiki_url(title: str) -> str:
     return "https://en.wikipedia.org/wiki/" + urllib.parse.quote(title.replace(" ", "_"))
 
@@ -386,6 +416,43 @@ class WikipediaProvider:
             if e.artist in stats:
                 e.artist_pageviews, e.artist_trend = stats[e.artist]
         return warnings, sum(1 for v in stats.values() if v[1] is not None)
+
+    # --- otkrivanje turneja (kategorije "2027 concert tours" itd.)
+    def category_members(self, category: str) -> list[str]:
+        titles: list[str] = []
+        cont = None
+        for _ in range(10):
+            data = self.http.get_json(
+                API_URL,
+                {"action": "query", "list": "categorymembers", "cmtitle": category, "cmlimit": 500, "cmnamespace": 0,
+                 "format": "json", "formatversion": 2, "cmcontinue": cont},
+                cache_ttl=12 * 3600,
+            )
+            titles += [m["title"] for m in ((data or {}).get("query") or {}).get("categorymembers", []) if m.get("title")]
+            cont = ((data or {}).get("continue") or {}).get("cmcontinue")
+            if not cont:
+                break
+        return titles
+
+    def revisions(self, titles: list[str]) -> dict[str, int]:
+        """Zadnja revizija članaka (za preskakanje nepromijenjenih turneja pri osvježavanju)."""
+        out: dict[str, int] = {}
+        for i in range(0, len(titles), 50):
+            chunk = titles[i:i + 50]
+            data = self.http.get_json(
+                API_URL,
+                {"action": "query", "prop": "info", "titles": "|".join(chunk), "format": "json", "formatversion": 2, "redirects": 1},
+                cache_ttl=3600,
+            )
+            query = (data or {}).get("query") or {}
+            normalized = {n["from"]: n["to"] for n in query.get("normalized", []) if "from" in n}
+            redirects = {r["from"]: r["to"] for r in query.get("redirects", []) if "from" in r}
+            revs = {p.get("title"): p.get("lastrevid") for p in query.get("pages", []) if p.get("lastrevid")}
+            for t in chunk:
+                final = redirects.get(normalized.get(t, t), normalized.get(t, t))
+                if final in revs:
+                    out[t] = int(revs[final])
+        return out
 
     # --- turneje
     def tour_html(self, title: str) -> str:

@@ -1,20 +1,24 @@
 # Izvori podataka — kako raditi bez Ticketmastera
 
-Stanje: 22. 11. 2026. Ukratko: **aplikacija sada radi i bez ijednog ključa** (snimka stvarnih događaja + Deezer +
-Wikipedia), a najbolja zamjena za Ticketmaster za Hrvatsku i Europu je **Google Events preko SerpApi** (besplatno
-250 pretraga mjesečno). Nominalne cijene i cijene s preprodaje u Europi nemaju besplatan javni API — zato aplikacija
-za takve događaje računa **do koje se cijene isplati kupiti** (preporuka *PROVJERI CIJENU*).
+Stanje: 25. 11. 2026. Ukratko: **aplikacija radi i bez ijednog ključa**. Ima snimku stvarnih događaja, Deezer i
+Wikipediju, **otkrivanje svih turneja s Wikipedije**, **radar najava (RSS)** s datumima presalea i prodaje, te
+**gumb „karte: spremi”** koji nominalne cijene i cijene s preprodaje čita sa stranice događaja otvorene u tvom pregledniku.
+Sve je objašnjeno u [BEZ_TICKETMASTERA.md](BEZ_TICKETMASTERA.md).
+Najbolja živa zamjena za popis događaja po gradovima ostaje **Google Events preko SerpApi** (besplatno 250 pretraga mjesečno).
+Kad nominalna cijena nije poznata, aplikacija računa **do koje se cijene isplati kupiti** (preporuka *PROVJERI CIJENU*).
 
 ## 1. Što napraviti danas
 
 | Korak | Što | Ključ |
 |---|---|---|
 | 1 | `karte gui` ili `karte scan` — bez ključeva automatski se koristi **snimka stvarnih događaja** (Hrvatska, regija, europske turneje 2027.) | ne treba |
+| 1a | `karte najave` (ili kartica **Najave i uvoz**): nove turneje, dodatni datumi, presale i početak prodaje iz RSS izvora | ne treba |
+| 1b | Povuci gumb **karte: spremi** u traku oznaka i klikni ga na stranici događaja (Eventim, Ticketmaster, Entrio, viagogo…) → nominalna cijena ili „preprodaja od” ide u *Moje događaje* | ne treba |
 | 2 | Registriraj se na [serpapi.com](https://serpapi.com) i upiši `SERPAPI_KEY` u `.env` → živi popis koncerata po gradovima (Zagreb, Split, Pula, Beč, Budimpešta…) | besplatno, 250 pretraga/mj. |
 | 3 | (Opcionalno) `LASTFM_API_KEY` za precizniju popularnost — bez njega se koristi Deezer | besplatno, odmah |
 | 4 | Za svaki zanimljiv koncert upiši **nominalnu cijenu** i **najnižu cijenu na viagogu** u *Kalkulator* (ili CSV) | — |
 | 5 | Ticketmaster: provjeri status ključa prema odjeljku 2 i dodaj ga kad proradi | besplatno |
-| 6 | Jednom mjesečno: `karte snimka --osvjezi` (svježi datumi turneja i popularnost) | ne treba |
+| 6 | Jednom mjesečno: `karte snimka --osvjezi` (nove turneje iz kategorija Wikipedije, svježi datumi i popularnost) | ne treba |
 
 ## 2. Zašto Ticketmaster „ne odobrava” ključ i što napraviti
 
@@ -46,6 +50,9 @@ za takve događaje računa **do koje se cijene isplati kupiti** (preporuka *PROV
 |---|---|---|---|---|
 | **Snimka stvarnih događaja** (ugrađena) | bez ključa | HR, regija, europski datumi velikih turneja | provjereni događaji s izvorom, „od” cijene s preprodaje uz datum, nominalne gdje su javne, popularnost | ✅ zadano bez ključeva |
 | **Wikipedia** — tablice turneja | bez ključa (User-Agent s kontaktom) | velike svjetske turneje | datumi, gradovi, dvorane (bez cijena); ažurno unutar par dana od najave | ✅ `karte snimka --osvjezi` |
+| **Wikipedia** — kategorije „<godina> concert tours”, „Upcoming concert tours” | bez ključa | sve turneje s člankom (25. 11. 2026.: 2026 + 2027 ≈ 190 turneja) | popis turneja → europski datumi, izvođač iz infookvira; nepromijenjeni članci se preskaču | ✅ otkrivanje uz `--osvjezi` |
+| **RSS najave** (muzika.hr, Croatia Week, Ajme.hr, tportal, Novi list, TicketNews, Pollstar, Ticketmaster UK blog, Consequence) | bez ključa | HR, regija, UK/SAD mediji | nove turneje i datumi, **presale i početak prodaje** iz teksta, mjesto, izvođač (Deezer) | ✅ `karte najave` |
+| **schema.org podaci sa stranice događaja** (gumb „karte: spremi”, `karte uvoz`) | bez ključa | svaka stranica koja objavljuje Event/Offer za Google | nominalne cijene ili „preprodaja od”, status, početak prodaje, dvorana | ✅ samo na tvoj klik, na otvorenoj stranici |
 | **Wikimedia Pageviews** | bez ključa | svaki izvođač s člankom | trend interesa: zadnjih 14 dana / prethodnih 60 | ✅ signal potražnje |
 | **Deezer API** | bez ključa (~50 zahtjeva / 5 s) | globalno, jak u Europi | broj fanova izvođača | ✅ popularnost bez Last.fm-a |
 | **Last.fm API** | besplatan ključ, odmah | globalno | broj slušatelja | ✅ |
@@ -56,6 +63,7 @@ za takve događaje računa **do koje se cijene isplati kupiti** (preporuka *PROV
 | **Bandsintown** | `app_id` **samo za izvođače i njihove timove**, uz pisani pristanak ([pomoć](https://help.artists.bandsintown.com/en/articles/3372745-can-i-have-access-to-the-api-and-an-app-id-if-i-m-not-an-artist), [uvjeti](https://corp.bandsintown.com/data-applications-terms)) | — | — | ❌ nije za ovu namjenu |
 | **Songkick** | zatvoren za nove korisnike | — | — | ❌ |
 | **Spotify Web API** | Development Mode od 2026. traži Premium, ograničeni endpointi | — | — | ❌ |
+| **setlist.fm API** | ključ besplatan samo za nekomercijalne projekte ([uvjeti](https://www.setlist.fm/help/api-terms)) | globalno | setliste **prošlih** koncerata | ❌ nije za ovu namjenu |
 | **Komercijalni podaci o preprodaji** (TicketsData, Eventory, Stage Front Broker Suite, Skybox) | plaćeno | uglavnom SAD | stvarne prodaje („sold comps”), cijene | ❌ tek uz veći obim |
 | **Agregatori cijena** (karlobag.eu, SeatPick, Hellotickets, Eventworld, StubHub) | web stranice | globalno | „od” cijene po događaju | ✋ ručno — ne scrapati (uvjeti korištenja) |
 | **Entrio / Eventim.hr / Ulaznice.hr** | nema javnog API-ja; zaštita od botova | HR | službene cijene i dostupnost | ✋ ručno ili CSV — ne scrapati |
@@ -89,7 +97,8 @@ ulaznicu — aplikacija ih zato umanjuje i upozorava kad su starije od 21 dan.
 
 - `karte/data/snimka/dogadaji.csv` — ručno provjereni događaji, svaki s poveznicom na izvor i bilješkom (gdje su druge cijene).
   Nominalne cijene samo iz službenih ili medijskih objava (npr. Fontaines D.C., Šalata: 49 € za prvih 1.500 kupaca, zatim 52 €).
-- `turneje.json` — europski datumi turneja (Fall Out Boy, Olivia Rodrigo, U2, Karol G) iz tablica na Wikipediji.
+- `turneje.json` — europski datumi turneja iz tablica na Wikipediji: odabrane turneje (Fall Out Boy, Olivia Rodrigo, U2,
+  Karol G) i sve **otkrivene** iz kategorija Wikipedije (oznaka *NOVA turneja* 14 dana nakon otkrivanja).
 - `popularnost.json` — Deezer fanovi i Wikipedia trend za sve izvođače (npr. Fall Out Boy ×3,0 i U2 ×2,0 zbog najava turneja).
 
 ```bash

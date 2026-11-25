@@ -63,6 +63,12 @@ jobs:
           karte scan $ARGS --format csv --out reports/izvjestaj.csv
           karte scan $ARGS --format json --out reports/izvjestaj.json
           karte scan $ARGS --only KUPI,RAZMOTRI --format md --top 15 > "$GITHUB_STEP_SUMMARY" || true
+      - name: Najave turneja i početak prodaje (RSS, bez ključeva)
+        env:
+          KARTE_USER_AGENT: ${{ vars.KARTE_USER_AGENT || 'karte (GitHub Actions)' }}
+        run: |
+          karte najave --regija regija --top 25 --ne-oznaci > reports/najave.txt || true
+          { echo "## Najave (Hrvatska i susjedi)"; echo '```'; cat reports/najave.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
           name: radar-ulaznica-${{ github.run_number }}

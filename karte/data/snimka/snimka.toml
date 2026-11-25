@@ -13,6 +13,9 @@
 # Oni DOPUNJUJU ugrađenu snimku; redak za isti događaj (izvođač + datum + grad) zamjenjuje ugrađeni (npr. upišeš nominalnu cijenu).
 
 stanje = "2026-11-22"
+# Otkrivanje turneja: `karte snimka --osvjezi` pregleda kategorije Wikipedije "<godina> concert tours"
+# i zadrži turneje s budućim koncertima u ovoj regiji (vidi `karte markets` za regije).
+regija_otkrivanja = "europa"
 opis = "Stvarni koncerti iz Hrvatske i regije te europski datumi velikih turneja 2027. (Wikipedia), s cijenama s preprodaje gdje su javno dostupne."
 
 [[turneja]]

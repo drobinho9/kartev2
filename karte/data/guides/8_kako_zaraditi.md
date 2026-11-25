@@ -138,7 +138,9 @@ i lokalnom oglasniku (Njuškalo, willhaben, Jófogás, Bolha…).
 
 ## 9. Prvih 30 dana (prema snimci od 22. 11. 2026.)
 
-1. Postavi `.env`: `SERPAPI_KEY` (besplatno), Ticketmaster ključ kad proradi, `KARTE_USER_AGENT`; pokreni `karte plan`.
+1. Postavi `.env`: `SERPAPI_KEY` (besplatno), `KARTE_USER_AGENT`; pokreni `karte plan`. Ticketmaster ključ nije potreban
+   (vidi *Radar bez Ticketmastera*): dvaput tjedno pogledaj **Najave i uvoz** (`karte najave`) i povuci gumb **karte: spremi**
+   u traku oznaka — njime spremaš nominalne cijene s Eventima/Ticketmastera i „preprodaja od” s viagoga.
 2. **Scorpions Zagreb** (KUPI po modelu): provjeri viagogo i uvjete Core Eventa; najviše 4 ulaznice; oglas tek kad ih imaš.
 3. **Eric Clapton Zagreb**: pogledaj cijene na eventim.hr i upiši najjeftiniju kategoriju u Kalkulator (potražnja 75/100).
 4. **Rod Stewart Pula**: provjeri današnju najnižu cijenu na viagogu; isplati se samo uz nominalnu ≤ ~82 €.

@@ -62,3 +62,13 @@ class FakeHttp:
             if url.startswith(prefix):
                 return payload(params) if callable(payload) else payload
         raise AssertionError(f"Neočekivan URL {url}")
+
+    def get_text(self, url, params=None, cache_ttl=None, headers=None, max_bytes=None):
+        self.calls.append((url, dict(params or {})))
+        for prefix, payload in self.routes.items():
+            if url.startswith(prefix):
+                result = payload(params) if callable(payload) else payload
+                if isinstance(result, Exception):
+                    raise result
+                return result
+        raise AssertionError(f"Neočekivan URL {url}")

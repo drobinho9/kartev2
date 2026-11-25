@@ -1,0 +1,67 @@
+# Izvori najava (RSS) – nove turneje, dodatni datumi, početak prodaje i presale ulaznica.
+# RSS je format namijenjen strojnom čitanju (sindikaciji), pa ga aplikacija smije redovito dohvaćati.
+# Provjereno 25. 11. 2026. Dodaj svoje izvore u ~/.karte/najave.toml (isti oblik; dopunjuje ove) ili:
+#   karte najave --dodaj-izvor URL --naziv "..."   (npr. Google Alerts → Isporuči na: RSS feed)
+#
+# vrsta = "turneje"   – izvor piše samo o koncertima/turnejama (sve stavke su relevantne)
+# vrsta = "opcenito"  – opći portal; zadržavaju se samo stavke s ključnim riječima (koncert, ulaznice, tour…)
+
+[[izvor]]
+naziv = "muzika.hr – turneje"
+url = "https://www.muzika.hr/category/turneje/feed/"
+jezik = "hr"
+vrsta = "turneje"
+
+[[izvor]]
+naziv = "muzika.hr – najave"
+url = "https://www.muzika.hr/category/najave/feed/"
+jezik = "hr"
+vrsta = "turneje"
+
+[[izvor]]
+naziv = "Croatia Week – zabava"
+url = "https://www.croatiaweek.com/category/entertainment/feed/"
+jezik = "en"
+vrsta = "opcenito"
+
+[[izvor]]
+naziv = "Ajme.hr"
+url = "https://ajme.hr/feed/"
+jezik = "hr"
+vrsta = "opcenito"
+
+[[izvor]]
+naziv = "tportal"
+url = "https://www.tportal.hr/rss"
+jezik = "hr"
+vrsta = "opcenito"
+
+[[izvor]]
+naziv = "Novi list"
+url = "https://www.novilist.hr/feed/"
+jezik = "hr"
+vrsta = "opcenito"
+
+[[izvor]]
+naziv = "TicketNews – datumi turneja"
+url = "https://www.ticketnews.com/category/tour-dates/feed/"
+jezik = "en"
+vrsta = "turneje"
+
+[[izvor]]
+naziv = "Pollstar – najave turneja"
+url = "https://news.pollstar.com/category/tour-announcements/feed/"
+jezik = "en"
+vrsta = "turneje"
+
+[[izvor]]
+naziv = "Ticketmaster UK – glazba"
+url = "https://discover.ticketmaster.co.uk/category/music/feed/"
+jezik = "en"
+vrsta = "opcenito"
+
+[[izvor]]
+naziv = "Consequence"
+url = "https://consequence.net/feed/"
+jezik = "en"
+vrsta = "opcenito"

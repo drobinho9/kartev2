@@ -90,6 +90,10 @@ Organizatori stavljaju spekulante na crne liste i poništavaju ulaznice ponuđen
 
 ## 8. Kako to primijeniti u aplikaciji
 
+- **Najave i uvoz → Najave:** besplatna zamjena za „presale info” iz plaćenih grupa — nove turneje, dodatni datumi i
+  datumi presalea/prodaje iz RSS izvora (`karte najave`), s podsjetnikom u kalendaru.
+- **Gumb „karte: spremi”:** na stranici prodavača sprema nominalne cijene, a na viagogu/StubHubu „preprodaja od” s datumom —
+  tako bilježiš svoje „compove” za isti ili sličan događaj bez ručnog prepisivanja.
 - **Radar → Snimka stvarnih događaja:** za događaje bez javne nominalne cijene vidiš *Kupi najviše do* — usporedi s cijenom na Eventimu/Entriju.
 - **Kalkulator:** upiši nominalnu cijenu i najniži oglas iste kategorije na viagogu (to je tvoj „comp”).
 - **Kategorije:** koja kategorija ima najveći postotni skok (parter i jeftina dobra mjesta obično prednjače).

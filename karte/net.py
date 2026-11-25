@@ -135,3 +135,44 @@ class HttpClient:
                     self._sleep(2 ** attempt)
                     continue
         raise ProviderError(f"Neuspio zahtjev {redact(full_url)}: {last_error}")
+
+    def get_text(self, url: str, params: dict[str, Any] | None = None, cache_ttl: float | None = None,
+                 headers: dict[str, str] | None = None, max_bytes: int = 3_000_000) -> str:
+        """GET tekstualnog sadržaja (npr. RSS/XML) s istim cacheom, ograničenjem brzine i ponovnim pokušajima."""
+        query = urllib.parse.urlencode({k: v for k, v in (params or {}).items() if v is not None}, doseq=True)
+        full_url = f"{url}?{query}" if query else url
+        key = "text:" + full_url
+        if self.cache is not None:
+            cached = self.cache.get(key, cache_ttl)
+            if isinstance(cached, dict) and "text" in cached:
+                return cached["text"]
+        last_error: Exception | None = None
+        for attempt in range(self.retries + 1):
+            wait = self.min_interval - (time.monotonic() - self._last_request)
+            if wait > 0:
+                self._sleep(wait)
+            self._last_request = time.monotonic()
+            request = urllib.request.Request(
+                full_url,
+                headers={"User-Agent": user_agent(), "Accept": "application/rss+xml, application/xml, text/xml, */*", **(headers or {})},
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=self.timeout) as resp:
+                    raw = resp.read(max_bytes + 1)[:max_bytes]
+                    charset = resp.headers.get_content_charset() or "utf-8"
+                text = raw.decode(charset, "replace")
+                if self.cache is not None:
+                    self.cache.set(key, {"text": text})
+                return text
+            except urllib.error.HTTPError as exc:
+                last_error = exc
+                if exc.code in (429, 500, 502, 503, 504) and attempt < self.retries:
+                    self._sleep(min(2 ** (attempt + 1), 30))
+                    continue
+                raise ProviderError(f"HTTP {exc.code} za {redact(full_url)}") from None
+            except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+                last_error = exc
+                if attempt < self.retries:
+                    self._sleep(2 ** attempt)
+                    continue
+        raise ProviderError(f"Neuspio zahtjev {redact(full_url)}: {last_error}")

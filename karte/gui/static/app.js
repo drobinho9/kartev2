@@ -33,6 +33,9 @@ const VERDICT_CLASS = {
   "ZAKONSKI OGRANIČENO": "v-legal", "UVJETI ZABRANJUJU": "v-legal", "NEMA CIJENE": "v-skip", OTKAZANO: "v-skip",
 };
 const plural = (n, one, other) => (n % 10 === 1 && n % 100 !== 11 ? one : other);
+// tri oblika: 1 najava, 2–4 najave, 5+ najava (21 najava, 22 najave…)
+const plural3 = (n, one, few, many) => (n % 10 === 1 && n % 100 !== 11 ? one
+  : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? few : many);
 const pill = (v) => `<span class="pill ${VERDICT_CLASS[v] || "v-skip"}">${esc(v)}</span>`;
 const REGION_LABELS = {
   otvoreno: "Otvorena tržišta (preporučeno)", svijet: "Cijeli svijet", europa: "Europa", zapadna_europa: "Zapadna Europa",
@@ -105,6 +108,7 @@ function showTab(name) {
   if (location.hash !== `#${name}`) history.replaceState(null, "", `#${name}`);
   if (name === "markets" && !state.loaded.markets) loadMarkets();
   if (name === "plan" && !state.loaded.plan) { state.loaded.plan = true; loadPlan(); }
+  if (name === "news" && !state.loaded.news) { state.loaded.news = true; loadNews(); loadMy(); }
   if (name === "journal" && !state.loaded.journal) loadJournal();
   if (name === "guides" && !state.loaded.guides) loadGuides();
   rerenderCharts();
@@ -619,6 +623,137 @@ function planIcs() {
   saveBlob(new Blob([lines.join("\r\n")], { type: "text/calendar" }), "plan_zarade.ics");
 }
 
+/* ------------------------------------------------------------------ NAJAVE I UVOZ */
+const IMPORT_FIELDS = [["izvodjac", "Izvođač"], ["naziv", "Naziv"], ["dvorana", "Dvorana"], ["grad", "Grad"], ["drzava", "Država (ISO)"],
+  ["datum", "Datum (GGGG-MM-DD)"], ["vrijeme", "Vrijeme"], ["cijena_min", "Nominalna od"], ["cijena_max", "Nominalna do"], ["valuta", "Valuta"],
+  ["sek_najniza", "Preprodaja od"], ["sek_valuta", "Valuta preprodaje"], ["sek_izvor", "Izvor preprodaje"], ["prodaja_od", "Prodaja počinje"],
+  ["prodavac", "Prodavač (ključ)"], ["url", "Poveznica"]];
+async function loadNews() {
+  await busy($("#newsBtn"), async () => {
+    const r = await api.get(`/api/najave?dana=${encodeURIComponent($("#newsDays").value || 21)}&regija=${encodeURIComponent($("#newsRegion").value)}`);
+    state.news = r;
+    renderNews();
+  });
+}
+function saleText(iso, label) {
+  const d = parseIso(iso);
+  if (!d) return "";
+  return `${label} ${dateFmt(iso)}${d.getHours() || d.getMinutes() ? ` ${pad(d.getHours())}:${pad(d.getMinutes())}` : ""}`;
+}
+function renderNews() {
+  const r = state.news;
+  if (!r.items.length) { $("#newsOut").innerHTML = `<div class="card"><p class="muted">Nema najava za odabranu regiju i razdoblje.</p></div>`; return; }
+  const newCount = r.items.filter((a) => a.new).length;
+  let html = `<div class="card"><p class="muted small">${r.items.length} ${plural3(r.items.length, "najava", "najave", "najava")} (${newCount} ${plural3(newCount, "nova", "nove", "novih")}) od ukupno ${r.total} iz izvora.</p>`;
+  html += r.items.map((a, i) => `<div class="news-item">
+      <div><a class="title" href="${esc(a.link)}" target="_blank" rel="noopener noreferrer">${esc(a.title)}</a> ${a.new ? '<span class="badge new">NOVO</span>' : ""}</div>
+      <div class="muted small">${esc(a.source)} · ${esc(dateFmt(a.published))}</div>
+      <div class="row wrapgap small">
+        ${a.artist ? `<span class="badge">${esc(a.artist)}${isNum(a.fans) ? ` · ${nf0.format(a.fans)} fanova` : ""}</span>` : ""}
+        ${(a.places || []).map((p) => `<span class="badge">${esc(p)}</span>`).join("")}
+        ${a.presale ? `<span class="badge pre">${esc(saleText(a.presale, "Presale"))}</span>` : ""}
+        ${a.onsale ? `<span class="badge sale">${esc(saleText(a.onsale, "Prodaja"))}</span>` : ""}
+        ${a.event_date ? `<span class="badge">Događaj ${esc(dateFmt(a.event_date))}</span>` : ""}
+      </div>
+      <div class="row">${a.onsale || a.presale ? `<button type="button" class="ghost small" data-ics="${i}">📅 Podsjetnik</button>` : ""}
+        ${a.artist ? `<button type="button" class="ghost small" data-calc="${i}">Kalkulator</button>` : ""}</div>
+    </div>`).join("");
+  html += r.warnings.length ? `<div class="notice warn small"><ul>${r.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul></div>` : "";
+  $("#newsOut").innerHTML = html + "</div>";
+  $$("#newsOut [data-ics]").forEach((b) => b.addEventListener("click", () => newsIcs(r.items[+b.dataset.ics])));
+  $$("#newsOut [data-calc]").forEach((b) => b.addEventListener("click", () => {
+    const a = r.items[+b.dataset.calc];
+    fillFields($("#calcFields"), { artist: a.artist, name: a.title, city: (a.places || [])[0] || "", country: (a.countries || [])[0] || "HR",
+      date: a.event_date || "", fans: a.fans || "" }, $("#calcTags"));
+    showTab("calc");
+    toast("Upiši nominalnu cijenu i najnižu cijenu na viagogu pa klikni Izračunaj.");
+  }));
+}
+function newsIcs(a) {
+  const fmtUtc = (d) => `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+  const icsText = (s) => String(s).replace(/\\/g, "\\\\").replace(/[,;]/g, (c) => "\\" + c).replace(/\n/g, "\\n");
+  const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//karte//najave//HR"];
+  [["presale", "Presale"], ["onsale", "Početak prodaje"]].forEach(([k, label]) => {
+    const d = parseIso(a[k]);
+    if (!d) return;
+    if (!d.getHours() && !d.getMinutes()) d.setHours(9, 0);
+    lines.push("BEGIN:VEVENT", `UID:${k}-${fmtUtc(d)}-${(a.artist || "najava").replace(/\W+/g, "")}@karte`, `DTSTAMP:${fmtUtc(new Date())}`,
+      `DTSTART:${fmtUtc(d)}`, `DTEND:${fmtUtc(new Date(d.getTime() + 3600e3))}`, `SUMMARY:${icsText(`${label}: ${a.artist || a.title}`)}`,
+      `DESCRIPTION:${icsText(`${a.title}\n${a.link}`)}`, "BEGIN:VALARM", "TRIGGER:-PT30M", "ACTION:DISPLAY",
+      `DESCRIPTION:${icsText("Za 30 min – uđi u red 10–15 min ranije")}`, "END:VALARM", "END:VEVENT");
+  });
+  lines.push("END:VCALENDAR");
+  saveBlob(new Blob([lines.join("\r\n")], { type: "text/calendar" }), `${(a.artist || "najava").replace(/[^\w-]+/g, "_")}.ics`);
+}
+async function addNewsSource() {
+  const url = $("#srcUrl").value.trim();
+  if (!url) { toast("Upiši adresu RSS izvora."); return; }
+  try {
+    const r = await api.post("/api/najave/izvor", { url, naziv: $("#srcName").value.trim() });
+    toast(r.added ? `Izvor „${r.source.naziv}” je dodan (ukupno ${r.count}).` : "Taj izvor već postoji.");
+    $("#srcUrl").value = ""; $("#srcName").value = "";
+    if (r.added) loadNews();
+  } catch (e) {
+    toast(`Izvor nije dodan: ${e.message}`);
+  }
+}
+async function markNewsSeen() {
+  if (!state.news) return;
+  await api.post("/api/najave/procitano", { links: state.news.items.map((a) => a.link) });
+  state.news.items.forEach((a) => (a.new = false));
+  renderNews();
+  toast("Najave su označene kao pročitane.");
+}
+async function loadMy() {
+  const r = await api.get("/api/moji");
+  renderMy(r);
+}
+function renderMy(r) {
+  const b = $("#bookmarklet");
+  b.setAttribute("href", r.bookmarklet);
+  $("#myPath").textContent = r.path ? `(${r.path})` : "";
+  if (!r.rows.length) { $("#myList").innerHTML = '<p class="muted">Još nema spremljenih događaja.</p>'; return; }
+  $("#myList").innerHTML = `<div class="tablewrap"><table><thead><tr><th>Datum</th><th>Izvođač</th><th>Mjesto</th><th class="num">Nominalna</th><th class="num">Preprodaja</th><th></th></tr></thead><tbody>${r.rows.map((x) => `<tr>
+    <td>${esc(dateFmt(x.datum))}</td><td><b>${esc(x.izvodjac || x.naziv)}</b></td><td>${esc([x.dvorana, x.grad].filter(Boolean).join(", "))} ${x.drzava ? `(${esc(x.drzava)})` : ""}</td>
+    <td class="num">${x.cijena_min ? esc(`${x.cijena_min}${x.cijena_max && x.cijena_max !== x.cijena_min ? "–" + x.cijena_max : ""} ${x.valuta || ""}`) : "—"}</td>
+    <td class="num">${x.sek_najniza ? esc(`${x.sek_najniza} ${x.sek_valuta || ""}`) : "—"}</td>
+    <td><button type="button" class="ghost small" data-del="${esc(x.key)}" aria-label="Ukloni">✕</button></td></tr>`).join("")}</tbody></table></div>`;
+  $$("#myList [data-del]").forEach((btn) => btn.addEventListener("click", async () => {
+    const res = await fetch(`/api/moji?kljuc=${encodeURIComponent(btn.dataset.del)}`, { method: "DELETE" });
+    renderMy(await res.json());
+  }));
+}
+async function importPayload(text) {
+  const box = $("#importOut");
+  try {
+    const r = await api.post("/api/uvoz/parse", { payload: text.trim() });
+    state.importRows = r.rows;
+    box.innerHTML = `<div class="card"><h2>Uvoz sa stranice</h2>
+      <div class="notice info small">Pročitano s ${esc(r.url || "stranice")}: ${r.rows.length} ${plural(r.rows.length, "događaj", "događaja")}. Provjeri i dopuni podatke pa spremi.
+        Cijene sa stranice prodavača spremaju se kao nominalne, a s viagoga, StubHuba i sličnih kao „preprodaja od”.</div>`
+      + r.rows.map((row, i) => `<div class="import-row">${r.rows.length > 1 ? `<h3>${esc(row.izvodjac || row.naziv || "Događaj")} · ${esc(dateFmt(row.datum))}</h3>` : ""}
+          <div class="import-grid">${IMPORT_FIELDS.map(([k, l]) => `<label class="small">${esc(l)}<input data-row="${i}" name="${k}" value="${esc(row[k] || "")}"></label>`).join("")}</div></div>`).join("")
+      + `<div class="row"><button type="button" class="primary" id="importSave">Spremi u Moje događaje</button>
+         <button type="button" class="ghost" id="importCancel">Odustani</button></div></div>`;
+    box.scrollIntoView({ behavior: "smooth", block: "start" });
+    $("#importCancel").addEventListener("click", () => { box.innerHTML = ""; state.importRows = null; });
+    $("#importSave").addEventListener("click", async () => {
+      const rows = state.importRows.map((row, i) => {
+        const out = { ...row };
+        $$(`#importOut input[data-row="${i}"]`).forEach((inp) => (out[inp.name] = inp.value.trim()));
+        return out;
+      });
+      const res = await api.post("/api/moji", { rows });
+      box.innerHTML = `<div class="card"><div class="notice info small">Spremljeno: ${res.added} novih, ${res.updated} dopunjenih.
+        Događaji su sada u snimci (Radar → Snimka stvarnih događaja) i u Planu zarade.</div></div>`;
+      renderMy(res);
+      state.loaded.plan = false;
+    });
+  } catch (e) {
+    box.innerHTML = `<div class="card"><div class="notice warn small">Uvoz nije uspio: ${esc(e.message)}</div></div>`;
+  }
+}
+
 /* ------------------------------------------------------------------ KALKULATOR */
 function initCalc() {
   buildFields($("#calcFields"), eventFields());
@@ -903,12 +1038,24 @@ async function init() {
   $("#detail").addEventListener("click", (e) => { if (e.target.id === "detail") closeDetail(); });
   initRadar();
   $("#planBtn").addEventListener("click", loadPlan);
+  $("#newsBtn").addEventListener("click", loadNews);
+  $("#newsSeen").addEventListener("click", markNewsSeen);
+  $("#srcAdd").addEventListener("click", addNewsSource);
+  $("#pasteBtn").addEventListener("click", () => importPayload($("#pasteBox").value));
+  $("#bookmarklet").addEventListener("click", (e) => { e.preventDefault(); toast("Povuci gumb u traku oznaka – ovdje klik ne radi ništa."); });
   $("#planIcs").addEventListener("click", planIcs);
   initCalc();
   initCats();
   initJournal();
+  if (location.hash.startsWith("#uvoz=")) {
+    const data = location.hash.slice(6);
+    history.replaceState(null, "", "#news");
+    showTab("news");
+    importPayload(decodeURIComponent(data));
+    return;
+  }
   const tab = (location.hash || "#radar").slice(1);
-  showTab(["radar", "plan", "calc", "cats", "journal", "markets", "guides"].includes(tab) ? tab : "radar");
+  showTab(["radar", "plan", "news", "calc", "cats", "journal", "markets", "guides"].includes(tab) ? tab : "radar");
   if (!(m.settings.live_sources || []).length) runScan(); // bez ključeva odmah prikaži snimku stvarnih događaja
 }
 document.addEventListener("DOMContentLoaded", init);

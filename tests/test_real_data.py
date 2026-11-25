@@ -250,9 +250,17 @@ def test_refresh_snapshot_writes_user_files(tmp_path, monkeypatch):
 
     def api(params):
         if params.get("action") == "parse":
+            if params["page"] == "Otkrivena Turneja":  # otkrivena turneja mora imati izvođača u infookviru
+                infobox = ('<table class="infobox"><tr><td class="infobox-subheader"><span class="attendee">'
+                           '<a href="/wiki/X">Otkriveni Izvođač</a></span></td></tr></table>')
+                return {"parse": {"text": infobox + twilight["parse"]["text"]}}
             if params["page"] == "Twilight of the Punks":
                 return twilight
             return {"error": {"code": "missingtitle", "info": "The page you specified doesn't exist."}}
+        if params.get("list") == "categorymembers":
+            return {"query": {"categorymembers": [{"title": "Otkrivena Turneja"}, {"title": "Twilight of the Punks"}]}}
+        if params.get("prop") == "info":
+            return {"query": {"pages": [{"title": t, "lastrevid": 7} for t in params["titles"].split("|")]}}
         return {"query": {"pages": [{"title": t, "pageprops": {"wikibase-shortdesc": "band"}} for t in params["titles"].split("|")]}}
 
     http = FakeHttp({wikipedia.API_URL: api, deezer.BASE_URL: {"data": []}, "https://wikimedia.org/": views})
@@ -266,8 +274,14 @@ def test_refresh_snapshot_writes_user_files(tmp_path, monkeypatch):
     assert {t["naslov"] for t in tours["turneje"]} >= {"Twilight of the Punks", "The Unraveled Tour"}
     pop = json.loads((folder / "popularnost.json").read_text(encoding="utf-8"))
     assert pop["izvodjaci"]["Rod Stewart"]["trend"] is not None
+    assert "Otkrivena Turneja" in summary["new"]
+    found = next(t for t in tours["turneje"] if t["naslov"] == "Otkrivena Turneja")
+    assert found["izvor"] == "kategorija" and found["revid"] == 7
+    assert found["koncerti"] and all(r["country"] != "US" for r in found["koncerti"])  # samo regija otkrivanja (Europa)
     events, info, _ = load_snapshot(SNAP_NOW)
     assert info.tours_date == "2026-11-22" and any(e.artist == "Fall Out Boy" for e in events)
+    discovered = [t for t in info.tours if t["title"] == "Otkrivena Turneja"]
+    assert discovered and discovered[0]["discovered"] and discovered[0]["new"]
 
 
 def test_manual_csv_new_columns():

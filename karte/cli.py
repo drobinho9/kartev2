@@ -307,13 +307,92 @@ def cmd_plan(args, settings: Settings) -> int:
     return 0
 
 
+REGIJE_NAJAVA = {"hr": 3, "regija": 2, "europa": 1, "sve": 0}
+
+
+def cmd_announcements(args, settings: Settings) -> int:
+    """Najave turneja, dodatnih datuma i početka prodaje iz RSS izvora (bez API ključeva)."""
+    from karte.announcements import fetch_announcements, mark_seen
+    from karte.snapshot import data_dir
+
+    if args.dodaj_izvor:
+        from karte.announcements import add_source
+
+        try:
+            added, source = add_source(data_dir(), args.dodaj_izvor, args.naziv or "", "turneje" if args.samo_koncerti else "opcenito")
+        except ValueError as exc:
+            print(f"! {exc}")
+            return 2
+        where = data_dir() / "najave.toml"
+        print(f"{'Dodan' if added else 'Već postoji'} izvor „{source['naziv']}”: {source['url']} ({where})")
+        return 0
+    if args.izvori:
+        from karte.announcements import load_sources
+
+        for s in load_sources(data_dir() / "najave.toml"):
+            print(f"  {s.get('naziv', '')}: {s['url']} ({s.get('vrsta', 'opcenito')})")
+        return 0
+    http = HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=3600), min_interval=0.3)
+    items, warnings = fetch_announcements(http, days=args.dana, enrich=not args.bez_deezera, data_dir=data_dir())
+    minimum = REGIJE_NAJAVA[args.regija]
+    shown = [a for a in items if a.region_score >= minimum][: args.top]
+    new = sum(1 for a in shown if a.new)
+    print(f"NAJAVE (zadnjih {args.dana} dana, regija: {args.regija}) – {len(shown)} stavki, novih: {new}\n")
+    for a in shown:
+        badge = "NOVO" if a.new else "    "
+        when = a.published.strftime("%d.%m.") if a.published else "     "
+        who = f"{a.artist} ({a.fans:,} fanova)".replace(",", ".") if a.artist and a.fans else (a.artist or "")
+        sale = []
+        if a.presale:
+            sale.append(f"presale {a.presale:%d.%m.%Y.}" + (f" {a.presale:%H:%M}" if a.presale.hour else ""))
+        if a.onsale:
+            sale.append(f"prodaja {a.onsale:%d.%m.%Y.}" + (f" {a.onsale:%H:%M}" if a.onsale.hour else ""))
+        if a.event_date:
+            sale.append(f"događaj {a.event_date:%d.%m.%Y.}")
+        print(f"{badge} {when}  {a.title}")
+        details = " · ".join(x for x in [who, ", ".join(a.places), " · ".join(sale), a.source] if x)
+        print(f"      {details}")
+        print(f"      {a.link}")
+    for w in warnings:
+        print(f"! {w}")
+    if not args.ne_oznaci:
+        mark_seen(data_dir(), [a.link for a in items])
+    print("\nSavjet: za događaj koji te zanima otvori stranicu prodavača i spremi ga gumbom „karte: spremi” (karte gui → Najave i uvoz).")
+    return 0
+
+
+def cmd_import(args, settings: Settings) -> int:
+    """Uvoz događaja iz spremljene web stranice (Ctrl+S) – čita schema.org podatke (JSON-LD)."""
+    from karte.capture import payload_from_html, event_rows
+    from karte.snapshot import save_user_events, user_dir
+
+    path = Path(args.file)
+    html = path.read_text(encoding="utf-8", errors="replace")
+    rows = event_rows(payload_from_html(html, args.url or ""))
+    complete = [r for r in rows if (r.get("izvodjac") or r.get("naziv")) and r.get("datum")]
+    for r in rows:
+        price = (f"nominalna {r['cijena_min']}–{r['cijena_max']} {r['valuta']}" if r.get("cijena_min") else
+                 (f"preprodaja od {r['sek_najniza']} {r['sek_valuta']} ({r['sek_izvor']})" if r.get("sek_najniza") else "bez cijene"))
+        print(f"  {r.get('datum') or '????-??-??'}  {r.get('izvodjac') or r.get('naziv')}  {r.get('dvorana')}, {r.get('grad')} "
+              f"({r.get('drzava') or '?'})  {price}")
+    if not complete:
+        print("Na stranici nema strukturiranih podataka o događaju – dodaj ga ručno (karte gui → Najave i uvoz → Moji događaji).")
+        return 1
+    if args.dry_run:
+        print("(probno – ništa nije spremljeno)")
+        return 0
+    added, updated = save_user_events(complete)
+    print(f"Spremljeno u {user_dir() / 'dogadaji.csv'}: {added} novih, {updated} dopunjenih. Pokreni: karte scan --snimka")
+    return 0
+
+
 def cmd_snapshot(args, settings: Settings) -> int:
     """Snimka stvarnih događaja: pregled i osvježavanje (bez ključeva)."""
     if args.osvjezi:
         http = HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=6 * 3600), min_interval=1.0)
         print(f"Osvježavam turneje (Wikipedia) i popularnost (Deezer, Wikipedia) → {user_dir()}")
-        summary = refresh_snapshot(http)
-        print(f"Gotovo: {len(summary['tours'])} turneja, {summary['artists']} izvođača.")
+        summary = refresh_snapshot(http, discover=not args.bez_otkrivanja)
+        print(f"Gotovo: {len(summary['tours'])} turneja ({len(summary.get('new', []))} novih), {summary['artists']} izvođača.")
         for err in summary["errors"]:
             print(f"! {err}")
         print("Cijene se ne osvježavaju automatski (nema javnog izvora bez ključa) – vlastite događaje i svježe cijene upiši u "
@@ -323,8 +402,13 @@ def cmd_snapshot(args, settings: Settings) -> int:
     print(f"  {info.description}")
     print(f"  Provjerenih događaja: {info.curated} · datuma turneja s Wikipedije: {info.tour_events}"
           f" · turneje ažurirane: {info.tours_date or '—'} · popularnost: {info.popularity_date or '—'}")
-    for t in info.tours:
-        print(f"  – {t['artist']}: {t['title']} ({t['events']} budućih koncerata u odabranim državama) {t['url']}")
+    shown = [t for t in info.tours if args.list or not t.get("discovered") or t.get("new")]
+    for t in shown:
+        flag = " [NOVA]" if t.get("new") else (" [otkrivena]" if t.get("discovered") else "")
+        print(f"  – {t['artist']}: {t['title']}{flag} ({t['events']} budućih koncerata u odabranim državama) {t['url']}")
+    hidden = len(info.tours) - len(shown)
+    if hidden:
+        print(f"  … i još {hidden} turneja otkrivenih u kategorijama Wikipedije (svi datumi: karte snimka --list)")
     for w in warnings:
         print(f"! {w}")
     age = info.age_days()
@@ -499,8 +583,28 @@ def build_parser() -> argparse.ArgumentParser:
     sn = sub.add_parser("snimka", help="snimka stvarnih događaja (bez ključeva): pregled i osvježavanje")
     sn.add_argument("--osvjezi", action="store_true", help="dohvati svježe turneje (Wikipedia) i popularnost (Deezer, Wikipedia)")
     sn.add_argument("--list", action="store_true", help="ispiši sve događaje iz snimke")
+    sn.add_argument("--bez-otkrivanja", action="store_true", help="osvježi samo turneje iz snimka.toml (bez kategorija Wikipedije)")
     sn.add_argument("--countries", help="samo ove države/regije (npr. HR,AT ili europa)")
     sn.set_defaults(func=cmd_snapshot)
+
+    na = sub.add_parser("najave", help="najave turneja i početka prodaje iz RSS izvora (bez ključeva)")
+    na.add_argument("--dana", type=int, default=21, help="koliko dana unatrag (zadano 21)")
+    na.add_argument("--regija", choices=sorted(REGIJE_NAJAVA), default="europa", help="hr, regija (HR + susjedi), europa, sve")
+    na.add_argument("--top", type=int, default=30)
+    na.add_argument("--bez-deezera", action="store_true", help="ne provjeravaj izvođače na Deezeru (brže)")
+    na.add_argument("--ne-oznaci", action="store_true", help="ne označavaj prikazane najave kao pročitane")
+    na.add_argument("--izvori", action="store_true", help="popis izvora (ugrađeni + moji)")
+    na.add_argument("--dodaj-izvor", metavar="URL", help="dodaj svoj RSS/Atom izvor (npr. Google Alerts → Isporuči na: RSS feed)")
+    na.add_argument("--naziv", help="naziv izvora uz --dodaj-izvor")
+    na.add_argument("--samo-koncerti", action="store_true",
+                    help="uz --dodaj-izvor: izvor piše samo o koncertima (zadržavaju se sve stavke, bez filtra ključnih riječi)")
+    na.set_defaults(func=cmd_announcements)
+
+    uv = sub.add_parser("uvoz", help="uvezi događaj iz spremljene web stranice (Ticketmaster, Eventim, viagogo…)")
+    uv.add_argument("file", help="HTML datoteka (u pregledniku: Ctrl+S)")
+    uv.add_argument("--url", help="adresa stranice (ako je nema u datoteci) – određuje je li cijena nominalna ili s preprodaje")
+    uv.add_argument("--dry-run", action="store_true", help="samo prikaži, ne spremaj")
+    uv.set_defaults(func=cmd_import)
 
     sp = sub.add_parser("sport", help="pravila preprodaje za nogomet po državama i za natjecanja (UEFA, FIFA, NFL, F1…)")
     sp.add_argument("--country", help="samo jedna država, npr. HR, GB, DE")
