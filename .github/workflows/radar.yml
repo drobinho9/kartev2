@@ -1,0 +1,73 @@
+name: Radar – obavijesti na Telegram
+
+# Svaka 3 sata: novi događaji i najave s visokim "hype scoreom" (vjerojatno će se skupo preprodavati),
+# podsjetnici prije presalea i skokovi cijena na preprodaji → poruka na Telegram.
+# Javlja SAMO ono što je novo ili se promijenilo (stanje se čuva u GitHub cacheu između pokretanja).
+#
+# Postavljanje (Settings → Secrets and variables → Actions):
+#   Secrets (obavezno): TELEGRAM_BOT_TOKEN (od @BotFather), TELEGRAM_CHAT_ID (karte telegram --chat-id)
+#   Secrets (opcionalno): TICKETMASTER_API_KEY, LASTFM_API_KEY, API_FOOTBALL_KEY
+#   Variables (opcionalno): KARTE_RADAR_PRAG (zadano 70), KARTE_RADAR_DRZAVE (zadano otvoreno), KARTE_USER_AGENT
+# SERPAPI_KEY se ovdje namjerno NE koristi: 8 pokretanja dnevno potrošilo bi besplatnih 250 pretraga mjesečno
+# (Google Events ostaje u tjednom skeniranju – scan.yml).
+
+on:
+  schedule:
+    - cron: "23 */3 * * *"
+  workflow_dispatch:
+    inputs:
+      prag:
+        description: "Najmanji hype score za obavijest (0–100)"
+        default: "70"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: radar
+  cancel-in-progress: false
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KARTE_DATA_DIR: ${{ github.workspace }}/.radar-stanje
+      KARTE_CACHE_DIR: ${{ github.workspace }}/.radar-stanje/cache
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Vrati stanje radara
+        uses: actions/cache/restore@v4
+        with:
+          path: .radar-stanje
+          key: radar-stanje-${{ github.run_id }}
+          restore-keys: radar-stanje-
+      - name: Radar
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+          API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
+          KARTE_USER_AGENT: ${{ vars.KARTE_USER_AGENT || 'karte (GitHub Actions)' }}
+          PRAG: ${{ github.event.inputs.prag || vars.KARTE_RADAR_PRAG || '70' }}
+          DRZAVE: ${{ vars.KARTE_RADAR_DRZAVE || 'otvoreno' }}
+        run: |
+          SEND=""
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            SEND="--posalji"
+          else
+            echo "::warning::TELEGRAM_BOT_TOKEN/TELEGRAM_CHAT_ID nisu postavljeni – radar radi, ali ne šalje obavijesti."
+          fi
+          karte radar --countries "$DRZAVE" --prag "$PRAG" $SEND | tee radar.txt
+          { echo "## Radar"; echo '```'; cat radar.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Spremi stanje radara
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .radar-stanje
+          key: radar-stanje-${{ github.run_id }}

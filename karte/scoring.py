@@ -20,15 +20,18 @@ VERDICT_ORDER = {
     "KUPI": 0,
     "RAZMOTRI": 1,
     "PROVJERI CIJENU": 2,  # nema nominalne cijene, ali iz preprodajnih cijena znamo do koje se cijene isplati kupiti
+    "RIZIČNO": 2.5,  # isplativo i uz rizik poništenja, ali krši uvjete kluba/organizatora (nije zakonska zabrana)
     "RASPRODANO": 3,
     "PRESKOČI": 4,
-    "ZAKONSKI OGRANIČENO": 5,
-    "UVJETI ZABRANJUJU": 6,
-    "NEMA CIJENE": 7,
+    "NEMA CIJENE": 5,  # možda prilika – cijenu treba provjeriti
+    "ZAKONSKI OGRANIČENO": 6,  # sigurno nije za preprodaju (npr. europski nogomet)
+    "UVJETI ZABRANJUJU": 7,
     "OTKAZANO": 8,
 }
 
 CATEGORIES = ("cheap", "mid", "premium")
+RISK_VERDICT = "RIZIČNO"
+BUYABLE = ("KUPI", "RAZMOTRI", RISK_VERDICT)
 
 
 class Evaluator:
@@ -40,7 +43,9 @@ class Evaluator:
         strict: bool = False,
         now: datetime | None = None,
         seller_country: str = "HR",
+        contract_risk: bool = False,
     ):
+        self.contract_risk = contract_risk  # nogomet: zabrana samo iz uvjeta kluba → računaj uz rizik poništenja
         if category not in CATEGORIES:
             raise ValueError(f"Nepoznata kategorija '{category}', dopušteno: {', '.join(CATEGORIES)}")
         self.cfg = config or ModelConfig.load()
@@ -80,6 +85,8 @@ class Evaluator:
         source = (sec.source or "").lower()
         fee_free = any(k in source for k in ("njuškalo", "njuskalo", "oglas", "facebook", "lokal"))
         net_of_fees = 1.0 if fee_free else 1 - r.get("buyer_fee_share", 0.0)
+        if "spekulativ" in source:
+            net_of_fees *= r.get("speculative_factor", 0.5)  # prodavač još nema ulaznice – oglasna cijena nije tržišna
         if self.category == "cheap":
             if lowest:
                 return lowest, lowest * net_of_fees * r["haircut_lowest"]
@@ -236,9 +243,14 @@ class Evaluator:
         options: list[PlatformOption] = []
         best: PlatformOption | None = None
         best_platform: Platform | None = None
+        # nogomet gdje preprodaju zabranjuju samo uvjeti kluba/UEFA-e (ne zakon): uz izbor korisnika računaj uz rizik poništenja
+        risk_mode = bool(
+            self.contract_risk and sport_rule and legal_result.contract_prohibited and not legal_result.profit_prohibited
+        )
+        p_cancel = self.cancel_risk(event) if risk_mode else 0.0
         if face_ref and buy_cost and expected_resale:
             ranked: list[tuple[float, PlatformOption, Platform]] = []
-            if sport_rule and (
+            if not risk_mode and sport_rule and (
                 sport_rule.get("rule") in sport.OFFICIAL_RULES
                 or (sport_rule.get("rule") in sport.LEGAL_RULES and sport_rule.get("official"))
             ):
@@ -249,6 +261,10 @@ class Evaluator:
                 option = self._platform_option(
                     platform, event, face_ref, buy_cost, expected_resale, legal_result.cap_price, demand.score, p_adjust
                 )
+                if risk_mode:
+                    # poništena ulaznica: gubiš kupljenu ulaznicu, a platforma naplaćuje kaznu (dio oglasne cijene)
+                    penalty = cfg.get("contract_risk", "penalty_share", 0.2) * option.list_price
+                    option.expected_value = (1 - p_cancel) * option.expected_value + p_cancel * (-buy_cost - penalty)
                 options.append(option)
                 rank = option.expected_value - platform.trust_risk * 0.05 * buy_cost
                 ranked.append((rank, option, platform))
@@ -267,6 +283,10 @@ class Evaluator:
             flags.insert(0, f"Sport – {sport_rule.get('name', '')}: {label}.")
             if assumed_personalized:
                 flags.insert(1, "Pretpostavka: ulaznice su na ime uz provjeru osobne (tipično za europski nogomet i UEFA).")
+        if risk_mode:
+            flags.insert(0, f"Krši uvjete kluba/organizatora: procijenjena šansa poništenja ulaznice ili odbijanja kupca ~{p_cancel * 100:.0f} % "
+                            "(uračunato u očekivanu dobit, uz kaznu platforme).")
+            risk = clamp(risk + p_cancel * 0.5)
         if locked_vendor:
             flags.insert(0, f"{vendor.get('name')}: ulaznice se ne mogu prenijeti ni preprodati izvan službenog kanala.")
         stale = self._stale_secondary_days(event)
@@ -274,7 +294,7 @@ class Evaluator:
             flags.append(
                 f"Cijena s preprodaje je stara {stale} dana (zabilježena {event.secondary.observed}) – provjeri aktualne oglase prije odluke."
             )
-        verdict, reason = self._verdict(event, phase, face_ref, legal_result, roi, demand.score, risk)
+        verdict, reason = self._verdict(event, phase, face_ref, legal_result, roi, demand.score, risk, risk_mode, p_cancel)
         max_buy = breakeven = None
         if face_ref is None and verdict == "NEMA CIJENE" and event.secondary is not None:
             max_buy, breakeven = self.price_ceiling(event)
@@ -458,10 +478,31 @@ class Evaluator:
                 )
         return clamp(risk), flags
 
-    def _verdict(self, event, phase, face_ref, legal_result, roi, demand, risk) -> tuple[str, str]:
+    def cancel_risk(self, event: Event) -> float:
+        """Šansa da preprodana ulaznica bude poništena / kupac odbijen (nogomet, uvjeti kluba)."""
+        r = self.cfg.section("contract_risk") if "contract_risk" in self.cfg.data else {}
+        p = float(r.get("base", 0.25))
+        if event.personalized:
+            p += float(r.get("personalized", 0.15))
+        if (event.country or "").upper() == "HR":
+            p += float(r.get("hr", 0.05))  # HNS poništava i prijavljuje policiji
+        return clamp(p, 0.0, 0.9)
+
+    def _verdict(self, event, phase, face_ref, legal_result, roi, demand, risk, risk_mode=False, p_cancel=0.0) -> tuple[str, str]:
         v = self.cfg.section("verdict")
         if phase == "OTKAZANO":
             return "OTKAZANO", "Događaj je otkazan."
+        if event.segment == "sport" and face_ref is None and (legal_result.contract_prohibited or legal_result.sport_rule in sport.LEGAL_RULES):
+            # nogomet u Europi: zabrana preprodaje ne ovisi o cijeni – jasna presuda i bez nominalne cijene
+            if legal_result.sport_rule in sport.LEGAL_RULES:
+                return "ZAKONSKI OGRANIČENO", (
+                    f"{legal_result.country_name}: {sport.RULE_LABELS.get(legal_result.sport_rule, legal_result.sport_rule)} – "
+                    "kupuj samo za vlastiti odlazak."
+                )
+            channel = f" Dopušteno je samo: {legal_result.official_channel}." if legal_result.official_channel else ""
+            return "UVJETI ZABRANJUJU", (
+                "Uvjeti kluba/organizatora zabranjuju preprodaju – ulaznice se poništavaju, a računi i članstva blokiraju." + channel
+            )
         if face_ref is None:
             if phase == "RASPRODANO":
                 return "RASPRODANO", (
@@ -471,6 +512,11 @@ class Evaluator:
             return "NEMA CIJENE", "Izvor ne daje nominalnu cijenu – unesi je ručno (CSV ili Kalkulator) za izračun zarade."
         if legal_result.profit_prohibited:
             return "ZAKONSKI OGRANIČENO", f"{legal_result.country_name}: {legal.RULE_LABELS.get(legal_result.rule, legal_result.rule)} – preprodaja radi zarade nije dopuštena."
+        if legal_result.contract_prohibited and risk_mode and phase != "RASPRODANO" and roi is not None and roi >= v["consider_roi"]:
+            return RISK_VERDICT, (
+                f"Preprodaju zabranjuju uvjeti kluba/organizatora (nije zakonska zabrana). I uz ~{p_cancel * 100:.0f} % šanse poništenja "
+                f"očekivani povrat je ~{roi * 100:.0f} % – visok rizik: poništena ulaznica, blokiran račun/članstvo, kazna platforme."
+            )
         if legal_result.contract_prohibited:
             channel = f" Dopušteno je samo: {legal_result.official_channel}." if legal_result.official_channel else ""
             return "UVJETI ZABRANJUJU", (
@@ -494,7 +540,7 @@ class Evaluator:
         return "PRESKOČI", "Očekivani povrat nakon naknada i rizika je prenizak."
 
     def _quantity(self, verdict: str, event: Event, buy_cost: float | None, demand: float) -> int:
-        if not buy_cost or verdict not in ("KUPI", "RAZMOTRI"):
+        if not buy_cost or verdict not in BUYABLE:
             return 0
         s = self.cfg.section("sizing")
         budget_cap = math.floor(self.budget * s["max_budget_share"] / buy_cost)

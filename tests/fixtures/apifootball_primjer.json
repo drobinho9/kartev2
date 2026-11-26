@@ -1,0 +1,24 @@
+{
+  "get": "fixtures",
+  "parameters": {"league": "210", "season": "2026", "from": "2026-11-18", "to": "2027-01-17"},
+  "errors": [],
+  "results": 3,
+  "paging": {"current": 1, "total": 1},
+  "response": [
+    {
+      "fixture": {"id": 9001, "timezone": "UTC", "date": "2026-11-29T16:00:00+00:00", "venue": {"id": 1, "name": "Stadion Maksimir", "city": "Zagreb"}, "status": {"long": "Not Started", "short": "NS", "elapsed": null}},
+      "league": {"id": 210, "name": "HNL", "country": "Croatia", "season": 2026, "round": "Regular Season - 15"},
+      "teams": {"home": {"id": 1, "name": "Dinamo Zagreb"}, "away": {"id": 2, "name": "Hajduk Split"}}
+    },
+    {
+      "fixture": {"id": 9002, "timezone": "UTC", "date": "2026-12-06T14:30:00+00:00", "venue": {"id": 3, "name": "Opus Arena", "city": "Osijek"}, "status": {"long": "Match Postponed", "short": "PST", "elapsed": null}},
+      "league": {"id": 210, "name": "HNL", "country": "Croatia", "season": 2026, "round": "Regular Season - 16"},
+      "teams": {"home": {"id": 3, "name": "NK Osijek"}, "away": {"id": 4, "name": "HNK Rijeka"}}
+    },
+    {
+      "fixture": {"id": 9003, "timezone": "UTC", "date": "2026-11-10T18:00:00+00:00", "venue": {"id": 5, "name": "Stadion Rujevica", "city": "Rijeka"}, "status": {"long": "Match Finished", "short": "FT", "elapsed": 90}},
+      "league": {"id": 210, "name": "HNL", "country": "Croatia", "season": 2026, "round": "Regular Season - 14"},
+      "teams": {"home": {"id": 4, "name": "HNK Rijeka"}, "away": {"id": 1, "name": "Dinamo Zagreb"}}
+    }
+  ]
+}

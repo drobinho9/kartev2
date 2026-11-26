@@ -17,66 +17,129 @@
 </header>
 
 <nav class="tabs" role="tablist" id="tabs">
-  <button role="tab" data-tab="radar" class="active">Radar</button>
-  <button role="tab" data-tab="plan">Plan zarade</button>
-  <button role="tab" data-tab="news">Najave i uvoz</button>
+  <button role="tab" data-tab="paketi" class="active">Paketi</button>
+  <button role="tab" data-tab="radar">Svi događaji</button>
+  <button role="tab" data-tab="nogomet">Nogomet</button>
   <button role="tab" data-tab="calc">Kalkulator</button>
-  <button role="tab" data-tab="cats">Kategorije</button>
   <button role="tab" data-tab="journal">Moje prodaje</button>
-  <button role="tab" data-tab="markets">Tržišta</button>
   <button role="tab" data-tab="guides">Vodiči</button>
+  <span class="tabsep" aria-hidden="true">Više:</span>
+  <button role="tab" data-tab="news" class="minor">Najave i uvoz</button>
+  <button role="tab" data-tab="cats" class="minor">Kategorije</button>
+  <button role="tab" data-tab="markets" class="minor">Tržišta</button>
+  <button role="tab" data-tab="plan" class="minor">Plan zarade</button>
 </nav>
 
 <main class="wrap">
 
-<!-- ====================================================== RADAR -->
-<section id="tab-radar" class="tab active">
-  <form class="card" id="scanForm">
-    <h2>Pretraga koncerata</h2>
+<!-- ====================================================== PAKETI -->
+<section id="tab-paketi" class="tab active">
+  <form class="card" id="pkgForm">
+    <h2>Što da kupim i preprodam?</h2>
+    <p class="muted">Odaberi budžet i gdje si spreman ići. Aplikacija složi nekoliko gotovih paketa: koje ulaznice kupiti, do koje cijene,
+      gdje ih prodati i koliko možeš očekivati zaraditi. Paketi su alternative – odaberi jedan.</p>
     <div class="grid">
-      <label>Izvor podataka
-        <select name="source" id="sourceSel">
-          <option value="snapshot">Snimka stvarnih događaja (bez ključeva)</option>
-          <option value="live">Živi izvori (API ključevi)</option>
-          <option value="demo">Izmišljeni demo (za isprobavanje)</option>
+      <label>Budžet (€)
+        <input type="number" name="budget" value="1000" min="50" step="50">
+      </label>
+      <label>Gdje
+        <select name="countries">
+          <option value="otvoreno">Hrvatska i otvorena tržišta (preporučeno)</option>
+          <option value="balkan">Hrvatska i susjedi</option>
+          <option value="srednja_europa">Srednja Europa</option>
+          <option value="europa">Cijela Europa</option>
+          <option value="svijet">Cijeli svijet</option>
         </select>
       </label>
+      <label>Što
+        <select name="segment">
+          <option value="all">Sve ulaznice (koncerti, sport…)</option>
+          <option value="music">Samo koncerti</option>
+          <option value="sport">Samo sport</option>
+        </select>
+      </label>
+    </div>
+    <div class="row"><button type="submit" class="primary" id="pkgBtn">Predloži pakete</button><span class="muted small" id="pkgHint"></span></div>
+  </form>
+  <div id="pkgOut"></div>
+</section>
+
+<!-- ====================================================== NOGOMET -->
+<section id="tab-nogomet" class="tab">
+  <form class="card" id="fbForm">
+    <h2>Nogomet</h2>
+    <p class="muted">Nadolazeće utakmice (Liga prvaka, Europska i Konferencijska liga, pet najvećih liga; HNL uz besplatni API-Football ključ):
+      zašto je utakmica zanimljiva, smije li se ulaznica preprodati i kako je kupiti.</p>
+    <div class="grid">
+      <label>Prikaži
+        <select name="filter">
+          <option value="notable">Hrvatski klubovi, derbiji i velike utakmice</option>
+          <option value="hr">Samo hrvatski klubovi</option>
+          <option value="all">Sve utakmice iz rasporeda</option>
+        </select>
+      </label>
+      <label>Idućih (dana)
+        <input type="number" name="days" value="60" min="1" max="365">
+      </label>
+    </div>
+    <div class="row"><button type="submit" class="primary" id="fbBtn">Prikaži utakmice</button></div>
+  </form>
+  <div id="fbOut"></div>
+</section>
+
+<!-- ====================================================== RADAR -->
+<section id="tab-radar" class="tab">
+  <form class="card" id="scanForm">
+    <h2>Svi događaji</h2>
+    <div class="grid">
       <label>Vrsta događaja
         <select name="segment" id="segmentSel">
+          <option value="all">Sve (koncerti, sport…)</option>
           <option value="music">Koncerti</option>
           <option value="sport">Sport (nogomet, NFL, NBA…)</option>
-          <option value="all">Sve</option>
         </select>
       </label>
       <label>Države / regija
         <select name="preset" id="presetSel"></select>
       </label>
-      <label>Vlastiti popis (ISO kodovi)
-        <input name="custom" id="customCountries" placeholder="npr. US,GB,DE" autocomplete="off">
-      </label>
-      <label>Koncerti u idućih (dana)
+      <label>Događaji u idućih (dana)
         <input type="number" name="days" value="60" min="1" max="365">
-      </label>
-      <label>+ prodaja počinje u idućih (dana)
-        <input type="number" name="onsale_days" value="30" min="0" max="180">
       </label>
       <label>Budžet (€)
         <input type="number" name="budget" value="1000" min="0" step="50">
       </label>
-      <label>Kategorija koju ciljaš
-        <select name="category" id="categorySel"></select>
-      </label>
-      <label>Moje prebivalište (prodavač)
-        <select name="seller_country" id="sellerSel"></select>
-      </label>
-      <label>Vlastiti događaji (CSV)
-        <input type="file" name="csv" accept=".csv,text/csv">
-      </label>
     </div>
-    <div class="row checks">
-      <label class="check"><input type="checkbox" name="strict"> Strogo: primijeni najavljene zakone</label>
-      <label class="check"><input type="checkbox" name="show_all"> Prikaži i događaje bez cijene</label>
-    </div>
+    <details class="adv">
+      <summary>Napredne postavke</summary>
+      <div class="grid">
+        <label>Izvor podataka
+          <select name="source" id="sourceSel">
+            <option value="snapshot">Snimka stvarnih događaja (bez ključeva)</option>
+            <option value="live">Živi izvori (API ključevi)</option>
+            <option value="demo">Izmišljeni demo (za isprobavanje)</option>
+          </select>
+        </label>
+        <label>Vlastiti popis država (ISO kodovi)
+          <input name="custom" id="customCountries" placeholder="npr. US,GB,DE" autocomplete="off">
+        </label>
+        <label>+ prodaja počinje u idućih (dana)
+          <input type="number" name="onsale_days" value="30" min="0" max="180">
+        </label>
+        <label>Kategorija koju ciljaš
+          <select name="category" id="categorySel"></select>
+        </label>
+        <label>Moje prebivalište (prodavač)
+          <select name="seller_country" id="sellerSel"></select>
+        </label>
+        <label>Vlastiti događaji (CSV)
+          <input type="file" name="csv" accept=".csv,text/csv">
+        </label>
+      </div>
+      <div class="row checks">
+        <label class="check"><input type="checkbox" name="strict"> Strogo: primijeni najavljene zakone</label>
+        <label class="check"><input type="checkbox" name="show_all"> Prikaži i događaje bez cijene</label>
+      </div>
+    </details>
     <div class="row">
       <button type="submit" class="primary" id="scanBtn">Pokreni pretragu</button>
       <button type="button" class="ghost" data-export="html">Preuzmi HTML izvještaj</button>

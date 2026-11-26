@@ -1,0 +1,8 @@
+[
+  {"MatchNumber": 101, "RoundNumber": 6, "DateUtc": "2026-12-10 17:45:00Z", "Location": "Roazhon Park", "HomeTeam": "Rennes", "AwayTeam": "GNK Dinamo", "Group": null, "HomeTeamScore": null, "AwayTeamScore": null, "Winner": null},
+  {"MatchNumber": 102, "RoundNumber": 5, "DateUtc": "2026-12-10 20:00:00Z", "Location": "Stadion Poljud", "HomeTeam": "Hajduk Split", "AwayTeam": "Nordsjælland", "Group": null, "HomeTeamScore": null, "AwayTeamScore": null, "Winner": null},
+  {"MatchNumber": 103, "RoundNumber": 6, "DateUtc": "2026-12-09 20:00:00Z", "Location": "Arsenal Stadium", "HomeTeam": "Arsenal", "AwayTeam": "Real Madrid", "Group": null, "HomeTeamScore": null, "AwayTeamScore": null, "Winner": null},
+  {"MatchNumber": 104, "RoundNumber": 6, "DateUtc": "2026-12-08 17:45:00Z", "Location": "Viking stadion", "HomeTeam": "Viking", "AwayTeam": "Feyenoord", "Group": null, "HomeTeamScore": null, "AwayTeamScore": null, "Winner": null},
+  {"MatchNumber": 105, "RoundNumber": 3, "DateUtc": "2026-11-05 20:00:00Z", "Location": "Stadium of Light", "HomeTeam": "Sunderland", "AwayTeam": "GNK Dinamo", "Group": null, "HomeTeamScore": 1, "AwayTeamScore": 2, "Winner": "GNK Dinamo"},
+  {"MatchNumber": 106, "RoundNumber": 9, "DateUtc": "2027-03-10 20:00:00Z", "Location": "Stadion Maksimir", "HomeTeam": "To be announced", "AwayTeam": "GNK Dinamo", "Group": null, "HomeTeamScore": null, "AwayTeamScore": null, "Winner": null}
+]

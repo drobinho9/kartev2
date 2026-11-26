@@ -14,6 +14,12 @@ def load_fixture(name: str):
     return json.loads((FIXTURES / name).read_text(encoding="utf-8"))
 
 
+@pytest.fixture(autouse=True)
+def _bez_rasporeda(monkeypatch):
+    """Testovi rade bez mreže: raspored nogometnih utakmica (fixturedownload.com) se ne dohvaća."""
+    monkeypatch.setenv("KARTE_BEZ_RASPOREDA", "1")
+
+
 @pytest.fixture
 def now():
     return NOW

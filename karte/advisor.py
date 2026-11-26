@@ -131,7 +131,8 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
     sell: list[str] = []
 
     # ------------------------------------------------------------ sažetak
-    if op.verdict in ("KUPI", "RAZMOTRI") and best:
+    risky = op.verdict == "RIZIČNO"
+    if op.verdict in ("KUPI", "RAZMOTRI", "RIZIČNO") and best:
         summary = (
             f"{op.verdict}: očekivana neto dobit ~{fmt_eur(op.profit)} po ulaznici ako se proda "
             f"(očekivana vrijednost uz rizik {fmt_eur(op.expected_value)}, ROI {fmt_pct(op.roi)}), "
@@ -163,7 +164,10 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
     elif op.phase == "NIJE U PRODAJI":
         buy.append("Ulaznice trenutno nisu u prodaji kod izvora (rasprodano ili prodaja zatvorena) – provjeri službenu stranicu.")
 
-    if op.verdict in ("KUPI", "RAZMOTRI"):
+    if risky:
+        buy.insert(0, "VISOK RIZIK: preprodaju zabranjuju uvjeti kluba/organizatora. Ulaznica može biti poništena, kupac odbijen na ulazu, "
+                      "a tvoj račun ili članstvo blokirani – uloži samo novac koji možeš izgubiti.")
+    if op.verdict in ("KUPI", "RAZMOTRI", "RIZIČNO"):
         if d >= 0.7:
             buy.append(
                 "Ciljaj najjeftinije kategorije s dobrim pogledom i parter/stajanje – najveći postotni skok cijene i najbrža prodaja. "
@@ -263,7 +267,11 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
             sell.append(f"Napomena ({best.name}): {best.payout} Datum događaja: {fmt_date(e.date)}")
         sell.append("Ulaznice prenosi samo službenim prijenosom (aplikacija prodavača) – nikad screenshot/PDF više kupaca.")
 
-    prohibited = op.legal.profit_prohibited or op.legal.contract_prohibited
+    prohibited = op.legal.profit_prohibited or (op.legal.contract_prohibited and not risky)
+    if risky:
+        sell.insert(0, "Kupcu jasno napiši da ulaznica glasi na ime ako je tako – skrivanje toga vodi do odbijanja na ulazu i kazne platforme.")
+        if op.legal.official_channel:
+            sell.append(f"Siguran izlaz bez zarade: {op.legal.official_channel}.")
     if prohibited and e.segment == "sport":
         buy = [f"[Prodaja] {note}" for note in op.legal.sport_notes] + [
             "Kupuj samo ako sam ideš na utakmicu – na svoje ime, svojim računom/članstvom i unutar limita.",

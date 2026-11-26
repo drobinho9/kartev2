@@ -46,6 +46,10 @@ class Settings:
     serpapi_cities: str | None = None  # npr. "Zagreb, Split, Beč:AT, Budimpešta:HU"
     predicthq_token: str | None = None
     predicthq_locations: list[str] = field(default_factory=list)  # besplatni plan: ID-evi spremljenih lokacija
+    api_football_key: str | None = None  # API-Football (api-sports.io): raspored HNL-a i drugih liga, besplatno 100 zahtjeva/dan
+    telegram_bot_token: str | None = None  # obavijesti radara (karte radar --posalji)
+    telegram_chat_id: str | None = None
+    football_risk: bool = True  # utakmice koje zabranjuju samo uvjeti kluba/UEFA-e računaj uz rizik poništenja (KARTE_NOGOMET_RIZIK=0 isključuje)
 
     @property
     def live_sources(self) -> list[str]:
@@ -79,4 +83,8 @@ class Settings:
             serpapi_cities=os.environ.get("KARTE_SERPAPI_GRADOVI") or None,
             predicthq_token=os.environ.get("PREDICTHQ_TOKEN") or None,
             predicthq_locations=[x.strip() for x in (os.environ.get("PREDICTHQ_LOCATIONS") or "").split(",") if x.strip()],
+            api_football_key=os.environ.get("API_FOOTBALL_KEY") or None,
+            telegram_bot_token=os.environ.get("TELEGRAM_BOT_TOKEN") or None,
+            telegram_chat_id=os.environ.get("TELEGRAM_CHAT_ID") or None,
+            football_risk=(os.environ.get("KARTE_NOGOMET_RIZIK") or "1").strip().lower() not in ("0", "ne", "false", "no"),
         )

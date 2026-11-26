@@ -51,7 +51,16 @@ pip install -e .
 karte gui
 ```
 
-Bez ključeva sučelje odmah prikazuje **snimku stvarnih događaja** (izvor podataka možeš promijeniti u prvom polju pretrage).
+**Najjednostavnije:** `karte gui` otvara karticu **Paketi** – upišeš budžet i dobiješ nekoliko gotovih paketa
+(*Mali ulog za početak*, *Najveća očekivana zarada*, *Blizu kuće*, *Sport*): koje ulaznice kupiti, do koje cijene,
+gdje i po kojoj cijeni ih prodati, očekivana zarada, raspon ishoda i šansa gubitka. U terminalu isto radi `karte paketi`.
+Kartica **Nogomet** (`karte nogomet`) prikazuje nadolazeće utakmice (bez ključa), derbije i utakmice hrvatskih klubova,
+smije li se ulaznica preprodati i kako je kupiti.
+
+**Radar s obavijestima:** `karte radar` svakom novom događaju i najavi daje *hype score* (hoće li poskupjeti) i šalje
+na Telegram samo ono što je novo ili se promijenilo – automatski svaka 3 sata preko GitHub Actions. Vidi [docs/RADAR.md](docs/RADAR.md).
+
+Bez ključeva sučelje odmah prikazuje **snimku stvarnih događaja** i raspored utakmica.
 Za žive podatke kopiraj `.env.example` u `.env` i upiši bar jedan ključ (preporuka: `SERPAPI_KEY`) — vidi
 [docs/IZVORI_PODATAKA.md](docs/IZVORI_PODATAKA.md).
 
@@ -61,7 +70,9 @@ Najlakši način korištenja — sve radi lokalno na tvom računalu (server slu�
 
 | Kartica | Čemu služi |
 |---|---|
-| **Radar** | Odabereš izvor (snimka stvarnih događaja / živi API-ji / demo), regiju (ili cijeli svijet), dane i budžet → tablica preporuka (KUPI / RAZMOTRI / PROVJERI CIJENU / …), graf koncerata s najvećim očekivanim skokom cijene ili do koje se cijene isplati kupiti, filtri i sortiranje. Klik na koncert otvara **plan po datumima**: presale, javna prodaja, kada oglasiti i po kojoj cijeni, kada spuštati cijenu. Gumb **📅 Kalendar (.ics)** sve to doda u tvoj kalendar s podsjetnikom 30 min prije prodaje. |
+| **Paketi** (početna) | Budžet + gdje + što → nekoliko gotovih paketa s ulogom, očekivanom dobiti, rasponom ishoda (simulacija), šansom gubitka i koracima „kako kupiti / kako prodati” za svaku ulaznicu. Stavke bez javne nominalne cijene su **UVJETNE** („kupi samo ako je cijena ≤ X”). Nogomet u Europi nikad nije u paketima (preprodaja zabranjena). |
+| **Nogomet** | Raspored (Liga prvaka, Europska, Konferencijska liga, 5 najvećih liga bez ključa; HNL uz `API_FOOTBALL_KEY`): derbiji, velike utakmice, hrvatski klubovi; za svaku utakmicu: smije li se preprodati, službeni kanal ako ne možeš ići, kako kupiti. |
+| **Svi događaji** (bivši Radar) | Odabereš izvor (snimka stvarnih događaja / živi API-ji / demo), regiju (ili cijeli svijet), dane i budžet → tablica preporuka (KUPI / RAZMOTRI / PROVJERI CIJENU / …), graf koncerata s najvećim očekivanim skokom cijene ili do koje se cijene isplati kupiti, filtri i sortiranje. Klik na koncert otvara **plan po datumima**: presale, javna prodaja, kada oglasiti i po kojoj cijeni, kada spuštati cijenu. Gumb **📅 Kalendar (.ics)** sve to doda u tvoj kalendar s podsjetnikom 30 min prije prodaje. |
 | **Plan zarade** | Raspodjela budžeta na najbolje prilike (najviše 25 % po događaju, parovi), uvjetne kupnje za događaje bez javne cijene („ako je nominalna ≤ X €”), raspon ishoda iz 4.000 simulacija, vjerojatnost gubitka, kalendar radnji (.ics). |
 | **Najave i uvoz** | Najave turneja i početka prodaje iz RSS izvora (oznaka **NOVO**, presale/prodaja, 📅 podsjetnik), gumb **karte: spremi** za traku oznaka (sa stranice događaja pročita nominalnu cijenu ili cijenu s preprodaje), lijepljenje podataka i popis **mojih događaja**. |
 | **Kalkulator** | Za jedan koncert (npr. s Entrija/Eventima) upišeš nominalnu cijenu i najnižu cijenu na viagogu → isplativost, platforme, cjenik. Gumb *Dohvati* uz **Deezer fanove** popuni popularnost i pokaže trend s Wikipedije (bez ključa). |
@@ -135,6 +146,7 @@ Države s limitom cijene i dalje se prikazuju, ali kao **ZAKONSKI OGRANIČENO**,
 | `TICKETMASTER_API_KEY` | [developer.ticketmaster.com](https://developer.ticketmaster.com/) — besplatno, 5000 poziva/dan ([ako ne radi](docs/IZVORI_PODATAKA.md#2-zašto-ticketmaster-ne-odobrava-ključ-i-što-napraviti)) | Događaji, nominalne cijene, presale datumi, limit po kupcu |
 | `PREDICTHQ_TOKEN` | [control.predicthq.com](https://control.predicthq.com) — 14 dana probno | Događaji + predviđena posjećenost (beta) |
 | `LASTFM_API_KEY` | [last.fm/api/account/create](https://www.last.fm/api/account/create) — odmah, besplatno | Preciznija popularnost izvođača (inače Deezer) |
+| `API_FOOTBALL_KEY` | [api-football.com](https://www.api-football.com) — odmah, 100 zahtjeva/dan besplatno | Raspored hrvatske HNL (europska natjecanja i 5 najvećih liga rade i bez ključa) |
 | `SEATGEEK_CLIENT_ID` | [seatgeek.com/account/develop](https://seatgeek.com/account/develop) — opcionalno | Cijene na sekundarnom tržištu (uglavnom SAD/UK) |
 | `KARTE_USER_AGENT` | npr. `karte/0.7 (ime@primjer.hr)` | Wikimedia traži kontakt u User-Agentu |
 
@@ -168,6 +180,10 @@ Stupci (hrvatski ili engleski nazivi, razdjelnik `,` ili `;`):
 ## Naredbe
 
 ```bash
+karte radar [--posalji] [--prag 70]                 # novi događaji koji će poskupjeti → obavijest na Telegram (docs/RADAR.md)
+karte telegram [--chat-id] [--test]                 # postavljanje Telegram bota
+karte paketi [--budget 1000] [--countries balkan]   # NAJJEDNOSTAVNIJE: gotovi paketi s očekivanom zaradom i koracima
+karte nogomet [--samo-hr] [--detalji] [--sve]       # utakmice, derbiji, smije li se preprodati, kako kupiti
 karte scan [opcije]        # glavna pretraga i rangiranje (bez ključeva: snimka stvarnih događaja)
 karte gui                  # grafičko sučelje u pregledniku
 karte snimka [--osvjezi] [--list] [--bez-otkrivanja]   # snimka stvarnih događaja: pregled i osvježavanje (bez ključeva)
@@ -248,6 +264,8 @@ karte/
   snapshot.py       snimka stvarnih događaja (učitavanje, osvježavanje i otkrivanje turneja bez ključeva, moji događaji)
   announcements.py  radar najava: RSS/Atom, prepoznavanje izvođača, mjesta i datuma presalea/prodaje
   capture.py        uvoz sa stranice događaja (schema.org JSON-LD) i gumb "karte: spremi"
+  paketi.py         paketi: gotovi prijedlozi (mali ulog, najveća zarada, blizu kuće, sport) s koracima kupnje/prodaje
+  football.py       nogomet: klubovi, derbiji, analiza utakmica (smije li se preprodati, kako kupiti)
   portfolio.py      plan zarade: raspodjela budžeta, simulacija ishoda, kalendar radnji
   links.py          poveznice "Provjeri cijene" (službeni prodavači, preprodaja, usporedbe, oglasnici)
   geo.py            nazivi država → ISO kodovi
@@ -261,7 +279,7 @@ karte/
   sport.py          sport/nogomet: prepoznavanje sporta i natjecanja, posebna pravila (sport.toml)
   platforms.py      platforme za preprodaju i naknade
   report.py         terminal / HTML / Markdown / CSV / JSON
-  providers/        ticketmaster, serpapi (Google Events), predicthq, seatgeek, lastfm, deezer, wikipedia (turneje, trend), manual (CSV), demo
+  providers/        ticketmaster, serpapi (Google Events), predicthq, seatgeek, lastfm, deezer, wikipedia (turneje, trend), fixtures (nogomet: fixturedownload.com, API-Football), manual (CSV), demo
   data/             laws.toml, markets.toml (regije, pristup), platforms.toml, vendors.toml (strani prodavači), venues.toml, model.toml, najave.toml (RSS izvori), snimka/ (stvarni događaji), demo_events.json, guides/
 primjeri/           primjeri CSV-a (uklj. stvarnu HR watchlistu)
 docs/               istraživanje, strategija, model

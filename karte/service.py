@@ -94,6 +94,7 @@ def make_evaluator(f: dict, settings, model_path: str | None = None, now: dateti
         strict=bool(f.get("strict")),
         now=now,
         seller_country=(f.get("seller_country") or settings.seller_country or "HR").upper(),
+        contract_risk=bool(getattr(settings, "football_risk", False)),
     )
 
 
@@ -164,6 +165,38 @@ def market_rows(codes: list[str] | None = None) -> list[dict]:
         })
     rows.sort(key=lambda r: r["score"], reverse=True)
     return rows
+
+
+def _scan_meta(result) -> dict:
+    return {
+        "generated_at": result.generated_at.isoformat(),
+        "is_demo": result.is_demo,
+        "is_snapshot": result.is_snapshot,
+        "snapshot": result.snapshot,
+        "countries": result.options.countries,
+        "sources": result.sources,
+        "warnings": result.warnings,
+    }
+
+
+def packages(opts, settings) -> dict:
+    """Paketi (Siguran start, Najveća zarada, Blizu kuće, Sport) za odabrane postavke pretrage."""
+    from karte.paketi import build_packages
+    from karte.pipeline import run_scan
+
+    result = run_scan(opts, settings)
+    out = build_packages(result.opportunities, opts.budget, result.evaluator, opts.seller_country)
+    return {**out, **_scan_meta(result)}
+
+
+def football_matches(opts, settings) -> dict:
+    """Nogomet: utakmice iz rasporeda (bez ključa) + CSV/snimka → zašto su zanimljive, smije li se preprodati, kako kupiti."""
+    from karte import football
+    from karte.pipeline import run_scan
+
+    opts.segment = "sport"
+    result = run_scan(opts, settings)
+    return {**football.analyze(result.opportunities, opts.seller_country), **_scan_meta(result)}
 
 
 def opportunity_dict(op: Opportunity) -> dict:

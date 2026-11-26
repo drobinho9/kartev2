@@ -221,7 +221,10 @@ def test_snapshot_scan_runs_offline_with_real_events(tmp_path):
     joksimovic = next(op for op in result.opportunities if op.event.artist == "Željko Joksimović" and op.event.date.day == 4)
     assert joksimovic.verdict == "RASPRODANO"
     sport = run_scan(ScanOptions(snapshot=True, countries=["HR"], now=SNAP_NOW, segment="sport"), _settings(tmp_path), http=http)
-    assert sport.opportunities == [] and any("sportskih" in w for w in sport.warnings)
+    # HNL derbiji s cijenama s viagoga (nogomet_trziste.csv) – bez mreže, uvijek s jasnom presudom (preprodaja nije dopuštena)
+    assert http.calls == [] and len(sport.opportunities) >= 3
+    assert all(op.event.sport == "football" and op.verdict == "UVJETI ZABRANJUJU" for op in sport.opportunities)
+    assert not any("sportskih" in w for w in sport.warnings)
 
 
 def test_user_snapshot_adds_and_overrides_events(tmp_path, monkeypatch):

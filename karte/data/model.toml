@@ -169,3 +169,11 @@ ISK = 0.0068
 BGN = 0.511
 MKD = 0.016
 UAH = 0.021
+
+[contract_risk]
+# Nogomet gdje preprodaju zabranjuju samo uvjeti kluba/UEFA-e (ne zakon), uz KARTE_NOGOMET_RIZIK=1 (zadano):
+# šansa da preprodana ulaznica bude poništena ili kupac odbijen na ulazu, i kazna platforme kao udio oglasne cijene
+base = 0.25
+personalized = 0.15   # ulaznica na ime uz provjeru osobne
+hr = 0.05             # HNS/klubovi poništavaju i prijavljuju policiji
+penalty_share = 0.20

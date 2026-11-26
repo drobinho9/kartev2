@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
@@ -51,6 +52,9 @@ class ScanOptions:
     use_wikipedia: bool = True  # trend pregleda na Wikipediji (bez ključa)
     trend_artists: int = 40  # za koliko izvođača dohvatiti trend (svaki je jedan zahtjev)
     serpapi_cities: list[str] = field(default_factory=list)  # gradovi za Google Events (SerpApi); prazno = zadani za države
+    use_fixtures: bool = False  # nogomet: raspored utakmica bez ključa (fixturedownload.com) + API-Football ako postoji ključ
+    football_all: bool = False  # nogomet: sve utakmice iz rasporeda, ne samo derbiji, velike i utakmice domaćih klubova
+    football_risk: bool = False  # nogomet: zabrana samo iz uvjeta kluba/UEFA-e → računaj uz rizik poništenja (presuda RIZIČNO)
 
 
 @dataclass
@@ -107,7 +111,7 @@ def annotate_supply(events: list[Event]) -> None:
                 e.capacity_estimated = True
 
 
-DISCOVERY_SOURCES = ("CSV", "Google Events", "PredictHQ")
+DISCOVERY_SOURCES = ("CSV", "Google Events", "PredictHQ", "Raspored", "API-Football", "Tržište")
 SNAPSHOT_TOUR_MIN_DEMAND = 65  # (0–100) datumi turneja bez cijene ispod ove potražnje ne zatrpavaju Radar
 
 TM_CLASSIFICATIONS = {
@@ -167,10 +171,6 @@ def collect_events(
             warnings.append(
                 f"Snimka je stara {age} dana – osvježi turneje i popularnost (karte snimka --osvjezi) i provjeri cijene kod prodavača."
             )
-        if opts.segment == "sport" and not chosen:
-            warnings.append(
-                "Snimka zasad nema sportskih događaja s potvrđenim datumom i cijenom – za utakmice koristi Kalkulator ili CSV (vodič 6)."
-            )
 
     for path in opts.manual_files:
         try:
@@ -183,6 +183,33 @@ def collect_events(
         loaded = load_csv_text(text, name)
         events.extend(loaded)
         sources.append(f"CSV {name} ({len(loaded)})")
+
+    if opts.use_fixtures and opts.segment in ("sport", "all") and not opts.demo and not os.environ.get("KARTE_BEZ_RASPOREDA"):
+        from karte.providers.fixtures import football_events
+
+        http = http or HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=12 * 3600))
+        found, fx_warnings, fx_sources = football_events(
+            http, now, now + timedelta(days=opts.days), opts.countries, opts.seller_country,
+            api_football_key=settings.api_football_key, only_notable=not opts.football_all,
+        )
+        events.extend(found)
+        warnings.extend(fx_warnings)
+        sources.extend(fx_sources)
+
+    if opts.segment in ("sport", "all") and not opts.demo:
+        # cijene s preprodaje za utakmice (viagogo/StubHub, ručno prikupljeno) – bez mreže
+        from karte.providers.fixtures import apply_market, market_events
+
+        wanted = set(opts.countries)
+        market = [m for m in market_events(now, opts.seller_country)
+                  if "ALL" in wanted or m.country in wanted or m.country == opts.seller_country]
+        if market:
+            events = apply_market(events, market)
+            sources.append(f"Nogomet – cijene s preprodaje (snimka, {len(market)} utakmica)")
+    if opts.snapshot and opts.segment == "sport" and not any(e.segment == "sport" for e in events):
+        warnings.append(
+            "Snimka zasad nema sportskih događaja s potvrđenim datumom i cijenom – za utakmice koristi Kalkulator ili CSV (vodič 6)."
+        )
 
     if live:
         http = http or HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=6 * 3600))
@@ -293,7 +320,8 @@ def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = No
     events, warnings, sources = collect_events(opts, settings, http, meta)
     config = ModelConfig.load(opts.model_path)
     evaluator = Evaluator(
-        config, budget=opts.budget, category=opts.category, strict=opts.strict, now=now, seller_country=opts.seller_country
+        config, budget=opts.budget, category=opts.category, strict=opts.strict, now=now, seller_country=opts.seller_country,
+        contract_risk=opts.football_risk,
     )
 
     window_end = now + timedelta(days=opts.days)

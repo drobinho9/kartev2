@@ -134,6 +134,8 @@ def render_terminal(result: ScanResult, top: int = 25, details: int = 5) -> str:
 def location(e) -> str:
     place = ", ".join(x for x in (e.venue, e.city) if x)
     code = f"{e.country}-{e.region}" if e.region else e.country
+    if not code:
+        return place or "—"
     return f"{place} ({code})" if place else code
 
 

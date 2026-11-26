@@ -53,6 +53,8 @@ def _scan_options(args, settings: Settings) -> tuple[ScanOptions, bool]:
         use_deezer=not args.no_deezer,
         use_wikipedia=not args.no_wikipedia,
         serpapi_cities=args.gradovi.split(",") if args.gradovi else [],
+        use_fixtures=not getattr(args, "bez_rasporeda", False),
+        football_risk=settings.football_risk,
     )
     return opts, auto_snapshot
 
@@ -307,6 +309,131 @@ def cmd_plan(args, settings: Settings) -> int:
     return 0
 
 
+def cmd_packages(args, settings: Settings) -> int:
+    """Paketi: nekoliko gotovih prijedloga s ulogom, očekivanom zaradom i koracima kupnje/prodaje."""
+    from karte.paketi import describe
+    from karte.service import packages
+
+    opts, auto_snapshot = _scan_options(args, settings)
+    result = packages(opts, settings)
+    if auto_snapshot:
+        print("! " + AUTO_SNAPSHOT_NOTE)
+    print(f"PAKETI · budžet {fmt_eur(opts.budget)} · države: {', '.join(result['countries'])}")
+    print(f"Izvori: {'; '.join(result['sources']) or '—'}\n")
+    for line in describe(result):
+        print(line)
+    print()
+    for note in result["notes"]:
+        print(f"• {note}")
+    for w in result["warnings"]:
+        print(f"! {w}")
+    print("\nNajlakše u pregledniku: karte gui → Paketi (gumbi za provjeru cijena, kalendar, dnevnik prodaja).")
+    return 0
+
+
+def cmd_football(args, settings: Settings) -> int:
+    """Nogomet: nadolazeće utakmice, zašto su zanimljive, smije li se preprodati i kako kupiti."""
+    from karte.service import football_matches
+    from karte.util import fmt_datetime
+    from datetime import datetime
+
+    opts, _ = _scan_options(args, settings)
+    if not args.countries:
+        opts.countries = expand_countries("europa")  # za nogomet zadano cijela Europa (ne samo "otvorena" tržišta)
+    opts.football_all = args.sve
+    result = football_matches(opts, settings)
+    rows = [r for r in result["rows"] if r["local"]] if args.samo_hr else result["rows"]
+    derbies, local = sum(1 for r in rows if r["derby"]), sum(1 for r in rows if r["local"])
+    print(f"NOGOMET · idućih {opts.days} dana · {len(rows)} utakmica (derbija: {derbies}, s hrvatskim klubom: {local})")
+    print(f"Izvori: {'; '.join(result['sources']) or '—'}\n")
+    for r in rows[: args.top]:
+        when = fmt_datetime(datetime.fromisoformat(r["date"]))
+        print(f"{when:<18} {r['match'][:44]:<44} {r['competition'][:24]:<24} {r['location'][:40]}")
+        print(f"{'':<18} {('★ ' + r['why']) if r['why'] else ''}")
+        print(f"{'':<18} Preprodaja: {r['resale_label']}" + (f" · službeno: {r['official']}" if r["official"] else ""))
+        m = r.get("market")
+        if m:
+            face = f", nominalno ~{fmt_eur(m['face_min'])}–{fmt_eur(m['face_max'])}" if m.get("face_min") else ""
+            print(f"{'':<18} Na preprodaji ({m['source']}, {m.get('observed') or '?'}): od {fmt_eur(m['lowest'])}, "
+                  f"{m.get('count') or '?'} oglasa{face}" + (" – spekulativni oglasi (klub još ne prodaje)" if m.get("speculative") else ""))
+            print(f"{'':<18} Zašto ne preprodavati: {m['why']}")
+        if args.detalji:
+            for s in r["how_to_buy"]:
+                print(f"{'':<20}• {s}")
+        print()
+    print("UKRATKO – smije li se preprodavati ulaznice za nogomet:")
+    for s in result["rules"]:
+        print(f"  • {s}")
+    for w in result["warnings"]:
+        print(f"! {w}")
+    print("\nZa HNL raspored dodaj besplatni API_FOOTBALL_KEY u .env (docs/IZVORI_PODATAKA.md). Detalji po državama: karte sport")
+    return 0
+
+
+def cmd_radar(args, settings: Settings) -> int:
+    """Radar: novi događaji koji bi se mogli skupo preprodavati → obavijesti (Telegram)."""
+    from karte.notify import split_messages, telegram_send
+    from karte.radar import run_radar, telegram_blocks
+    from karte.snapshot import data_dir
+
+    opts, _ = _scan_options(args, settings)
+    result = run_radar(opts, settings, data_dir(), threshold=args.prag, announcements=not args.bez_najava)
+    alerts = result["alerts"]
+    print(f"RADAR · prag {args.prag}/100 · praćeno događaja: {result['tracked']} · novih obavijesti: {len(alerts)}")
+    print(f"Izvori: {'; '.join(result['sources']) or '—'}\n")
+    for a in alerts:
+        print(f"★ {a.score:>3}/100  {a.kind:<15} {a.title}")
+        for line in a.lines:
+            print(f"{'':<23}{line}")
+        if a.url:
+            print(f"{'':<23}{a.url}")
+        print()
+    if not alerts:
+        print("Ništa novo iznad praga. Najviše ocjene trenutno:")
+        for t in result["top"][:5]:
+            print(f"  {t['score']:>3}/100  {t['name'][:60]}  ({t['verdict']})")
+    if args.posalji and alerts:
+        if not (settings.telegram_bot_token and settings.telegram_chat_id):
+            print("! Za slanje postavi TELEGRAM_BOT_TOKEN i TELEGRAM_CHAT_ID (vidi: karte telegram --help).")
+            return 2
+        try:
+            for msg in split_messages(telegram_blocks(result)):
+                telegram_send(settings.telegram_bot_token, settings.telegram_chat_id, msg)
+            print(f"Poslano na Telegram: {len(alerts)} obavijesti.")
+        except ProviderError as exc:
+            print(f"! {exc}")
+            return 1
+    print(f"\nStanje radara: {result['state_path']} (javlja se samo ono što je novo ili se promijenilo)")
+    return 0
+
+
+def cmd_telegram(args, settings: Settings) -> int:
+    """Postavljanje Telegram obavijesti: chat id i probna poruka."""
+    from karte.notify import telegram_chats, telegram_send
+
+    try:
+        if args.chat_id:
+            chats = telegram_chats(settings.telegram_bot_token or "")
+            if not chats:
+                print("Nema poruka. Pošalji svom botu bilo koju poruku (npr. /start) u Telegramu i pokreni ponovno.")
+                return 1
+            for cid, name in chats:
+                print(f"TELEGRAM_CHAT_ID={cid}    ({name})")
+            print("Upiši redak u .env (i u GitHub Secrets za automatske obavijesti).")
+            return 0
+        if args.test:
+            telegram_send(settings.telegram_bot_token or "", settings.telegram_chat_id or "",
+                          "🎟️ <b>karte</b>: probna obavijest radi. Ovdje će stizati novi događaji koji bi se mogli skupo preprodavati.")
+            print("Probna poruka poslana.")
+            return 0
+    except ProviderError as exc:
+        print(f"! {exc}")
+        return 1
+    print("Koraci: 1) @BotFather → /newbot → token u .env kao TELEGRAM_BOT_TOKEN  2) pošalji botu poruku  "
+          "3) karte telegram --chat-id  4) karte telegram --test")
+    return 0
+
+
 REGIJE_NAJAVA = {"hr": 3, "regija": 2, "europa": 1, "sve": 0}
 
 
@@ -424,6 +551,13 @@ def cmd_snapshot(args, settings: Settings) -> int:
     return 0
 
 
+def _fixture_check_url() -> str:
+    from karte.providers.fixtures import FIXTURE_URL, season_start_year
+    from karte.util import utcnow
+
+    return FIXTURE_URL.format(slug="champions-league", season=season_start_year(utcnow()))
+
+
 def cmd_doctor(args, settings: Settings) -> int:
     print(f"karte {__version__} · Python {sys.version.split()[0]}")
     print(f"Države: {', '.join(expand_countries(settings.countries))} · prodavatelj iz: {settings.seller_country} · "
@@ -438,6 +572,7 @@ def cmd_doctor(args, settings: Settings) -> int:
          {"client_id": settings.seatgeek_client_id, "per_page": 1}),
         ("SERPAPI_KEY", settings.serpapi_key, "https://serpapi.com/account.json", {"api_key": settings.serpapi_key}),
         ("PREDICTHQ_TOKEN", settings.predicthq_token, "https://api.predicthq.com/v1/events/", {"limit": 1}),
+        ("API_FOOTBALL_KEY", settings.api_football_key, "https://v3.football.api-sports.io/status", None),
     ]
     ok = True
     print("Izvori s ključem:")
@@ -449,11 +584,18 @@ def cmd_doctor(args, settings: Settings) -> int:
             print(f"  ✓ {name}: postavljen (bez provjere mreže)")
             continue
         try:
-            headers = {"Authorization": f"Bearer {value}"} if name == "PREDICTHQ_TOKEN" else None
+            headers = ({"Authorization": f"Bearer {value}"} if name == "PREDICTHQ_TOKEN"
+                       else {"x-apisports-key": value} if name == "API_FOOTBALL_KEY" else None)
             data = http.get_json(url, params, headers=headers)
             extra = ""
             if name == "SERPAPI_KEY" and isinstance(data, dict) and data.get("plan_searches_left") is not None:
                 extra = f" (preostalo pretraga ovaj mjesec: {data.get('plan_searches_left')})"
+            if name == "API_FOOTBALL_KEY" and isinstance(data, dict):
+                if data.get("errors"):
+                    raise ProviderError(str(data["errors"]))
+                req = (data.get("response") or {}).get("requests") or {}
+                if req:
+                    extra = f" (danas iskorišteno {req.get('current')} od {req.get('limit_day')} zahtjeva)"
             print(f"  ✓ {name}: radi{extra}")
         except ProviderError as exc:
             ok = False
@@ -463,6 +605,7 @@ def cmd_doctor(args, settings: Settings) -> int:
         ("Deezer (popularnost)", "https://api.deezer.com/search/artist", {"q": "Rod Stewart", "limit": 1}),
         ("Wikipedia (turneje)", "https://en.wikipedia.org/w/api.php", {"action": "query", "titles": "U2", "format": "json"}),
         ("Wikimedia (pregledi)", "https://wikimedia.org/api/rest_v1/metrics/pageviews/top/en.wikipedia/all-access/2026/01/01", None),
+        ("fixturedownload.com (raspored nogometa)", _fixture_check_url(), None),
     ]
     for name, url, params in keyless:
         if args.offline:
@@ -495,7 +638,8 @@ def _add_scan_source_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--seller-country", help="država tvog prebivališta (zadano HR) – za dostupnost platformi i rizik pristupa")
     p.add_argument("--max-artists", type=int, default=300, help="koliko najperspektivnijih izvođača obogatiti Last.fm-om (zadano 300)")
     p.add_argument("--show-all", action="store_true", help="prikaži i događaje bez nominalne cijene u izvoru")
-    p.add_argument("--vrsta", choices=sorted(VRSTA), default="koncerti", help="koncerti (zadano), sport ili sve")
+    p.add_argument("--vrsta", choices=sorted(VRSTA), default="sve", help="sve (zadano: koncerti, sport, ostalo), koncerti ili sport")
+    p.add_argument("--bez-rasporeda", action="store_true", help="ne dohvaćaj raspored nogometnih utakmica (fixturedownload.com)")
     p.add_argument("--budget", type=float, help="ukupni budžet u EUR (za preporuku količine)")
     p.add_argument("--category", choices=CATEGORIES, default="cheap", help="koju kategoriju ulaznica ciljaš (zadano: cheap)")
     p.add_argument("--strict", action="store_true", help="primijeni i najavljene (još nevažeće) zakonske limite, npr. DE, UK")
@@ -574,6 +718,30 @@ def build_parser() -> argparse.ArgumentParser:
     k.add_argument("--not-personalized", action="store_true")
     k.add_argument("--strict", action="store_true")
     k.set_defaults(func=cmd_categories, face=None)
+
+    pk = sub.add_parser("paketi", help="NAJJEDNOSTAVNIJE: nekoliko gotovih paketa s očekivanom zaradom i koracima kupnje/prodaje")
+    _add_scan_source_args(pk)
+    pk.set_defaults(func=cmd_packages)
+
+    fb = sub.add_parser("nogomet", help="nogomet: nadolazeće utakmice, smije li se preprodati i kako kupiti")
+    _add_scan_source_args(fb)
+    fb.add_argument("--samo-hr", action="store_true", help="samo utakmice hrvatskih klubova")
+    fb.add_argument("--sve", action="store_true", help="sve utakmice iz rasporeda (ne samo derbiji, velike i hrvatski klubovi)")
+    fb.add_argument("--detalji", action="store_true", help="ispiši i kako kupiti za svaku utakmicu")
+    fb.add_argument("--top", type=int, default=40)
+    fb.set_defaults(func=cmd_football)
+
+    rd = sub.add_parser("radar", help="novi događaji koji bi se mogli skupo preprodavati (hype score) → obavijesti na Telegram")
+    _add_scan_source_args(rd)
+    rd.add_argument("--prag", type=int, default=70, help="najmanji hype score za obavijest (0–100, zadano 70)")
+    rd.add_argument("--posalji", action="store_true", help="pošalji obavijesti na Telegram (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)")
+    rd.add_argument("--bez-najava", action="store_true", help="bez RSS najava (samo događaji iz izvora)")
+    rd.set_defaults(func=cmd_radar)
+
+    tg = sub.add_parser("telegram", help="postavljanje Telegram obavijesti (chat id, probna poruka)")
+    tg.add_argument("--chat-id", action="store_true", help="ispiši chat id iz zadnjih poruka botu")
+    tg.add_argument("--test", action="store_true", help="pošalji probnu poruku")
+    tg.set_defaults(func=cmd_telegram)
 
     pl = sub.add_parser("plan", help="plan zarade: raspodjela budžeta, raspon ishoda i kalendar radnji")
     _add_scan_source_args(pl)

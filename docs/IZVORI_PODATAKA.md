@@ -7,6 +7,31 @@ Sve je objašnjeno u [BEZ_TICKETMASTERA.md](BEZ_TICKETMASTERA.md).
 Najbolja živa zamjena za popis događaja po gradovima ostaje **Google Events preko SerpApi** (besplatno 250 pretraga mjesečno).
 Kad nominalna cijena nije poznata, aplikacija računa **do koje se cijene isplati kupiti** (preporuka *PROVJERI CIJENU*).
 
+## 0. Koje API-je zatražiti (provjereno 26. 11. 2026.)
+
+Kratko: **ne čekaj Ticketmaster**. Redom, od najkorisnijeg:
+
+| # | API | Za što | Ključ i limit | Stanje |
+|---|---|---|---|---|
+| 1 | **fixturedownload.com** | raspored nogometa: Liga prvaka, Europska i Konferencijska liga, Premier League, Bundesliga, LaLiga, Serie A, Ligue 1 (datum i stadion) | **bez ključa**, JSON feed po natjecanju | ✅ ugrađeno (`karte nogomet`, kartica *Nogomet*); provjereno: feedovi za 2026./27. rade i sadrže Dinamo (Europska liga) i Hajduk (Konferencijska liga) |
+| 2 | **SerpApi – Google Events** | koncerti i događaji po gradovima, uključujući Hrvatsku | odmah, **250 pretraga/mj. besplatno** | ✅ ugrađeno (`SERPAPI_KEY`) – najbolja zamjena za Ticketmaster |
+| 3 | **API-Football** ([api-football.com](https://www.api-football.com/pricing)) | **hrvatska SuperSport HNL** i 1.200+ drugih liga | registracija e-mailom, **100 zahtjeva/dan besplatno**, bez kartice | ✅ ugrađeno (`API_FOOTBALL_KEY`, beta); javno nije jasno daje li besplatni plan tekuću sezonu – `karte doctor` i prvi poziv to pokažu |
+| 4 | **Last.fm** | popularnost izvođača | besplatno, odmah | ✅ (bez njega Deezer) |
+| 5 | **Ticketmaster Discovery v2** | nominalne cijene, presale datumi (SAD, UK, dio EU) | Consumer Key je obično aktivan odmah; za zapelu prijavu piši na devportalinquiry@ticketmaster.com (opća podrška cilja odgovor unutar 24 h) | ✅ kad proradi – vidi odjeljak 2 |
+| 6 | **football-data.org** | 12 natjecanja besplatno (PL, Championship, BL1, Serie A, LaLiga, Ligue 1, Eredivisie, Primeira Liga, Liga prvaka, EURO, SP, Brasileirão) | besplatni ključ, 10 zahtjeva/min; **HNL samo u plaćenom paketu** | ⏸ nije potrebno – isto pokriva fixturedownload bez ključa |
+| 7 | **StubHub API** | tvoji oglasi i prodaje (za prodavatelje) | samo uz zahtjev na api.support@stubhub.com, za aktivne prodavatelje | ⏸ zatraži tek kad prodaješ na StubHubu |
+| 8 | **tickets.dev, TicketsData** | „žive” cijene s preprodaje (StubHub, viagogo, SeatGeek…) | plaćeno; podaci dolaze od partnera ili scrapinga – provjeri uvjete | ❌ tek uz veći obim |
+
+**Ne isplati se tražiti:** Eventbrite (javna pretraga ugašena 2019., API vraća samo tvoje događaje),
+Bandsintown (samo za izvođače), Songkick (zatvoren), viagogo (javna API dokumentacija arhivirana 2022.),
+TicketSwap (nema javni API), TheSportsDB (besplatni ključ „123”, ali su krajnje točke za utakmice 26. 11. 2026.
+vraćale grešku 522 – nepouzdano), openfootball (javni JSON bez ključa, ali bez stadiona i samo lige, ne europska
+natjecanja).
+
+> **Cijene ulaznica nema nijedan besplatni API.** Nominalne cijene objavljuje prodavač, a cijene s preprodaje
+> agregatori. Zato aplikacija za događaje bez javne cijene računa **do koje se cijene isplati kupiti** (UVJETNO u Paketima),
+> a cijenu provjeravaš gumbom „Provjeri cijene” ili gumbom „karte: spremi” na stranici prodavača.
+
 ## 1. Što napraviti danas
 
 | Korak | Što | Ključ |
@@ -113,8 +138,28 @@ Oni **dopunjuju** ugrađenu snimku, a redak za isti događaj (izvođač + datum 
 nominalnu cijenu ili svježu najnižu cijenu na viagogu.
 Novi stupci: `sek_valuta` (valuta cijene s preprodaje), `sek_datum` (kad je zabilježena), `fanovi` (Deezer).
 
-**Sport:** u snimci zasad nema utakmica s potvrđenim datumom i cijenom (raspored HNL-a 2026./27. za derbije nije bio
-objavljen). Referentne cijene iz prošlih utakmica: Dinamo – Hajduk (Maksimir, 9. 5. 2026.) zapad dolje 25 € za članove /
+**Sport:** raspored utakmica dolazi uživo bez ključa (fixturedownload.com: europska natjecanja i 5 najvećih liga), a HNL
+uz besplatni `API_FOOTBALL_KEY`. Aplikacija prikazuje derbije, velike utakmice i sve utakmice hrvatskih klubova te za
+svaku jasno kaže smije li se ulaznica preprodati (u Europi u pravilu ne) i kako je kupiti (`karte nogomet`, kartica *Nogomet*).
+
+**Nogomet na viagogu i StubHubu (ručno provjereno 26. 11. 2026.):** viagogo i StubHub prikazuju **iste oglase s istim
+oznakama događaja** (npr. E-161286374), pa je dovoljno pratiti jedan. Na StubHubu su prikazane cijene niže
+(vjerojatno bez naknade kupca).
+
+| Utakmica | Najniži oglas | Oglasa | Napomena |
+|---|---|---|---|
+| Dinamo – Hajduk, Maksimir, 19. 12. 2026. | viagogo 54 € (StubHub 49 €) | 3 × 2 ulaznice | nominalno prošle sezone 25–30 €; Dinamo još ne prodaje → spekulativni oglasi |
+| Hajduk – Rijeka, Poljud, 13. 12. 2026. 15:00 | viagogo 52 € | 6 × 2 | istok 66 €, zapad 88 € |
+| Hajduk – Dinamo, Poljud, 20. 3. 2027. | viagogo 108 € | 7 × 2 | spekulativno, 4 mjeseca unaprijed |
+| Dinamo – Hajduk, Maksimir, 22. 5. 2027. | viagogo 299 € | 4 × 2 | spekulativno, 6 mjeseci unaprijed |
+| Real Madrid – Barcelona, 9. 5. 2027. | StubHub, 238 oglasa | — | prvih 40 prikazanih oko 1.600–3.600 $ (nije sortirano po cijeni) |
+
+Ovi podaci su u `karte/data/snimka/nogomet_trziste.csv` i prikazuju se u kartici **Nogomet** i ispod paketa
+(„Nogomet na preprodaji”) – **samo kao informacija**: ulaznice za HNL i UEFA utakmice glase na ime, pa kupac s preprodaje
+može biti odbijen na ulazu, a klub poništava ulaznicu. Zato nogomet u Europi ne ulazi u pakete.
+Svoje provjere dodaj u `~/.karte/snimka/nogomet_trziste.csv` (isti stupci: `domacin,gost,datum,vrijeme,natjecanje,stadion,grad,
+drzava,sek_najniza,sek_medijan,sek_najvisa,broj_oglasa,sek_izvor,sek_valuta,sek_datum,nominalna_od,nominalna_do,
+nominalna_izvor,url,biljeske`); redak za istu utakmicu zamjenjuje ugrađeni. Referentne cijene iz prošlih utakmica: Dinamo – Hajduk (Maksimir, 9. 5. 2026.) zapad dolje 25 € za članove /
 30 € ostali ([Index](https://www.index.hr/sport/clanak/dinamo-objavio-informacije-o-ulaznicama-za-derbi-s-hajdukom/2787043.aspx));
 Hrvatska – Francuska (Poljud, 3/2026.) 50/40/25 €, na dan utakmice +5 €
 ([Index](https://www.index.hr/sport/clanak/hrvatska-i-francuska-igrat-ce-na-poljudu-hns-je-objavio-cijene-ulaznica/2647766.aspx)).
@@ -144,6 +189,13 @@ nudi samo kanale s limitom cijene. Aplikacija te stranice **ne dohvaća** — sa
 
 ## Izvori
 
+- Nogomet: [fixturedownload.com](https://fixturedownload.com) · [API-Football – cjenik](https://www.api-football.com/pricing) ·
+  [football-data.org – limiti](https://docs.football-data.org/general/v4/policies.html) ·
+  [openfootball/football.json](https://github.com/openfootball/football.json) · [TheSportsDB – dokumentacija](https://www.thesportsdb.com/documentation)
+- Preprodaja: [StubHub developer blog](https://developer.stubhub.com/blog/) · [viagogo na GitHubu](https://github.com/viagogo) ·
+  [tickets.dev](https://tickets.dev/apis) · [TicketsData](https://ticketsdata.com/marketplaces) ·
+  [Eventbrite: gašenje pretrage (2019.)](https://groups.google.com/g/eventbrite-api/c/FT2MsDswdrA) ·
+  [Ticketmaster: kontakt](https://developer.ticketmaster.com/support/contact-us/)
 - Ticketmaster: [International Discovery API v2](https://developer.ticketmaster.com/products-and-docs/apis/international-discovery/v2/) ·
   [FAQ](https://developer.ticketmaster.com/support/faq/) · [Discovery Feed](https://developer.ticketmaster.com/products-and-docs/apis/dc-dataFeeds/) ·
   [Discovery Feed 2.0](https://developer.ticketmaster.com/products-and-docs/apis/discovery-feed/) · [Vorp Labs](https://vorplabs.com/agent-tools/ticketmaster-cli) ·

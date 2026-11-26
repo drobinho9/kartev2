@@ -5,3 +5,6 @@
 - `wikipedia_tour_twilight.json` — isječak (tablica *Tour dates*) članka *Twilight of the Punks* s en.wikipedia.org (22. 11. 2026.), licenca [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); izvor: https://en.wikipedia.org/wiki/Twilight_of_the_Punks
 - `serpapi_google_events.json`, `predicthq_events.json` — **primjeri** u obliku iz službene dokumentacije (nisu stvarni odgovori; ključevi nisu bili dostupni pri izradi).
 - `ticketmaster_events.json`, `seatgeek_events.json`, `lastfm_artist.json` — primjeri u obliku službene dokumentacije.
+- `fixturedownload_sample.json` — isječak stvarnih feedova `fixturedownload.com/feed/json/{europa,conference,champions}-league-2026` (26. 11. 2026.),
+  dopunjen s jednom odigranom utakmicom i jednim „To be announced” retkom za testiranje filtara.
+- `apifootball_primjer.json` — **primjer** u obliku odgovora API-Football v3 `/fixtures` (izmišljene utakmice; ključ nije bio dostupan pri izradi).

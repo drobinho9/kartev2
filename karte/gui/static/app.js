@@ -29,7 +29,7 @@ function dtFmt(iso) {
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
 const VERDICT_CLASS = {
-  KUPI: "v-buy", RAZMOTRI: "v-maybe", "PROVJERI CIJENU": "v-check", RASPRODANO: "v-sold", "PRESKOČI": "v-skip",
+  KUPI: "v-buy", RAZMOTRI: "v-maybe", "PROVJERI CIJENU": "v-check", "RIZIČNO": "v-risk", RASPRODANO: "v-sold", "PRESKOČI": "v-skip",
   "ZAKONSKI OGRANIČENO": "v-legal", "UVJETI ZABRANJUJU": "v-legal", "NEMA CIJENE": "v-skip", OTKAZANO: "v-skip",
 };
 const plural = (n, one, other) => (n % 10 === 1 && n % 100 !== 11 ? one : other);
@@ -106,6 +106,8 @@ function showTab(name) {
   $$("#tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
   $$(".tab").forEach((s) => s.classList.toggle("active", s.id === `tab-${name}`));
   if (location.hash !== `#${name}`) history.replaceState(null, "", `#${name}`);
+  if (name === "radar" && !state.loaded.radar) { state.loaded.radar = true; runScan(); }
+  if (name === "nogomet" && !state.loaded.nogomet) { state.loaded.nogomet = true; loadFootball(); }
   if (name === "markets" && !state.loaded.markets) loadMarkets();
   if (name === "plan" && !state.loaded.plan) { state.loaded.plan = true; loadPlan(); }
   if (name === "news" && !state.loaded.news) { state.loaded.news = true; loadNews(); loadMy(); }
@@ -421,7 +423,7 @@ function renderResults() {
   const ops = state.scan ? state.scan.opportunities : [];
   const counts = {};
   ops.forEach((o) => (counts[o.verdict] = (counts[o.verdict] || 0) + 1));
-  const order = ["SVE", "KUPI", "RAZMOTRI", "PROVJERI CIJENU", "RASPRODANO", "PRESKOČI", "ZAKONSKI OGRANIČENO", "UVJETI ZABRANJUJU", "NEMA CIJENE", "OTKAZANO"];
+  const order = ["SVE", "KUPI", "RAZMOTRI", "PROVJERI CIJENU", "RIZIČNO", "RASPRODANO", "PRESKOČI", "NEMA CIJENE", "ZAKONSKI OGRANIČENO", "UVJETI ZABRANJUJU", "OTKAZANO"];
   $("#verdictChips").innerHTML = order.filter((v) => v === "SVE" || counts[v])
     .map((v) => `<button type="button" class="chip${state.filter === v ? " active" : ""}" data-f="${esc(v)}">${esc(v === "SVE" ? "Sve" : v)} <span class="muted">${v === "SVE" ? ops.length : counts[v]}</span></button>`).join("");
   $$("#verdictChips .chip").forEach((c) => c.addEventListener("click", () => { state.filter = c.dataset.f; renderResults(); }));
@@ -1022,6 +1024,144 @@ async function loadGuides() {
   if (r.guides.length) $("#guideBody").innerHTML = r.guides[0].html;
 }
 
+/* ------------------------------------------------------------------ PAKETI */
+function sourceNotice(r) {
+  let html = "";
+  if (r.is_demo) html += `<div class="notice demo">DEMO PODACI – izmišljeni događaji.</div>`;
+  if (r.is_snapshot && r.snapshot) {
+    const sn = r.snapshot;
+    html += `<div class="notice info small">Podaci: <b>snimka stvarnih događaja (stanje ${esc(sn.date_hr)})</b>${sn.age_days > 30 ? ` – stara ${sn.age_days} dana, osvježi: karte snimka --osvjezi` : ""} i raspored utakmica. `
+      + `Za žive podatke dodaj ključ (npr. besplatni SERPAPI_KEY) – vidi Vodiči / docs/IZVORI_PODATAKA.md.</div>`;
+  }
+  return html;
+}
+function warningsBox(r) {
+  return (r.warnings || []).length
+    ? `<details class="notice small"><summary>Napomene o podacima (${r.warnings.length})</summary><ul>${r.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul>`
+      + `<p class="muted">Izvori: ${esc((r.sources || []).join("; ") || "—")}</p></details>`
+    : "";
+}
+function pkgBody() {
+  const fd = new FormData($("#pkgForm"));
+  return { budget: fd.get("budget"), countries: fd.get("countries"), segment: fd.get("segment") };
+}
+function initPackages() {
+  $("#pkgForm [name=budget]").value = state.meta.settings.budget;
+  $("#pkgForm").addEventListener("submit", (e) => { e.preventDefault(); loadPackages(); });
+  const live = (state.meta.settings.live_sources || []).length > 0;
+  $("#pkgHint").textContent = live ? `Izvori: ${state.meta.settings.live_sources.join(", ")}` : "Bez API ključeva: snimka stvarnih događaja + raspored utakmica.";
+}
+async function loadPackages() {
+  await busy($("#pkgBtn"), async () => {
+    state.packages = await api.post("/api/paketi", pkgBody());
+    renderPackages();
+  });
+}
+function pkgItemHTML(it, pi, ii) {
+  const list = (arr) => `<ul>${(arr || []).map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+  const links = (it.links || []).filter((l) => ["Događaj", "Službena prodaja", "Preprodaja"].includes(l.group)).slice(0, 5)
+    .map((l) => `<a class="btn ghost small" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.label)} ↗</a>`).join("");
+  const price = it.conditional
+    ? `kupi samo ako je nominalna <b>≤ ${eur(it.max_face)}</b>`
+    : `nominalna <b>${eur(it.face)}</b>`;
+  return `<div class="pkg-item">
+    <div class="title"><b>${esc(it.artist)}</b><span class="muted">${esc(it.location)} · ${esc(dateFmt(it.date))}</span>
+      ${it.conditional ? '<span class="cond" title="Nominalna cijena nije javna – vrijedi samo ako ulaznicu kupiš do granice">UVJETNO</span>' : pill(it.verdict)}
+      <button type="button" class="ghost small" data-pkg="${pi}" data-item="${ii}">Detalji</button></div>
+    <div class="facts"><span>Kupi <b>${it.qty} kom</b>, ${price}</span><span>trošak <b>${eur(it.cost)}</b></span>
+      <span>prodaj na <b>${esc(it.platform)}</b> ~<b>${eur(it.list_price)}</b>/kom</span>
+      <span>očekivana dobit <b>${eur(it.expected_profit)}</b> <span class="muted">(ako se sve proda ${eur(it.profit_if_sold)})</span></span></div>
+    <div class="cols"><div><b class="small">Kako kupiti</b>${list(it.buy)}</div><div><b class="small">Kako prodati</b>${list(it.sell)}</div></div>
+    ${links ? `<div class="row wrapgap">${links}</div>` : ""}
+  </div>`;
+}
+function renderPackages() {
+  const r = state.packages;
+  let html = sourceNotice(r);
+  if (!r.packages.length) html += `<div class="notice warn">${r.notes.map((n) => esc(n)).join("<br>")}</div>`;
+  r.packages.forEach((p, pi) => {
+    const sim = p.simulation || {};
+    html += `<div class="card pkg">
+      <div class="pkg-head"><span class="logo" aria-hidden="true">${esc(p.icon)}</span><h2>Paket ${pi + 1}: ${esc(p.title)}</h2>
+        <span class="badge r-${esc(p.risk_label)}">rizik: ${esc(p.risk_label)}</span>
+        ${p.conditional ? '<span class="cond">ima uvjetnih stavki</span>' : ""}</div>
+      <p class="muted">${esc(p.subtitle)}</p>
+      <div class="kpis compact">${[
+        ["Ulog", eur(p.cost)],
+        ["Očekivana dobit", eur(p.expected_profit)],
+        ["Ako se sve proda", eur(p.profit_if_sold)],
+        ["90 % ishoda", isNum(sim.p05) ? `${eur(sim.p05)} … ${eur(sim.p95)}` : "—"],
+        ["Šansa gubitka", isNum(sim.prob_loss) ? `${nf0.format(sim.prob_loss * 100)} %` : "—"],
+        ["Ulaznica / događaja", `${p.tickets} / ${p.events}`],
+      ].map(([l, v]) => `<div class="kpi"><span>${l}</span><b>${v}</b></div>`).join("")}</div>
+      ${p.items.map((it, ii) => pkgItemHTML(it, pi, ii)).join("")}
+      <h3>Koraci</h3><ol class="steps">${p.steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
+    </div>`;
+  });
+  if (r.packages.length) html += `<div class="notice info small"><ul>${r.notes.map((n) => `<li>${esc(n)}</li>`).join("")}</ul></div>`;
+  const fm = (r.football && r.football.market) || [];
+  if (fm.length) {
+    html += `<div class="card"><h3>Nogomet na preprodaji <span class="muted small">(zabranjene nisu u paketima; RIZIČNO samo u paketu „Nogomet – visok rizik”)</span></h3>
+      <p class="muted small">Ove utakmice se nude na viagogu/StubHubu; ulaznice glase na ime i preprodaju zabranjuju zakon ili uvjeti kluba – detalji u kartici Nogomet.</p>
+      ${fm.map((m) => `<div class="pkg-item"><div class="title"><b>${esc(m.match)}</b><span class="muted">${esc(m.competition)} · ${esc(m.location)} · ${esc(dtFmt(m.date))}</span>${pill(m.verdict)}
+        ${m.url ? `<a class="btn ghost small" href="${esc(m.url)}" target="_blank" rel="noopener noreferrer">Oglasi ↗</a>` : ""}</div>${marketHTML(m)}</div>`).join("")}</div>`;
+  }
+  if ((r.watch || []).length) {
+    html += `<div class="card"><h3>Prati – jaka potražnja, cijena još nije poznata</h3><ul>${r.watch.map((w) => `<li><b>${esc(w.artist)}</b> · ${esc(w.location)} · ${esc(dateFmt(w.date))} · potražnja ${score(w.demand)}${w.url ? ` · <a href="${esc(w.url)}" target="_blank" rel="noopener">izvor ↗</a>` : ""}</li>`).join("")}</ul>
+      <p class="muted small">Kad saznaš nominalnu cijenu, upiši je u Kalkulator ili otvori događaj u kartici Svi događaji.</p></div>`;
+  }
+  html += warningsBox(r);
+  $("#pkgOut").innerHTML = html;
+  $$("#pkgOut [data-pkg]").forEach((b) => b.addEventListener("click", () => openDetail(r.packages[+b.dataset.pkg].items[+b.dataset.item].op)));
+}
+
+/* ------------------------------------------------------------------ NOGOMET */
+const RESALE_PILL = { rizicno: "⚠ moguće uz visok rizik", zabranjeno: "✕ ne smije se preprodati", sluzbeno: "! samo službena preprodaja", sluzbeno_trziste: "! samo službeno tržište", dopusteno: "✓ preprodaja dopuštena" };
+function marketHTML(m) {
+  if (!m) return "";
+  const face = isNum(m.face_min) ? ` · nominalno ~${eur(m.face_min)}${isNum(m.face_max) && m.face_max !== m.face_min ? "–" + eur(m.face_max) : ""}` : "";
+  const multiple = isNum(m.multiple) ? ` (${mult(m.multiple)})` : "";
+  return `<div class="market"><b>Na preprodaji (${esc(m.source)}, ${esc(dateFmt(m.observed))}):</b> od <b>${eur(m.lowest)}</b>${multiple}`
+    + `${isNum(m.median) ? `, medijan ${eur(m.median)}` : ""}${m.count ? `, ${m.count} oglasa` : ""}${face}`
+    + `${m.speculative ? ' <span class="badge sale" title="Oglasi daleko prije početka službene prodaje – prodavač još nema ulaznice">spekulativni oglasi</span>' : ""}`
+    + `<div class="muted small">${esc(m.why)}</div></div>`;
+}
+function initFootball() {
+  $("#fbForm").addEventListener("submit", (e) => { e.preventDefault(); state.loaded.nogomet = true; loadFootball(); });
+}
+async function loadFootball() {
+  const fd = new FormData($("#fbForm"));
+  const filter = fd.get("filter");
+  await busy($("#fbBtn"), async () => {
+    state.football = await api.post("/api/nogomet", { days: fd.get("days"), countries: "europa", football_all: filter === "all" });
+    state.football.filter = filter;
+    renderFootball();
+  });
+}
+function renderFootball() {
+  const r = state.football;
+  const rows = r.filter === "hr" ? r.rows.filter((x) => x.local) : r.rows;
+  let html = `<div class="kpis">${[
+    ["Utakmica", nf0.format(rows.length)], ["S hrvatskim klubom", nf0.format(r.local)], ["Derbija", nf0.format(r.derbies)],
+    ["Preprodaja dopuštena", nf0.format(r.allowed)],
+  ].map(([l, v]) => `<div class="kpi"><span>${l}</span><b>${v}</b></div>`).join("")}</div>`;
+  html += `<div class="notice warn"><b>Smije li se preprodati ulaznica za nogomet?</b><ul>${r.rules.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
+    Zato nogomet u Europi nije u Paketima – ovdje vidiš kako ulaznicu kupiti za sebe i kamo je legalno vratiti ako ne možeš ići.</div>`;
+  if (!rows.length) html += `<div class="notice">Nema utakmica za odabrani filtar.${state.meta.settings.api_football ? "" : " Za HNL dodaj besplatni API_FOOTBALL_KEY u .env."}</div>`;
+  html += `<div class="card">${rows.map((x, i) => `<div class="pkg-item">
+      <div class="title"><b>${esc(x.match)}</b><span class="muted">${esc(x.competition)} · ${esc(x.location)} · ${esc(dtFmt(x.date))}</span>
+        <span class="pill res-${esc(x.resale)}" title="${esc(x.legal)}">${esc(RESALE_PILL[x.resale] || x.resale_label)}</span>
+        <button type="button" class="ghost small" data-fb="${i}">Detalji</button></div>
+      <div class="facts">${x.why ? `<span>★ <b>${esc(x.why)}</b></span>` : ""}<span>potražnja <b>${score(x.demand)}</b>/100</span><span>${esc(x.resale_label)}</span>
+        ${x.official ? `<span>ako ne možeš ići: <b>${esc(x.official)}</b></span>` : ""}</div>
+      ${marketHTML(x.market)}
+      <details><summary class="small">Kako kupiti ulaznicu</summary><ul>${x.how_to_buy.map((s) => `<li>${esc(s)}</li>`).join("")}</ul></details>
+    </div>`).join("")}</div>`;
+  html += warningsBox(r);
+  $("#fbOut").innerHTML = html;
+  $$("#fbOut [data-fb]").forEach((b) => b.addEventListener("click", () => openDetail(rows[+b.dataset.fb].op)));
+}
+
 /* ------------------------------------------------------------------ start */
 async function init() {
   initTheme();
@@ -1030,7 +1170,7 @@ async function init() {
   const m = state.meta;
   $("#version").textContent = ` v${m.version}`;
   $("#keys").innerHTML = [["Ticketmaster", m.settings.ticketmaster], ["SerpApi", m.settings.serpapi], ["PredictHQ", m.settings.predicthq],
-    ["SeatGeek", m.settings.seatgeek], ["Last.fm", m.settings.lastfm]]
+    ["SeatGeek", m.settings.seatgeek], ["Last.fm", m.settings.lastfm], ["API-Football", m.settings.api_football]]
     .map(([n, on]) => `<span class="key ${on ? "on" : "off"}" title="${on ? "Ključ postavljen" : "Nema ključa u .env"}">${n}</span>`).join("")
     + `<span class="key on" title="Deezer i Wikipedia rade bez ključa">Deezer · Wikipedia</span>`;
   $$("#tabs button").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
@@ -1054,8 +1194,10 @@ async function init() {
     importPayload(decodeURIComponent(data));
     return;
   }
-  const tab = (location.hash || "#radar").slice(1);
-  showTab(["radar", "plan", "news", "calc", "cats", "journal", "markets", "guides"].includes(tab) ? tab : "radar");
-  if (!(m.settings.live_sources || []).length) runScan(); // bez ključeva odmah prikaži snimku stvarnih događaja
+  initPackages();
+  initFootball();
+  const tab = (location.hash || "#paketi").slice(1);
+  showTab(["paketi", "radar", "nogomet", "plan", "news", "calc", "cats", "journal", "markets", "guides"].includes(tab) ? tab : "paketi");
+  loadPackages(); // početni ekran: gotovi paketi (bez ključeva iz snimke stvarnih događaja)
 }
 document.addEventListener("DOMContentLoaded", init);

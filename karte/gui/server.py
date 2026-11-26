@@ -77,9 +77,10 @@ def guide_list() -> list[dict]:
 
 
 class App:
-    def __init__(self, settings: Settings, journal_path: Path | None = None, model_path: str | None = None):
+    def __init__(self, settings: Settings, journal_path: Path | None = None, model_path: str | None = None, fixtures: bool = False):
         self.settings = settings
         self.model_path = model_path
+        self.fixtures = fixtures  # dohvaćaj raspored nogometnih utakmica (mreža) – uključeno u `karte gui`
         self.journal = Journal(journal_path or default_path())
         self._http = HttpClient(cache=FileCache(settings.cache_dir, ttl_seconds=6 * 3600))
 
@@ -108,6 +109,7 @@ class App:
                 "seatgeek": bool(self.settings.seatgeek_client_id),
                 "serpapi": bool(self.settings.serpapi_key),
                 "predicthq": bool(self.settings.predicthq_token),
+                "api_football": bool(self.settings.api_football_key),
                 "live_sources": self.settings.live_sources,
                 "seller_country": self.settings.seller_country,
                 "countries": ",".join(self.settings.countries),
@@ -142,9 +144,31 @@ class App:
             show_all=bool(body.get("show_all")),
             seller_country=(body.get("seller_country") or self.settings.seller_country).upper(),
             max_artists=parse_int(body.get("max_artists")) or 300,
-            segment=body.get("segment") if body.get("segment") in ("music", "sport", "all") else "music",
+            segment=body.get("segment") if body.get("segment") in ("music", "sport", "all") else "all",
             model_path=self.model_path,
+            use_fixtures=self.fixtures and body.get("fixtures") is not False,
+            football_all=bool(body.get("football_all")),
+            football_risk=self.settings.football_risk,
         )
+
+    def _source(self, body: dict) -> dict:
+        """Paketi/Nogomet: bez odabira izvora → živi izvori ako postoje ključevi, inače snimka stvarnih događaja."""
+        if body.get("source") not in ("live", "snapshot", "demo"):
+            body = {**body, "source": "live" if self.settings.live_sources else "snapshot"}
+        return body
+
+    def packages(self, body: dict) -> dict:
+        from karte.service import packages
+
+        return packages(self._scan_options(self._source(body)), self.settings)
+
+    def football(self, body: dict) -> dict:
+        from karte.service import football_matches
+
+        body = self._source(body)
+        if not body.get("countries"):
+            body["countries"] = "europa"
+        return football_matches(self._scan_options(body), self.settings)
 
     def scan(self, body: dict) -> dict:
         result = run_scan(self._scan_options(body), self.settings)
@@ -403,6 +427,10 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(app.calc(body))
             if path == "/api/plan":
                 return self._json(app.plan(body))
+            if path == "/api/paketi":
+                return self._json(app.packages(body))
+            if path == "/api/nogomet":
+                return self._json(app.football(body))
             if path == "/api/najave/procitano":
                 return self._json(app.announcements_seen(body))
             if path == "/api/najave/izvor":
@@ -455,7 +483,7 @@ def make_server(app: App, host: str = "127.0.0.1", port: int = 8765, tries: int 
 
 def serve(settings: Settings, port: int = 8765, open_browser: bool = True, journal_path: Path | None = None,
           model_path: str | None = None, verbose: bool = False) -> None:
-    app = App(settings, journal_path, model_path)
+    app = App(settings, journal_path, model_path, fixtures=True)
     server = make_server(app, port=port)
     server.verbose = verbose
     url = f"http://127.0.0.1:{server.server_port}/"
