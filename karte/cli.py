@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import math
 import os
 import sys
 from pathlib import Path
@@ -55,6 +56,7 @@ def _scan_options(args, settings: Settings) -> tuple[ScanOptions, bool]:
         serpapi_cities=args.gradovi.split(",") if args.gradovi else [],
         use_fixtures=not getattr(args, "bez_rasporeda", False),
         football_risk=settings.football_risk,
+        use_learned=True,
     )
     return opts, auto_snapshot
 
@@ -407,6 +409,50 @@ def cmd_radar(args, settings: Settings) -> int:
     return 0
 
 
+def cmd_model(args, settings: Settings) -> int:
+    """Naš model: što kažu stvarni podaci (StubHub krivulje) i učenje iz prikupljenih cijena."""
+    from karte import timing, ucenje
+    from karte.snapshot import data_dir
+
+    curves = timing.data().get("krivulje", {})
+    print(f"1) KADA PRODATI – stvarni podaci ({timing.data().get('izvor', '—')})")
+    print(f"   događaji {timing.data().get('dogadaji_od', '?')} – {timing.data().get('dogadaji_do', '?')}; "
+          "promjena najniže cijene u odnosu na dan događaja (medijan) i udio događaja kojima je cijena kasnije pala:\n")
+    names = {"large": "velike dvorane/stadioni", "mid": "srednje dvorane", "small": "mali klubovi", "sports": "sport",
+             "concerts": "koncerti", "theater": "kazalište", "all": "sve"}
+    print(f"   {'Segment':<26} {'događaja':>8} {'T-30':>7} {'T-14':>7} {'T-7':>7} {'T-3':>7}   pala kasnije (T-30)")
+    for seg in ("large", "mid", "small", "sports", "concerts", "theater", "all"):
+        c = curves.get(f"ALL:{seg}")
+        if not c:
+            continue
+        pts = {p["dana_prije"]: p for p in c["tocke"]}
+        cell = lambda d: f"{pts[d]['medijan_pct']:+.0f} %" if d in pts else "—"  # noqa: E731
+        print(f"   {names[seg]:<26} {c['dogadaja']:>8} {cell(30):>7} {cell(14):>7} {cell(7):>7} {cell(3):>7}   "
+              f"{pts.get(30, {}).get('udio_skuplje', 0) * 100:.0f} %")
+    print("\n   → Najviše novca: velike dvorane i sport – prodaj rano (mjesec dana prije cijene su ~17–20 % više nego na dan "
+          "događaja). Mali klubovi: cijena stabilna. Kazalište: cijene rastu prema datumu.\n")
+
+    opts, _ = _scan_options(args, settings)
+    from karte.pipeline import run_scan
+
+    result = run_scan(opts, settings)
+    report = ucenje.train(data_dir(), result.opportunities) if args.treniraj else None
+    rows = ucenje.dataset(data_dir(), result.opportunities)
+    print(f"2) NAŠ MODEL (ridge regresija na ln(preprodaja / nominalna)) – primjera: {len(rows)} (uključuje se od {ucenje.MIN_PRIMJERA})")
+    for r in rows[:10]:
+        print(f"   • {r['naziv'][:50]:<50} preprodaja/nominalna ×{math.exp(r['y']):.2f}".replace(".", ","))
+    if report:
+        print(f"\n   {report['poruka']}")
+        if report.get("coef"):
+            top = sorted(report["coef"].items(), key=lambda kv: -abs(kv[1]))[:6]
+            print("   Najjači signali: " + ", ".join(f"{k} {v:+.2f}" for k, v in top))
+    else:
+        print("\n   Pokreni s --treniraj da se model nauči i spremi (radar ga zatim koristi kad je dovoljno točan).")
+    print("\n   Primjere skuplja radar (svaka 3 sata): za svaki događaj dnevno zapiše značajke i cijene. Najbrže se puni s "
+          "ključevima (Ticketmaster, SerpApi) i tvojim prodajama u „Moje prodaje”.")
+    return 0
+
+
 def cmd_telegram(args, settings: Settings) -> int:
     """Postavljanje Telegram obavijesti: chat id i probna poruka."""
     from karte.notify import telegram_chats, telegram_send
@@ -737,6 +783,11 @@ def build_parser() -> argparse.ArgumentParser:
     rd.add_argument("--posalji", action="store_true", help="pošalji obavijesti na Telegram (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID)")
     rd.add_argument("--bez-najava", action="store_true", help="bez RSS najava (samo događaji iz izvora)")
     rd.set_defaults(func=cmd_radar)
+
+    md = sub.add_parser("model", help="naš model: kada prodati (stvarni StubHub podaci) i učenje iz prikupljenih cijena")
+    _add_scan_source_args(md)
+    md.add_argument("--treniraj", action="store_true", help="nauči model iz prikupljenih primjera i spremi ga")
+    md.set_defaults(func=cmd_model)
 
     tg = sub.add_parser("telegram", help="postavljanje Telegram obavijesti (chat id, probna poruka)")
     tg.add_argument("--chat-id", action="store_true", help="ispiši chat id iz zadnjih poruka botu")

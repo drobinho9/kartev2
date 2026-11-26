@@ -1,0 +1,1648 @@
+{
+ "izvor": "NeedATicket (najniža cijena na StubHubu, bez naknade kupca), Hugging Face: streetvisit/uk-resale-ticket-prices, licenca CC BY 4.0",
+ "dogadaji_od": "2026-08-29",
+ "dogadaji_do": "2026-10-27",
+ "azurirano": "2026-10-28",
+ "objasnjenje": "medijan_pct = promjena najniže cijene X dana prije događaja u odnosu na dan događaja; udio_skuplje = udio događaja kojima je najniža cijena X dana prije bila viša nego na dan događaja.",
+ "krivulje": {
+  "ALL:all": {
+   "dogadaja": 6023,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": -2.0,
+     "p75_pct": 4.8,
+     "udio_skuplje": 0.277,
+     "udio_jeftinije": 0.259,
+     "uzorak": 5808
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": -4.5,
+     "p75_pct": 12.7,
+     "udio_skuplje": 0.326,
+     "udio_jeftinije": 0.276,
+     "uzorak": 5608
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": -5.1,
+     "p75_pct": 17.4,
+     "udio_skuplje": 0.349,
+     "udio_jeftinije": 0.282,
+     "uzorak": 5378
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.0,
+     "p25_pct": -6.0,
+     "p75_pct": 25.7,
+     "udio_skuplje": 0.373,
+     "udio_jeftinije": 0.285,
+     "uzorak": 4904
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 0.0,
+     "p25_pct": -6.9,
+     "p75_pct": 30.0,
+     "udio_skuplje": 0.391,
+     "udio_jeftinije": 0.292,
+     "uzorak": 4691
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 0.0,
+     "p25_pct": -8.3,
+     "p75_pct": 33.8,
+     "udio_skuplje": 0.404,
+     "udio_jeftinije": 0.297,
+     "uzorak": 4226
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 0.0,
+     "p25_pct": -8.3,
+     "p75_pct": 37.5,
+     "udio_skuplje": 0.418,
+     "udio_jeftinije": 0.3,
+     "uzorak": 3667
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 0.0,
+     "p25_pct": -11.3,
+     "p75_pct": 42.6,
+     "udio_skuplje": 0.432,
+     "udio_jeftinije": 0.316,
+     "uzorak": 2765
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 0.0,
+     "p25_pct": -10.2,
+     "p75_pct": 49.3,
+     "udio_skuplje": 0.449,
+     "udio_jeftinije": 0.304,
+     "uzorak": 1525
+    }
+   ]
+  },
+  "ALL:concerts": {
+   "dogadaja": 3435,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 4.2,
+     "udio_skuplje": 0.27,
+     "udio_jeftinije": 0.188,
+     "uzorak": 3319
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 13.2,
+     "udio_skuplje": 0.322,
+     "udio_jeftinije": 0.205,
+     "uzorak": 3201
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 17.7,
+     "udio_skuplje": 0.345,
+     "udio_jeftinije": 0.216,
+     "uzorak": 3057
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 27.6,
+     "udio_skuplje": 0.376,
+     "udio_jeftinije": 0.224,
+     "uzorak": 2842
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 30.7,
+     "udio_skuplje": 0.388,
+     "udio_jeftinije": 0.232,
+     "uzorak": 2725
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 34.1,
+     "udio_skuplje": 0.399,
+     "udio_jeftinije": 0.234,
+     "uzorak": 2463
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 35.4,
+     "udio_skuplje": 0.411,
+     "udio_jeftinije": 0.239,
+     "uzorak": 2159
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 0.0,
+     "p25_pct": -3.9,
+     "p75_pct": 40.0,
+     "udio_skuplje": 0.419,
+     "udio_jeftinije": 0.263,
+     "uzorak": 1597
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 0.0,
+     "p25_pct": -1.9,
+     "p75_pct": 47.8,
+     "udio_skuplje": 0.431,
+     "udio_jeftinije": 0.256,
+     "uzorak": 882
+    }
+   ]
+  },
+  "ALL:large": {
+   "dogadaja": 1337,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": -9.1,
+     "p75_pct": 15.0,
+     "udio_skuplje": 0.41,
+     "udio_jeftinije": 0.347,
+     "uzorak": 1299
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": -9.5,
+     "p75_pct": 24.4,
+     "udio_skuplje": 0.457,
+     "udio_jeftinije": 0.344,
+     "uzorak": 1268
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": -9.4,
+     "p75_pct": 30.0,
+     "udio_skuplje": 0.48,
+     "udio_jeftinije": 0.333,
+     "uzorak": 1226
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 1.3,
+     "p25_pct": -10.6,
+     "p75_pct": 38.0,
+     "udio_skuplje": 0.505,
+     "udio_jeftinije": 0.334,
+     "uzorak": 1109
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 4.9,
+     "p25_pct": -9.3,
+     "p75_pct": 43.3,
+     "udio_skuplje": 0.529,
+     "udio_jeftinije": 0.33,
+     "uzorak": 1061
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 6.1,
+     "p25_pct": -10.0,
+     "p75_pct": 48.1,
+     "udio_skuplje": 0.555,
+     "udio_jeftinije": 0.329,
+     "uzorak": 977
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 10.7,
+     "p25_pct": -10.4,
+     "p75_pct": 53.3,
+     "udio_skuplje": 0.577,
+     "udio_jeftinije": 0.327,
+     "uzorak": 850
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 13.4,
+     "p25_pct": -14.3,
+     "p75_pct": 68.1,
+     "udio_skuplje": 0.58,
+     "udio_jeftinije": 0.347,
+     "uzorak": 640
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 19.9,
+     "p25_pct": -12.5,
+     "p75_pct": 78.8,
+     "udio_skuplje": 0.629,
+     "udio_jeftinije": 0.335,
+     "uzorak": 358
+    }
+   ]
+  },
+  "ALL:mid": {
+   "dogadaja": 477,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.9,
+     "udio_skuplje": 0.249,
+     "udio_jeftinije": 0.164,
+     "uzorak": 458
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 14.9,
+     "udio_skuplje": 0.327,
+     "udio_jeftinije": 0.179,
+     "uzorak": 441
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 20.0,
+     "udio_skuplje": 0.363,
+     "udio_jeftinije": 0.183,
+     "uzorak": 422
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 33.0,
+     "udio_skuplje": 0.405,
+     "udio_jeftinije": 0.208,
+     "uzorak": 390
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 36.2,
+     "udio_skuplje": 0.427,
+     "udio_jeftinije": 0.223,
+     "uzorak": 363
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 40.0,
+     "udio_skuplje": 0.436,
+     "udio_jeftinije": 0.234,
+     "uzorak": 321
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 0.0,
+     "p25_pct": -1.9,
+     "p75_pct": 47.1,
+     "udio_skuplje": 0.457,
+     "udio_jeftinije": 0.254,
+     "uzorak": 276
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 1.3,
+     "p25_pct": 0.0,
+     "p75_pct": 50.2,
+     "udio_skuplje": 0.515,
+     "udio_jeftinije": 0.248,
+     "uzorak": 198
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 8.6,
+     "p25_pct": -0.3,
+     "p75_pct": 50.0,
+     "udio_skuplje": 0.532,
+     "udio_jeftinije": 0.248,
+     "uzorak": 109
+    }
+   ]
+  },
+  "ALL:small": {
+   "dogadaja": 173,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.108,
+     "udio_jeftinije": 0.133,
+     "uzorak": 166
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.179,
+     "udio_jeftinije": 0.173,
+     "uzorak": 162
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.197,
+     "udio_jeftinije": 0.178,
+     "uzorak": 152
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.22,
+     "udio_jeftinije": 0.241,
+     "uzorak": 141
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.25,
+     "udio_jeftinije": 0.242,
+     "uzorak": 128
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 14.9,
+     "udio_skuplje": 0.273,
+     "udio_jeftinije": 0.236,
+     "uzorak": 110
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 0.0,
+     "p25_pct": -2.2,
+     "p75_pct": 18.0,
+     "udio_skuplje": 0.326,
+     "udio_jeftinije": 0.25,
+     "uzorak": 92
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 18.0,
+     "udio_skuplje": 0.338,
+     "udio_jeftinije": 0.211,
+     "uzorak": 71
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 5.7,
+     "udio_skuplje": 0.278,
+     "udio_jeftinije": 0.194,
+     "uzorak": 36
+    }
+   ]
+  },
+  "ALL:sports": {
+   "dogadaja": 1557,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": -9.1,
+     "p75_pct": 13.5,
+     "udio_skuplje": 0.357,
+     "udio_jeftinije": 0.344,
+     "uzorak": 1508
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": -12.2,
+     "p75_pct": 23.8,
+     "udio_skuplje": 0.413,
+     "udio_jeftinije": 0.346,
+     "uzorak": 1475
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": -9.9,
+     "p75_pct": 30.0,
+     "udio_skuplje": 0.446,
+     "udio_jeftinije": 0.33,
+     "uzorak": 1424
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.0,
+     "p25_pct": -11.2,
+     "p75_pct": 38.5,
+     "udio_skuplje": 0.47,
+     "udio_jeftinije": 0.328,
+     "uzorak": 1238
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 1.0,
+     "p25_pct": -10.0,
+     "p75_pct": 48.5,
+     "udio_skuplje": 0.502,
+     "udio_jeftinije": 0.329,
+     "uzorak": 1175
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 4.7,
+     "p25_pct": -10.8,
+     "p75_pct": 53.3,
+     "udio_skuplje": 0.526,
+     "udio_jeftinije": 0.33,
+     "uzorak": 1071
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 10.9,
+     "p25_pct": -12.4,
+     "p75_pct": 62.8,
+     "udio_skuplje": 0.554,
+     "udio_jeftinije": 0.327,
+     "uzorak": 908
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 14.1,
+     "p25_pct": -13.0,
+     "p75_pct": 70.6,
+     "udio_skuplje": 0.574,
+     "udio_jeftinije": 0.332,
+     "uzorak": 721
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 16.6,
+     "p25_pct": -12.8,
+     "p75_pct": 69.8,
+     "udio_skuplje": 0.582,
+     "udio_jeftinije": 0.338,
+     "uzorak": 402
+    }
+   ]
+  },
+  "ALL:theater": {
+   "dogadaja": 995,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": -11.5,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.177,
+     "udio_jeftinije": 0.373,
+     "uzorak": 946
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": -15.3,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.198,
+     "udio_jeftinije": 0.413,
+     "uzorak": 900
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": -17.3,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.199,
+     "udio_jeftinije": 0.441,
+     "uzorak": 865
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.0,
+     "p25_pct": -17.7,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.213,
+     "udio_jeftinije": 0.44,
+     "uzorak": 797
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 0.0,
+     "p25_pct": -19.9,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.226,
+     "udio_jeftinije": 0.457,
+     "uzorak": 764
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 0.0,
+     "p25_pct": -21.1,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.231,
+     "udio_jeftinije": 0.487,
+     "uzorak": 668
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": -0.4,
+     "p25_pct": -20.9,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.236,
+     "udio_jeftinije": 0.492,
+     "uzorak": 581
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": -0.3,
+     "p25_pct": -21.1,
+     "p75_pct": 0.8,
+     "udio_skuplje": 0.249,
+     "udio_jeftinije": 0.494,
+     "uzorak": 433
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 0.0,
+     "p25_pct": -17.4,
+     "p75_pct": 6.9,
+     "udio_skuplje": 0.298,
+     "udio_jeftinije": 0.447,
+     "uzorak": 228
+    }
+   ]
+  },
+  "GB:all": {
+   "dogadaja": 1140,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.161,
+     "udio_jeftinije": 0.075,
+     "uzorak": 1097
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.237,
+     "udio_jeftinije": 0.119,
+     "uzorak": 1046
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 9.7,
+     "udio_skuplje": 0.268,
+     "udio_jeftinije": 0.14,
+     "uzorak": 1003
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 14.4,
+     "udio_skuplje": 0.287,
+     "udio_jeftinije": 0.168,
+     "uzorak": 931
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 20.0,
+     "udio_skuplje": 0.309,
+     "udio_jeftinije": 0.171,
+     "uzorak": 877
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 25.5,
+     "udio_skuplje": 0.325,
+     "udio_jeftinije": 0.188,
+     "uzorak": 788
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 36.4,
+     "udio_skuplje": 0.341,
+     "udio_jeftinije": 0.194,
+     "uzorak": 690
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 40.0,
+     "udio_skuplje": 0.365,
+     "udio_jeftinije": 0.224,
+     "uzorak": 509
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 50.2,
+     "udio_skuplje": 0.407,
+     "udio_jeftinije": 0.244,
+     "uzorak": 275
+    }
+   ]
+  },
+  "GB:concerts": {
+   "dogadaja": 883,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.172,
+     "udio_jeftinije": 0.075,
+     "uzorak": 855
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.1,
+     "udio_skuplje": 0.249,
+     "udio_jeftinije": 0.129,
+     "uzorak": 817
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 10.0,
+     "udio_skuplje": 0.277,
+     "udio_jeftinije": 0.151,
+     "uzorak": 784
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 15.1,
+     "udio_skuplje": 0.293,
+     "udio_jeftinije": 0.185,
+     "uzorak": 740
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 20.0,
+     "udio_skuplje": 0.302,
+     "udio_jeftinije": 0.189,
+     "uzorak": 695
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 25.0,
+     "udio_skuplje": 0.311,
+     "udio_jeftinije": 0.207,
+     "uzorak": 637
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 35.0,
+     "udio_skuplje": 0.331,
+     "udio_jeftinije": 0.213,
+     "uzorak": 568
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 40.0,
+     "udio_skuplje": 0.364,
+     "udio_jeftinije": 0.243,
+     "uzorak": 415
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 0.0,
+     "p25_pct": -10.3,
+     "p75_pct": 48.6,
+     "udio_skuplje": 0.385,
+     "udio_jeftinije": 0.281,
+     "uzorak": 221
+    }
+   ]
+  },
+  "GB:large": {
+   "dogadaja": 50,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 3.4,
+     "udio_skuplje": 0.3,
+     "udio_jeftinije": 0.14,
+     "uzorak": 50
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 35.4,
+     "udio_skuplje": 0.479,
+     "udio_jeftinije": 0.104,
+     "uzorak": 48
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 5.6,
+     "p25_pct": 0.0,
+     "p75_pct": 50.0,
+     "udio_skuplje": 0.553,
+     "udio_jeftinije": 0.149,
+     "uzorak": 47
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 5.7,
+     "p25_pct": 0.0,
+     "p75_pct": 37.5,
+     "udio_skuplje": 0.585,
+     "udio_jeftinije": 0.146,
+     "uzorak": 41
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 14.3,
+     "p25_pct": 0.0,
+     "p75_pct": 50.0,
+     "udio_skuplje": 0.659,
+     "udio_jeftinije": 0.122,
+     "uzorak": 41
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 28.7,
+     "p25_pct": 0.0,
+     "p75_pct": 53.8,
+     "udio_skuplje": 0.737,
+     "udio_jeftinije": 0.053,
+     "uzorak": 38
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 50.0,
+     "p25_pct": 1.7,
+     "p75_pct": 100.0,
+     "udio_skuplje": 0.774,
+     "udio_jeftinije": 0.032,
+     "uzorak": 31
+    }
+   ]
+  },
+  "GB:mid": {
+   "dogadaja": 167,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.186,
+     "udio_jeftinije": 0.087,
+     "uzorak": 161
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 18.2,
+     "udio_skuplje": 0.301,
+     "udio_jeftinije": 0.078,
+     "uzorak": 153
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 33.7,
+     "udio_skuplje": 0.379,
+     "udio_jeftinije": 0.09,
+     "uzorak": 145
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 38.6,
+     "udio_skuplje": 0.433,
+     "udio_jeftinije": 0.105,
+     "uzorak": 134
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 50.0,
+     "udio_skuplje": 0.484,
+     "udio_jeftinije": 0.139,
+     "uzorak": 122
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 50.0,
+     "udio_skuplje": 0.495,
+     "udio_jeftinije": 0.174,
+     "uzorak": 109
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 2.4,
+     "p25_pct": 0.0,
+     "p75_pct": 78.0,
+     "udio_skuplje": 0.517,
+     "udio_jeftinije": 0.165,
+     "uzorak": 91
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 27.2,
+     "p25_pct": 0.0,
+     "p75_pct": 86.0,
+     "udio_skuplje": 0.603,
+     "udio_jeftinije": 0.175,
+     "uzorak": 63
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 27.6,
+     "p25_pct": 0.0,
+     "p75_pct": 50.2,
+     "udio_skuplje": 0.632,
+     "udio_jeftinije": 0.237,
+     "uzorak": 38
+    }
+   ]
+  },
+  "GB:small": {
+   "dogadaja": 103,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.139,
+     "udio_jeftinije": 0.05,
+     "uzorak": 101
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.1,
+     "udio_skuplje": 0.238,
+     "udio_jeftinije": 0.129,
+     "uzorak": 101
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.7,
+     "udio_skuplje": 0.247,
+     "udio_jeftinije": 0.155,
+     "uzorak": 97
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 16.4,
+     "udio_skuplje": 0.29,
+     "udio_jeftinije": 0.215,
+     "uzorak": 93
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 19.6,
+     "udio_skuplje": 0.337,
+     "udio_jeftinije": 0.217,
+     "uzorak": 83
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 33.3,
+     "udio_skuplje": 0.354,
+     "udio_jeftinije": 0.19,
+     "uzorak": 79
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 35.4,
+     "udio_skuplje": 0.377,
+     "udio_jeftinije": 0.203,
+     "uzorak": 69
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 22.6,
+     "udio_skuplje": 0.385,
+     "udio_jeftinije": 0.192,
+     "uzorak": 52
+    }
+   ]
+  },
+  "GB:sports": {
+   "dogadaja": 45,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.14,
+     "udio_jeftinije": 0.233,
+     "uzorak": 43
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": -12.5,
+     "p75_pct": 16.2,
+     "udio_skuplje": 0.31,
+     "udio_jeftinije": 0.262,
+     "uzorak": 42
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": -16.0,
+     "p75_pct": 50.0,
+     "udio_skuplje": 0.359,
+     "udio_jeftinije": 0.333,
+     "uzorak": 39
+    }
+   ]
+  },
+  "GB:theater": {
+   "dogadaja": 206,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.124,
+     "udio_jeftinije": 0.042,
+     "uzorak": 193
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.17,
+     "udio_jeftinije": 0.044,
+     "uzorak": 182
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.206,
+     "udio_jeftinije": 0.051,
+     "uzorak": 175
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.239,
+     "udio_jeftinije": 0.076,
+     "uzorak": 159
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 15.9,
+     "udio_skuplje": 0.298,
+     "udio_jeftinije": 0.093,
+     "uzorak": 151
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 21.4,
+     "udio_skuplje": 0.336,
+     "udio_jeftinije": 0.112,
+     "uzorak": 125
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 33.3,
+     "udio_skuplje": 0.353,
+     "udio_jeftinije": 0.108,
+     "uzorak": 102
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 41.4,
+     "udio_skuplje": 0.359,
+     "udio_jeftinije": 0.141,
+     "uzorak": 78
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 0.0,
+     "p25_pct": 0.0,
+     "p75_pct": 64.3,
+     "udio_skuplje": 0.457,
+     "udio_jeftinije": 0.109,
+     "uzorak": 46
+    }
+   ]
+  },
+  "US:all": {
+   "dogadaja": 2911,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": -13.5,
+     "p75_pct": 19.5,
+     "udio_skuplje": 0.433,
+     "udio_jeftinije": 0.415,
+     "uzorak": 2865
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": -14.8,
+     "p75_pct": 27.5,
+     "udio_skuplje": 0.466,
+     "udio_jeftinije": 0.411,
+     "uzorak": 2783
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.0,
+     "p25_pct": -14.9,
+     "p75_pct": 32.8,
+     "udio_skuplje": 0.477,
+     "udio_jeftinije": 0.411,
+     "uzorak": 2678
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 0.9,
+     "p25_pct": -14.9,
+     "p75_pct": 38.1,
+     "udio_skuplje": 0.499,
+     "udio_jeftinije": 0.4,
+     "uzorak": 2436
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 1.4,
+     "p25_pct": -15.4,
+     "p75_pct": 43.5,
+     "udio_skuplje": 0.507,
+     "udio_jeftinije": 0.405,
+     "uzorak": 2327
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 2.8,
+     "p25_pct": -15.3,
+     "p75_pct": 46.5,
+     "udio_skuplje": 0.517,
+     "udio_jeftinije": 0.406,
+     "uzorak": 2074
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 3.3,
+     "p25_pct": -16.7,
+     "p75_pct": 45.7,
+     "udio_skuplje": 0.522,
+     "udio_jeftinije": 0.413,
+     "uzorak": 1773
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 4.5,
+     "p25_pct": -18.2,
+     "p75_pct": 51.2,
+     "udio_skuplje": 0.524,
+     "udio_jeftinije": 0.43,
+     "uzorak": 1331
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 8.4,
+     "p25_pct": -16.1,
+     "p75_pct": 56.8,
+     "udio_skuplje": 0.548,
+     "udio_jeftinije": 0.404,
+     "uzorak": 727
+    }
+   ]
+  },
+  "US:concerts": {
+   "dogadaja": 1240,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 2.0,
+     "p25_pct": -11.1,
+     "p75_pct": 27.1,
+     "udio_skuplje": 0.517,
+     "udio_jeftinije": 0.37,
+     "uzorak": 1226
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 6.4,
+     "p25_pct": -10.1,
+     "p75_pct": 35.9,
+     "udio_skuplje": 0.563,
+     "udio_jeftinije": 0.352,
+     "uzorak": 1187
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 9.2,
+     "p25_pct": -9.8,
+     "p75_pct": 41.0,
+     "udio_skuplje": 0.573,
+     "udio_jeftinije": 0.353,
+     "uzorak": 1134
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 12.0,
+     "p25_pct": -9.1,
+     "p75_pct": 49.2,
+     "udio_skuplje": 0.608,
+     "udio_jeftinije": 0.327,
+     "uzorak": 1054
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 13.1,
+     "p25_pct": -9.2,
+     "p75_pct": 52.6,
+     "udio_skuplje": 0.617,
+     "udio_jeftinije": 0.325,
+     "uzorak": 1021
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 16.1,
+     "p25_pct": -9.1,
+     "p75_pct": 55.7,
+     "udio_skuplje": 0.628,
+     "udio_jeftinije": 0.321,
+     "uzorak": 904
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 16.2,
+     "p25_pct": -10.3,
+     "p75_pct": 52.4,
+     "udio_skuplje": 0.627,
+     "udio_jeftinije": 0.333,
+     "uzorak": 775
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 15.9,
+     "p25_pct": -15.7,
+     "p75_pct": 54.0,
+     "udio_skuplje": 0.607,
+     "udio_jeftinije": 0.372,
+     "uzorak": 567
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 17.9,
+     "p25_pct": -12.5,
+     "p75_pct": 67.9,
+     "udio_skuplje": 0.637,
+     "udio_jeftinije": 0.327,
+     "uzorak": 306
+    }
+   ]
+  },
+  "US:large": {
+   "dogadaja": 1026,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": -10.0,
+     "p75_pct": 20.0,
+     "udio_skuplje": 0.466,
+     "udio_jeftinije": 0.371,
+     "uzorak": 1015
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": -10.3,
+     "p75_pct": 27.9,
+     "udio_skuplje": 0.495,
+     "udio_jeftinije": 0.363,
+     "uzorak": 993
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 3.0,
+     "p25_pct": -9.9,
+     "p75_pct": 34.7,
+     "udio_skuplje": 0.516,
+     "udio_jeftinije": 0.341,
+     "uzorak": 959
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 5.8,
+     "p25_pct": -10.0,
+     "p75_pct": 43.1,
+     "udio_skuplje": 0.536,
+     "udio_jeftinije": 0.334,
+     "uzorak": 871
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 8.9,
+     "p25_pct": -8.9,
+     "p75_pct": 49.1,
+     "udio_skuplje": 0.558,
+     "udio_jeftinije": 0.327,
+     "uzorak": 825
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 8.8,
+     "p25_pct": -9.2,
+     "p75_pct": 56.0,
+     "udio_skuplje": 0.574,
+     "udio_jeftinije": 0.331,
+     "uzorak": 749
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 13.4,
+     "p25_pct": -10.8,
+     "p75_pct": 58.7,
+     "udio_skuplje": 0.59,
+     "udio_jeftinije": 0.338,
+     "uzorak": 646
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 13.8,
+     "p25_pct": -14.3,
+     "p75_pct": 72.3,
+     "udio_skuplje": 0.574,
+     "udio_jeftinije": 0.372,
+     "uzorak": 479
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 18.7,
+     "p25_pct": -12.8,
+     "p75_pct": 78.8,
+     "udio_skuplje": 0.611,
+     "udio_jeftinije": 0.362,
+     "uzorak": 265
+    }
+   ]
+  },
+  "US:mid": {
+   "dogadaja": 124,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 3.5,
+     "p25_pct": -7.4,
+     "p75_pct": 25.5,
+     "udio_skuplje": 0.566,
+     "udio_jeftinije": 0.328,
+     "uzorak": 122
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 9.4,
+     "p25_pct": -4.1,
+     "p75_pct": 40.0,
+     "udio_skuplje": 0.605,
+     "udio_jeftinije": 0.319,
+     "uzorak": 119
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 8.5,
+     "p25_pct": -10.4,
+     "p75_pct": 48.3,
+     "udio_skuplje": 0.591,
+     "udio_jeftinije": 0.339,
+     "uzorak": 115
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 8.7,
+     "p25_pct": -8.9,
+     "p75_pct": 52.5,
+     "udio_skuplje": 0.645,
+     "udio_jeftinije": 0.327,
+     "uzorak": 107
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 17.0,
+     "p25_pct": -3.1,
+     "p75_pct": 70.5,
+     "udio_skuplje": 0.647,
+     "udio_jeftinije": 0.283,
+     "uzorak": 99
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 11.1,
+     "p25_pct": -2.0,
+     "p75_pct": 58.3,
+     "udio_skuplje": 0.659,
+     "udio_jeftinije": 0.281,
+     "uzorak": 82
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 12.6,
+     "p25_pct": -7.7,
+     "p75_pct": 65.9,
+     "udio_skuplje": 0.629,
+     "udio_jeftinije": 0.343,
+     "uzorak": 70
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 21.9,
+     "p25_pct": -4.6,
+     "p75_pct": 63.0,
+     "udio_skuplje": 0.685,
+     "udio_jeftinije": 0.296,
+     "uzorak": 54
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 31.6,
+     "p25_pct": -1.5,
+     "p75_pct": 90.8,
+     "udio_skuplje": 0.667,
+     "udio_jeftinije": 0.273,
+     "uzorak": 33
+    }
+   ]
+  },
+  "US:sports": {
+   "dogadaja": 1061,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": 0.0,
+     "p25_pct": -10.4,
+     "p75_pct": 19.4,
+     "udio_skuplje": 0.437,
+     "udio_jeftinije": 0.372,
+     "uzorak": 1050
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": 0.0,
+     "p25_pct": -12.8,
+     "p75_pct": 27.8,
+     "udio_skuplje": 0.468,
+     "udio_jeftinije": 0.359,
+     "uzorak": 1029
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": 0.3,
+     "p25_pct": -10.4,
+     "p75_pct": 35.5,
+     "udio_skuplje": 0.492,
+     "udio_jeftinije": 0.337,
+     "uzorak": 998
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": 1.3,
+     "p25_pct": -12.6,
+     "p75_pct": 42.8,
+     "udio_skuplje": 0.503,
+     "udio_jeftinije": 0.339,
+     "uzorak": 878
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": 2.9,
+     "p25_pct": -11.3,
+     "p75_pct": 49.9,
+     "udio_skuplje": 0.513,
+     "udio_jeftinije": 0.347,
+     "uzorak": 822
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": 6.4,
+     "p25_pct": -10.8,
+     "p75_pct": 57.9,
+     "udio_skuplje": 0.541,
+     "udio_jeftinije": 0.344,
+     "uzorak": 730
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": 12.2,
+     "p25_pct": -13.2,
+     "p75_pct": 66.0,
+     "udio_skuplje": 0.567,
+     "udio_jeftinije": 0.343,
+     "uzorak": 609
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": 15.5,
+     "p25_pct": -13.1,
+     "p75_pct": 75.0,
+     "udio_skuplje": 0.59,
+     "udio_jeftinije": 0.353,
+     "uzorak": 473
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": 16.5,
+     "p25_pct": -13.6,
+     "p75_pct": 69.5,
+     "udio_skuplje": 0.582,
+     "udio_jeftinije": 0.384,
+     "uzorak": 268
+    }
+   ]
+  },
+  "US:theater": {
+   "dogadaja": 589,
+   "tocke": [
+    {
+     "dana_prije": 1,
+     "medijan_pct": -4.2,
+     "p25_pct": -24.1,
+     "p75_pct": 0.4,
+     "udio_skuplje": 0.245,
+     "udio_jeftinije": 0.59,
+     "uzorak": 568
+    },
+    {
+     "dana_prije": 2,
+     "medijan_pct": -8.2,
+     "p25_pct": -27.2,
+     "p75_pct": 1.1,
+     "udio_skuplje": 0.253,
+     "udio_jeftinije": 0.647,
+     "uzorak": 546
+    },
+    {
+     "dana_prije": 3,
+     "medijan_pct": -10.4,
+     "p25_pct": -29.4,
+     "p75_pct": 0.0,
+     "udio_skuplje": 0.236,
+     "udio_jeftinije": 0.688,
+     "uzorak": 525
+    },
+    {
+     "dana_prije": 5,
+     "medijan_pct": -10.4,
+     "p25_pct": -33.3,
+     "p75_pct": 1.1,
+     "udio_skuplje": 0.256,
+     "udio_jeftinije": 0.676,
+     "uzorak": 485
+    },
+    {
+     "dana_prije": 7,
+     "medijan_pct": -12.2,
+     "p25_pct": -34.1,
+     "p75_pct": 1.1,
+     "udio_skuplje": 0.253,
+     "udio_jeftinije": 0.691,
+     "uzorak": 466
+    },
+    {
+     "dana_prije": 10,
+     "medijan_pct": -12.5,
+     "p25_pct": -33.4,
+     "p75_pct": 0.6,
+     "udio_skuplje": 0.241,
+     "udio_jeftinije": 0.705,
+     "uzorak": 423
+    },
+    {
+     "dana_prije": 14,
+     "medijan_pct": -11.7,
+     "p25_pct": -33.5,
+     "p75_pct": 0.6,
+     "udio_skuplje": 0.239,
+     "udio_jeftinije": 0.7,
+     "uzorak": 377
+    },
+    {
+     "dana_prije": 21,
+     "medijan_pct": -11.4,
+     "p25_pct": -31.3,
+     "p75_pct": 3.2,
+     "udio_skuplje": 0.259,
+     "udio_jeftinije": 0.684,
+     "uzorak": 282
+    },
+    {
+     "dana_prije": 30,
+     "medijan_pct": -9.7,
+     "p25_pct": -24.9,
+     "p75_pct": 6.9,
+     "udio_skuplje": 0.313,
+     "udio_jeftinije": 0.632,
+     "uzorak": 144
+    }
+   ]
+  }
+ }
+}

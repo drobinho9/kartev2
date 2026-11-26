@@ -44,7 +44,9 @@ class Evaluator:
         now: datetime | None = None,
         seller_country: str = "HR",
         contract_risk: bool = False,
+        learned: dict | None = None,
     ):
+        self.learned = learned  # naučeni model (karte/ucenje.py) – samo kad je aktivan
         self.contract_risk = contract_risk  # nogomet: zabrana samo iz uvjeta kluba → računaj uz rizik poništenja
         if category not in CATEGORIES:
             raise ValueError(f"Nepoznata kategorija '{category}', dopušteno: {', '.join(CATEGORIES)}")
@@ -232,6 +234,11 @@ class Evaluator:
                 multiplier = r["base_multiplier"] + r["demand_slope"] * demand.score ** r["demand_exponent"]
                 multiplier *= multiplier_adjust
                 multiplier_source = "model (procjena iz potražnje)"
+                if self.learned:
+                    from karte.ucenje import blend_multiplier, features_from
+
+                    multiplier, how = blend_multiplier(self.learned, features_from(event, demand.components, days_between(self.now, event.date)), multiplier)
+                    multiplier_source = f"model (procjena iz potražnje; {how})"
             if days_to_event <= r["late_days"] and demand.score < r["late_decay_max_demand"]:
                 multiplier *= r["late_decay"]
             expected_resale = face_ref * multiplier

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from karte import knowledge
+from karte import knowledge, timing
 from karte.knowledge import ModelConfig
 from karte.links import price_links
 from karte.models import Opportunity
@@ -27,20 +27,23 @@ def _ladder(op: Opportunity, cfg: ModelConfig) -> list[dict]:
     cap = min(caps) if caps else None
     d = op.demand.score
     salvage = cfg.get("sell", "salvage_ratio", 0.5) * (op.face_ref or 0)
+    # spuštanje cijene prema stvarnoj krivulji najniže cijene na StubHubu (NeedATicket) za ovakav događaj
+    ref = timing.rel(op.event, min(op.days_to_event, 30)) or 1.0
+    f = lambda days: min(1.0, timing.rel(op.event, days) / ref)  # noqa: E731
 
     if d >= 0.7:
         steps = [
             (None, start * 1.10, "Odmah (po rasprodaji primarne prodaje / kupnji)"),
-            (30, start, "T-30 dana"),
-            (14, max(floor, start * 0.92), "T-14 dana"),
-            (7, max(floor, start * 0.85), "T-7 dana"),
-            (2, floor, "T-2 dana – zadnja prilika (break-even)"),
+            (30, start * f(30), "T-30 dana"),
+            (14, max(floor, start * f(14)), "T-14 dana"),
+            (7, max(floor, start * f(7)), "T-7 dana"),
+            (2, max(floor, start * f(2) * 0.95), "T-2 dana – zadnja prilika"),
         ]
     elif d >= 0.45:
         steps = [
             (None, start, "Odmah po kupnji"),
-            (30, max(floor, start * 0.95), "T-30 dana"),
-            (14, max(floor, start * 0.88), "T-14 dana"),
+            (30, max(floor, start * f(30) * 0.97), "T-30 dana"),
+            (14, max(floor, start * f(14) * 0.93), "T-14 dana"),
             (5, floor, "T-5 dana – break-even"),
             (1, max(salvage, floor * 0.8), "T-1 dan – smanji gubitak"),
         ]
@@ -52,11 +55,15 @@ def _ladder(op: Opportunity, cfg: ModelConfig) -> list[dict]:
         ]
 
     rows = []
+    last = None
     for days_before, price, label in steps:
         if days_before is not None and days_before >= op.days_to_event:
             continue
         if cap is not None:
             price = min(price, cap)
+        if last is not None:
+            price = min(price, last)  # cijena se samo spušta
+        last = price
         date = add_days(op.event.date, -days_before) if days_before is not None else None
         rows.append({
             "label": label,
@@ -261,6 +268,9 @@ def build_advice(op: Opportunity, cfg: ModelConfig) -> dict:
         else:
             sell.append("Potražnja je slaba – ne kupuj radi preprodaje. Ako već imaš ulaznice, prodaj što prije, makar po nominalnoj cijeni.")
         sell.append("Prati najniži oglas iste kategorije i budi 1–3 % ispod njega; ne spuštaj ispod break-evena prije T-7 dana.")
+        tip = timing.insight(e)
+        if tip:
+            sell.append(tip)
         if best.capped:
             sell.append(f"Cijena je ograničena (zakon ili pravila platforme) na ~{fmt_eur(best.list_price)}.")
         if "nakon" in best.payout.lower():

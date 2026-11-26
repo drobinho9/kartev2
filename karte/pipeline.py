@@ -54,6 +54,7 @@ class ScanOptions:
     serpapi_cities: list[str] = field(default_factory=list)  # gradovi za Google Events (SerpApi); prazno = zadani za države
     use_fixtures: bool = False  # nogomet: raspored utakmica bez ključa (fixturedownload.com) + API-Football ako postoji ključ
     football_all: bool = False  # nogomet: sve utakmice iz rasporeda, ne samo derbiji, velike i utakmice domaćih klubova
+    use_learned: bool = False  # koristi naučeni model (karte model --treniraj) ako je aktivan
     football_risk: bool = False  # nogomet: zabrana samo iz uvjeta kluba/UEFA-e → računaj uz rizik poništenja (presuda RIZIČNO)
 
 
@@ -313,6 +314,12 @@ def collect_events(
     return events, warnings, sources
 
 
+def _learned():
+    from karte.ucenje import load
+
+    return load()
+
+
 def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = None) -> ScanResult:
     now = opts.now or utcnow()
     opts.now = now
@@ -322,6 +329,7 @@ def run_scan(opts: ScanOptions, settings: Settings, http: HttpClient | None = No
     evaluator = Evaluator(
         config, budget=opts.budget, category=opts.category, strict=opts.strict, now=now, seller_country=opts.seller_country,
         contract_risk=opts.football_risk,
+        learned=_learned() if opts.use_learned else None,
     )
 
     window_end = now + timedelta(days=opts.days)

@@ -225,7 +225,11 @@ def scan_alerts(ops: list[Opportunity], state: dict, now: datetime, threshold: i
                 reminded.add(start.isoformat())
         history = list((prev or {}).get("povijest", []))
         if not history or history[-1].get("dan") != today:
-            history.append({"dan": today, "ocjena": score, "presuda": op.verdict, "preprodaja": sec, "nominalna": op.face_ref})
+            from karte.ucenje import features
+
+            history.append({"dan": today, "ocjena": score, "presuda": op.verdict, "preprodaja": sec, "nominalna": op.face_ref,
+                            "znacajke": features(op), "spekulativno": "spekulativ" in ((e.secondary.source if e.secondary else "") or ""),
+                            "heuristika": round(math.log(op.multiplier), 5) if op.multiplier and op.multiplier_source.startswith("model") else None})
         seen[key] = {
             "naziv": e.name, "datum": e.date.isoformat(), "score": score, "verdict": op.verdict, "secondary": sec,
             "prvi_put": (prev or {}).get("prvi_put", today), "podsjetnici": sorted(reminded), "povijest": history[-HISTORY_LIMIT:],

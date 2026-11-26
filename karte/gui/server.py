@@ -149,6 +149,7 @@ class App:
             use_fixtures=self.fixtures and body.get("fixtures") is not False,
             football_all=bool(body.get("football_all")),
             football_risk=self.settings.football_risk,
+            use_learned=self.fixtures,
         )
 
     def _source(self, body: dict) -> dict:

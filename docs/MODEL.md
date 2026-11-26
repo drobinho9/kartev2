@@ -136,3 +136,24 @@ Za svaku kategoriju istog koncerta: multiplikator koncerta × `(cijena / medijan
 (prednji sektor 1,15 · parter 1,10 · standard 1,00 · tribina 0,95 · VIP 0,85 · zaklonjeno 0,75), uz korekciju vjerojatnosti
 prodaje (jeftinije se prodaje brže, VIP sporije). Ako za kategoriju upišeš stvarnu najnižu cijenu s viagoga, koristi se ona.
 Detalji: [`karte/categories.py`](../karte/categories.py).
+
+## Učenje iz stvarnih cijena (`karte model`)
+
+**Što postoji javno (provjereno na Hugging Faceu, 26. 11. 2026.):**
+
+| Skup | Sadržaj | Upotrebljivo? |
+|---|---|---|
+| `rebrowser/stubhub-dataset`, `rebrowser/seatgeek-dataset` | dnevne snimke oglasa (StubHub od 2024., 151 mil. zapisa u punom skupu) | uzorak na HF ima **zaključane cijene** (`[PREMIUM]`); puni skup je plaćen ili besplatan za akademsko istraživanje; licenca CC BY-NC |
+| `streetvisit/uk-resale-ticket-prices` (NeedATicket) | agregati najniže cijene na StubHubu po danima prije događaja, segmentu i tržištu (6.023 događaja) | ✅ CC BY 4.0 – ugrađeno kao `karte/data/vrijeme_prodaje.json` |
+| gotovi modeli za cijene ulaznica | — | nema ih |
+
+**1. Kada prodati (stvarni podaci).** Cjenik prodaje i savjet „kada oglasiti” sada slijede stvarnu krivulju:
+velike dvorane i sport su mjesec dana prije događaja u medijanu 17–20 % skuplji nego na dan događaja (kod 58–63 %
+događaja cijena kasnije padne) → prodaj rano. Male dvorane: stabilno. Kazalište: cijene rastu prema datumu.
+Osvježavanje: `pip install -r modeliranje/requirements.txt` pa `python modeliranje/needaticket_krivulja.py`.
+
+**2. Naš model (`karte/ucenje.py`).** Ridge regresija na `ln(preprodaja / nominalna)` sa značajkama iz modela
+potražnje (popularnost, rijetkost, turneja, oznake, kapacitet, trend, dani do događaja). Primjere skuplja radar
+(svaki dan po događaju) i trenutna procjena; spekulativni oglasi se ne uzimaju. `karte model --treniraj` uči i
+sprema model u `~/.karte/naucen_model.json`; model se koristi tek od 25 primjera i ako u unakrsnoj provjeri griješi
+manje od heuristike, i to pomiješan s heuristikom s težinom n / (n + 50).
